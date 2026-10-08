@@ -1,0 +1,80 @@
+/* GreenSwap Botanical Editorial Design System Tokens */
+:root {
+  /* Light Mode ("Field Guide / Pressed Botanical Archive") */
+  --color-bg: #F8F6F0;           /* Warm bone/off-white paper */
+  --color-surface: #FCFAF6;      /* Archival plate card surface */
+  --color-surface-muted: #F0EAE1;/* Muted parchment tint */
+  --color-surface-subtle: #E7E0D3;
+  --color-ink: #1B211E;          /* Deep carbon ink (never #000000) */
+  --color-ink-muted: #535C55;    /* Field notebook pencil lead */
+  --color-ink-faint: #848E86;    /* Margin annotation faint ink */
+  --color-border: #DFD7CA;       /* Fine 1px bookbinding rule */
+  --color-border-strong: #C5BCAD;/* Heavy catalogue division line */
+  
+  --color-moss: #33593A;         /* Dried moss / lichen green */
+  --color-clay: #A35A38;         /* Terracotta / clay sediment */
+  --color-burnt: #C84B26;        /* Burnt orange specimen seal */
+  --color-bone: #F8F6F0;
+
+  --ring-focus: rgba(200, 75, 38, 0.4);
+}
+
+.dark {
+  /* Dark Mode ("Night Field Station / Darkroom Plate") */
+  --color-bg: #131614;           /* Deep peat obsidian (never #000000) */
+  --color-surface: #1B201D;      /* Dark slate tray */
+  --color-surface-muted: #242A26;/* Deep shale tint */
+  --color-surface-subtle: #2D3530;
+  --color-ink: #EDEAE1;          /* Bone chalk ink (never #FFFFFF) */
+  --color-ink-muted: #9BA59C;    /* Moonlight slate gray */
+  --color-ink-faint: #636D65;    /* Faint graphite coordinate */
+  --color-border: #2B332D;       /* Archival dark rule */
+  --color-border-strong: #3F4B42;
+  
+  --color-moss: #4C7D55;         /* Phosphor lichen moss */
+  --color-clay: #BD6F4C;         /* Fired terracotta */
+  --color-burnt: #D65C35;        /* Ember seal accent */
+  --color-bone: #242A26;
+
+  --ring-focus: rgba(214, 92, 53, 0.5);
+}
+
+/* Subtle archival paper noise texture overlay (3.5% opacity) */
+.paper-grain {
+  position: relative;
+}
+
+.paper-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  z-index: 1;
+}
+
+/* Custom selection styling */
+::selection {
+  background-color: rgba(163, 90, 56, 0.22);
+  color: var(--color-ink);
+}
+
+/* Custom clean scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-muted);
+}
