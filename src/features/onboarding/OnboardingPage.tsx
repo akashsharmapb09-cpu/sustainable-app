@@ -63,9 +63,10 @@ export function OnboardingPage() {
         onboarding_completed: true,
       });
       navigate('/dashboard');
-    } catch {
-      setError('Could not save calibration. Try again.');
-    }
+     } catch (err: any) {
+    console.error(err);
+    setError(err?.message || 'Could not save calibration. Try again.');
+  }
   };
 
   return (
