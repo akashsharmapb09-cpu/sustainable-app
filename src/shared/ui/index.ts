@@ -1,4 +1,3 @@
-export * from './AssistantWidget';
 export * from './Button';
 export * from './Card';
 export * from './Badge';
