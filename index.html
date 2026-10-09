@@ -109,6 +109,47 @@ body.route-method #methodology .tablewrap>p:last-child{border-top:1px solid var(
 .source-link{display:inline;color:var(--clay);text-decoration:underline;text-decoration-color:#d9a18f;text-decoration-thickness:1px;text-underline-offset:3px;cursor:pointer;pointer-events:auto;position:relative;z-index:1}
 .source-link:hover{color:#84351f;text-decoration-color:currentColor}
 .source-link:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.account-page{max-width:1180px;margin:0 auto;min-height:80vh}
+.account-intro{max-width:720px;border-bottom:1px solid var(--line);padding-bottom:26px;margin:16px 0 28px}
+.account-intro h2{font:700 clamp(42px,5vw,62px)/1.04 "Playfair Display",serif;letter-spacing:-2px;margin:0 0 15px}
+.account-intro p,.account-note{font-size:13px;line-height:1.8;color:var(--muted)}
+.account-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:900px}
+.account-panel{padding:clamp(20px,3vw,30px);background:#fbfaf6;border:1px solid var(--line);border-radius:3px;max-width:900px}
+.account-panel h3{font:700 23px "Playfair Display",serif;margin:8px 0 20px}
+.panel-kicker{font:10px "DM Mono",monospace;letter-spacing:1px;color:var(--clay)}
+.account-panel>label:not(.switch){display:block;font-size:12px;font-weight:600;margin:18px 0 7px}
+.account-panel input[type="text"],.account-panel input[type="email"]{width:100%;padding:13px;border:1px solid var(--line);background:#f8f6f0;color:var(--ink);border-radius:2px;font:13px "DM Sans",sans-serif}
+.form-hint{font-size:11px;line-height:1.7;color:var(--muted)}
+.save-status{min-height:18px;font-size:12px;color:var(--green)}
+.profile-preference{display:flex;justify-content:space-between;gap:15px;padding:14px 0;border-bottom:1px solid var(--line);font-size:12px}
+.profile-preference span{color:var(--muted)}.profile-preference strong{font-weight:600;text-align:right}
+.profile-summary .btn{margin-top:22px}
+.account-note{max-width:900px;margin-top:22px;padding:16px 18px;background:#efeee6}
+.settings-panel{max-width:900px}
+.setting-row{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:22px 0;border-bottom:1px solid var(--line)}
+.setting-row:first-child{padding-top:0}
+.setting-row h3{font:700 18px "Playfair Display",serif;margin:0 0 6px}
+.setting-row p{font-size:12px;line-height:1.65;color:var(--muted);margin:0;max-width:570px}
+.switch{position:relative;display:inline-flex;flex:0 0 auto;cursor:pointer}
+.switch input{position:absolute;opacity:0;width:1px;height:1px}
+.switch-ui{width:44px;height:25px;border-radius:30px;background:#d5d3c9;transition:background .2s;position:relative}
+.switch-ui:after{content:"";position:absolute;width:19px;height:19px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0002;transition:transform .2s}
+.switch input:checked+.switch-ui{background:var(--green)}
+.switch input:checked+.switch-ui:after{transform:translateX(19px)}
+.switch input:focus-visible+.switch-ui{outline:2px solid var(--green);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.settings-actions{display:flex;gap:10px;flex-wrap:wrap;padding-top:22px}
+body.compact-cards .card{min-height:190px}
+body.compact-cards .cardbody{padding:13px}
+body.reduce-motion *,body.reduce-motion *:before,body.reduce-motion *:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+body.hide-explanations .rec p strong{display:none}
+body.route-profile .top,body.route-settings .top{display:none}
+body.route-profile .app-sidebar,body.route-settings .app-sidebar{display:flex;position:fixed;inset:0 auto 0 0;width:264px;flex-direction:column;background:#fbfaf6;border-right:1px solid var(--line);padding:22px 20px;z-index:10}
+body.route-profile main,body.route-settings main{margin-left:264px}
+body.route-profile main>*:not(#profile-page),body.route-settings main>*:not(#settings-page),body.route-profile footer,body.route-settings footer{display:none!important}
+body.route-profile #profile-page,body.route-settings #settings-page{display:block!important;min-height:100vh;background:radial-gradient(ellipse at 80% 0%,#f3f1e9 0,transparent 42%),var(--paper)}
+body.route-profile .app-sidebar .side-links a[href="/profile"],body.route-settings .app-sidebar .side-links a[href="/settings"]{border-left-color:var(--green);color:var(--green);background:#f0f2eb}
+@media(max-width:760px){body.route-profile .app-sidebar,body.route-settings .app-sidebar{position:sticky;top:0;width:100%;height:auto;padding:12px 16px;display:block;border-right:0;border-bottom:1px solid var(--line)}body.route-profile .app-sidebar .side-profile,body.route-settings .app-sidebar .side-profile,body.route-profile .app-sidebar .side-bottom,body.route-settings .app-sidebar .side-bottom{display:none}body.route-profile .app-sidebar .side-brand,body.route-settings .app-sidebar .side-brand{padding:0 0 10px;border:0}body.route-profile .app-sidebar .side-links,body.route-settings .app-sidebar .side-links{display:flex;overflow-x:auto;gap:4px}body.route-profile .app-sidebar .side-links a,body.route-settings .app-sidebar .side-links a{white-space:nowrap;padding:9px 10px;border-left:0;border-bottom:2px solid transparent;font-size:12px}body.route-profile .app-sidebar .side-links a[href="/profile"],body.route-settings .app-sidebar .side-links a[href="/settings"]{border-bottom-color:var(--green)}body.route-profile main,body.route-settings main{margin-left:0}body.route-profile #profile-page,body.route-settings #settings-page{padding:38px 5%}.account-grid{grid-template-columns:1fr}.setting-row{gap:12px}.settings-actions .btn{font-size:11px}}
 .footer-links{display:flex;gap:10px;align-items:center}.footer-links a:hover{color:var(--green);text-decoration:underline}
 .privacy-page{max-width:1040px;margin:0 auto;padding-top:72px;padding-bottom:90px}
 .privacy-intro{max-width:760px;border-bottom:1px solid var(--line);padding-bottom:25px;margin-bottom:10px}
@@ -164,8 +205,34 @@ body.route-privacy .app-sidebar .side-links a[href="/privacy"]{border-left-color
 </div>
 <p class="privacy-disclaimer">Transparency note: this policy describes the current browser-based demo as implemented today. If accounts, analytics, forms, or server-side preference storage are added later, update this page to reflect those changes before launch.</p>
 </section>
+<section class="section account-page" id="profile-page">
+<div class="eyebrow">YOUR GREENSWAP SPACE</div>
+<div class="account-intro"><h2>User profile</h2><p>Keep a few details and lifestyle preferences on this device to make your GreenSwap experience feel more relevant. No account or sign-in is required.</p></div>
+<div class="account-grid">
+<form id="profile-form" class="account-panel">
+<div class="panel-kicker">PROFILE DETAILS</div><h3>About you</h3>
+<label for="profile-name">Display name</label><input id="profile-name" name="name" type="text" maxlength="60" placeholder="e.g. Green Explorer">
+<label for="profile-email">Email (optional)</label><input id="profile-email" name="email" type="email" maxlength="120" placeholder="you@example.com">
+<p class="form-hint">Your email is only saved in this browser by this demo. It is not sent to GreenSwap.</p>
+<button class="btn" type="submit">Save profile ↗</button><p class="save-status" id="profile-status" role="status" aria-live="polite"></p>
+</form>
+<div class="account-panel profile-summary"><div class="panel-kicker">YOUR APPROACH</div><h3>Preferences that guide your swaps</h3><p>These choices help shape practical recommendations. You can change them any time on the home page.</p><div class="profile-preference"><span>Travel</span><strong id="profile-travel">Not set</strong></div><div class="profile-preference"><span>Diet</span><strong id="profile-diet">Not set</strong></div><div class="profile-preference"><span>Budget</span><strong id="profile-budget">Not set</strong></div><div class="profile-preference"><span>Priority</span><strong id="profile-priority">Not set</strong></div><a class="btn outline" href="/#recommend">Update preferences →</a></div>
+</div>
+<p class="account-note">Privacy first: profile details and these display settings are stored locally in this browser. Clearing browser site data may remove them.</p>
+</section>
+<section class="section account-page" id="settings-page">
+<div class="eyebrow">MAKE IT YOURS</div>
+<div class="account-intro"><h2>Settings</h2><p>Adjust how GreenSwap looks and behaves on this device.</p></div>
+<form id="settings-form" class="account-panel settings-panel">
+<div class="setting-row"><div><h3>Compact recommendation cards</h3><p>Reduce spacing so you can scan more alternatives at once.</p></div><label class="switch"><input type="checkbox" id="setting-compact"><span class="switch-ui"></span><span class="sr-only">Compact recommendation cards</span></label></div>
+<div class="setting-row"><div><h3>Reduce motion</h3><p>Limit animated transitions and smooth scrolling where possible.</p></div><label class="switch"><input type="checkbox" id="setting-motion"><span class="switch-ui"></span><span class="sr-only">Reduce motion</span></label></div>
+<div class="setting-row"><div><h3>Show “why it fits” explanations</h3><p>Keep practical context with your recommendations.</p></div><label class="switch"><input type="checkbox" id="setting-explanations" checked><span class="switch-ui"></span><span class="sr-only">Show explanations</span></label></div>
+<div class="settings-actions"><button class="btn" type="submit">Save settings ↗</button><button class="btn outline" type="button" id="reset-local-data">Reset local profile & settings</button></div><p class="save-status" id="settings-status" role="status" aria-live="polite"></p>
+</form>
+<div class="account-note"><strong>Local demo settings.</strong> These controls affect this browser only. GreenSwap currently has no sign-in system or cloud profile sync.</div>
+</section>
 <section class="section about" id="about"><div><div class="eyebrow">ABOUT GREENSWAP</div><h2>Sustainability should fit real life.</h2></div><div><p>GreenSwap is a practical recommendation system for everyday decisions. It focuses on accessible alternatives, transparent assumptions and steady progress—without shame, expensive defaults or claims of perfect precision.</p><a class="btn outline" href="#recommend">Start with your routine ↗</a></div></section>
-</main><footer><a class="brand" href="#home">GreenSwap<span>.</span></a><span>Practical changes. Clear assumptions. Better habits.</span><span class="footer-links"><a href="/privacy">Privacy policy</a> · <a href="#methodology">Methodology ↑</a></span></footer>
+</main><footer><a class="brand" href="#home">GreenSwap<span>.</span></a><span>Practical changes. Clear assumptions. Better habits.</span><span class="footer-links"><a href="/profile">Profile</a> · <a href="/settings">Settings</a> · <a href="/privacy">Privacy policy</a> · <a href="#methodology">Methodology ↑</a></span></footer>
 <script>
 const swaps=[
 {c:'Transport',t:'Switch commute to metro or bus',d:'Replace a regular solo car or taxi trip with public transit where routes are convenient.',cost:'Often lower trip cost',impact:'Potentially lower travel emissions',why:'Best when a reliable route exists and the car trip is genuinely replaced.'},
@@ -191,15 +258,42 @@ $('#filters').addEventListener('click',e=>{const b=e.target.closest('button[data
 days.forEach(d=>{const el=document.createElement('article');el.className='day';el.innerHTML='<small>'+d[0].toUpperCase()+'</small><h3>'+d[1]+'</h3><p>'+d[2]+'</p><label><input type="checkbox"> Mark complete</label>';el.querySelector('input').addEventListener('change',e=>el.classList.toggle('done',e.target.checked));$('#week').appendChild(el);});
 function update(){const km=+$('#dist').value,days=+$('#freq').value;$('#distv').textContent=km+' km';$('#freqv').textContent=days+' days / week';$('#impactv').textContent='≈ '+Math.round(km*2*days*4.33*(.17-.015))+' kg CO₂e';}$('#dist').addEventListener('input',update);$('#freq').addEventListener('input',update);update();renderCards();
 
+/* Local-only profile and display preferences */
+(function(){
+ const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch(e){return fallback}};
+ const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));return true}catch(e){return false}};
+ const profile=read('greenswap-profile',{name:'',email:''});
+ const settings=read('greenswap-settings',{compact:false,reduceMotion:false,explanations:true});
+ document.body.classList.toggle('compact-cards',!!settings.compact);
+ document.body.classList.toggle('reduce-motion',!!settings.reduceMotion);
+ document.body.classList.toggle('hide-explanations',!settings.explanations);
+ const nameInput=document.querySelector('#profile-name'),emailInput=document.querySelector('#profile-email');
+ if(nameInput)nameInput.value=profile.name||'';
+ if(emailInput)emailInput.value=profile.email||'';
+ const updateSummary=()=>{
+  const map={travel:['travel','profile-travel'],diet:['diet','profile-diet'],budget:['budget','profile-budget'],priority:['priority','profile-priority']};
+  Object.entries(map).forEach(([key,entry])=>{const el=document.getElementById(entry[1]);const control=document.getElementById(key);if(el)el.textContent=control&&control.value?control.options[control.selectedIndex].text:'Not set';});
+ };
+ updateSummary();
+ const profileForm=document.querySelector('#profile-form');
+ if(profileForm)profileForm.addEventListener('submit',e=>{e.preventDefault();const data={name:nameInput.value.trim(),email:emailInput.value.trim()};const ok=write('greenswap-profile',data);const status=document.querySelector('#profile-status');if(status)status.textContent=ok?'Profile saved on this device.':'Could not save; check your browser storage settings.';});
+ const checks={compact:document.querySelector('#setting-compact'),reduceMotion:document.querySelector('#setting-motion'),explanations:document.querySelector('#setting-explanations')};
+ Object.entries(checks).forEach(([key,el])=>{if(el)el.checked=!!settings[key]});
+ const settingsForm=document.querySelector('#settings-form');
+ const applySettings=values=>{document.body.classList.toggle('compact-cards',!!values.compact);document.body.classList.toggle('reduce-motion',!!values.reduceMotion);document.body.classList.toggle('hide-explanations',!values.explanations)};
+ if(settingsForm)settingsForm.addEventListener('submit',e=>{e.preventDefault();const values={compact:!!checks.compact?.checked,reduceMotion:!!checks.reduceMotion?.checked,explanations:!!checks.explanations?.checked};const ok=write('greenswap-settings',values);applySettings(values);const status=document.querySelector('#settings-status');if(status)status.textContent=ok?'Settings saved on this device.':'Could not save; check your browser storage settings.';});
+ const reset=document.querySelector('#reset-local-data');
+ if(reset)reset.addEventListener('click',()=>{try{localStorage.removeItem('greenswap-profile');localStorage.removeItem('greenswap-settings')}catch(e){}if(nameInput)nameInput.value='';if(emailInput)emailInput.value='';Object.entries(checks).forEach(([key,el])=>{if(el)el.checked=key==='explanations'});const defaults={compact:false,reduceMotion:false,explanations:true};applySettings(defaults);const status=document.querySelector('#settings-status');if(status)status.textContent='Local profile and settings reset.';});
+})();
 /* Route-aware layouts for the catalogue and methodology pages */
 (function(){
  let path=location.pathname||'/'; if(path.length>1 && path.endsWith('/')) path=path.slice(0,-1);
- if(path==='/explore'||path==='/methodology'||path==='/privacy'){
-  const isExplore=path==='/explore'; const isPrivacy=path==='/privacy';
-  document.body.classList.add(isExplore?'route-catalog':(isPrivacy?'route-privacy':'route-method'));
+ if(path==='/explore'||path==='/methodology'||path==='/privacy'||path==='/profile'||path==='/settings'){
+  const isExplore=path==='/explore'; const isPrivacy=path==='/privacy'; const isProfile=path==='/profile'; const isSettings=path==='/settings';
+  document.body.classList.add(isExplore?'route-catalog':(isPrivacy?'route-privacy':(isProfile?'route-profile':(isSettings?'route-settings':'route-method'))));
   const aside=document.createElement('aside');
   aside.className='app-sidebar';
-  aside.innerHTML='<a class="side-brand" href="/">GreenSwap<span>.</span></a><div class="side-profile"><span class="side-kicker">FIELD OPERATOR</span><strong>Guest · local session</strong></div><nav class="side-links" aria-label="Main navigation"><a href="/#home"><span class="side-icon">⌂</span>Home</a><a href="/#recommend"><span class="side-icon">✳</span>My recommendations</a><a href="/explore" class="'+(isExplore?'active':'')+'"><span class="side-icon">◎</span>Explore</a><a href="/methodology" class="'+(!isExplore&&!isPrivacy?'active':'')+'"><span class="side-icon">↗</span>Methodology</a><a href="/privacy" class="'+(isPrivacy?'active':'')+'"><span class="side-icon">⌑</span>Privacy policy</a></nav><div class="side-bottom">Small changes, grounded in real life.<br>Recommendations are indicative, not guarantees.</div>';
+  aside.innerHTML='<a class="side-brand" href="/">GreenSwap<span>.</span></a><div class="side-profile"><span class="side-kicker">FIELD OPERATOR</span><strong>Guest · local session</strong></div><nav class="side-links" aria-label="Main navigation"><a href="/#home"><span class="side-icon">⌂</span>Home</a><a href="/#recommend"><span class="side-icon">✳</span>My recommendations</a><a href="/explore" class="'+(isExplore?'active':'')+'"><span class="side-icon">◎</span>Explore</a><a href="/methodology" class="'+(!isExplore&&!isPrivacy?'active':'')+'"><span class="side-icon">↗</span>Methodology</a><a href="/privacy" class="'+(isPrivacy?'active':'')+'"><span class="side-icon">⌑</span>Privacy policy</a><a href="/profile" class="'+(isProfile?'active':'')+'"><span class="side-icon">◉</span>User profile</a><a href="/settings" class="'+(isSettings?'active':'')+'"><span class="side-icon">⚙</span>Settings</a></nav><div class="side-bottom">Small changes, grounded in real life.<br>Recommendations are indicative, not guarantees.</div>';
   document.body.insertBefore(aside,document.body.firstChild);
   if(isExplore){
    const heading=document.querySelector('#explore .heading p');
