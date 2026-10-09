@@ -67,7 +67,7 @@ export function LandingPage() {
 
           <div className="mt-8 flex gap-4">
             <Link to="/login" className="px-8 py-3 bg-white text-black rounded-full font-bold">Start Swapping</Link>
-            <Link to="/register" className="px-8 py-3 border border-white/20 rounded-full">Join Now</Link>
+            <Link to="/signup" className="px-8 py-3 border border-white/20 rounded-full">Join Now</Link>
           </div>
         </motion.div>
 
