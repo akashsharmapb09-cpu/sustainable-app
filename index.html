@@ -206,6 +206,56 @@ body.route-saved .app-sidebar .side-links a[href="/saved"],body.route-faq .app-s
 .theme-choice[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#1b2618}
 .theme-choice:focus-visible{outline:2px solid var(--green);outline-offset:3px}
 @media(prefers-color-scheme:dark){:root[data-theme="system"]{color-scheme:dark}}
+
+/* Dashboard hierarchy and topic highlights */
+nav .nav-dashboard{color:var(--green);font-weight:700}
+.dashboard-section{padding:clamp(46px,6vw,76px) clamp(22px,8%,120px);background:#f0f0e7;border-bottom:1px solid var(--line)}
+.dashboard-topline{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;margin-bottom:26px}
+.dashboard-topline h2{font:700 clamp(38px,4.5vw,58px)/1.03 "Playfair Display",serif;letter-spacing:-1.8px;margin:10px 0}
+.dashboard-topline h2 span{color:var(--clay)}
+.dashboard-topline p{font-size:13px;line-height:1.8;color:var(--muted);max-width:590px;margin:0}
+.dashboard-main-action{display:inline-flex;align-items:center;gap:20px;white-space:nowrap;background:var(--green);color:#fff;padding:14px 17px;font-size:12px;font-weight:600}
+.dashboard-main-action span{font-size:17px}
+.dashboard-stats{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:12px;margin-bottom:36px}
+.dash-stat{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:164px;padding:20px;background:#fbfaf6;border:1px solid var(--line);transition:transform .18s ease,border-color .18s ease}
+.dash-stat:hover,.topic-card:hover{transform:translateY(-2px);border-color:#b6c7ae}
+.dash-stat-featured{background:#315b3d;color:white;border-color:#315b3d}
+.dash-stat-icon{font-size:19px;line-height:1}
+.dash-stat-label,.topic-number{font:10px "DM Mono",monospace;letter-spacing:.7px;color:var(--muted)}
+.dash-stat-featured .dash-stat-label,.dash-stat-featured small{color:#e0e9d9}
+.dash-stat strong{font:700 clamp(20px,2vw,27px) "Playfair Display",serif;letter-spacing:-.4px}
+.dash-stat small{font-size:11px;line-height:1.5;color:var(--muted)}
+.dash-mini-track{width:100%;height:4px;background:#dce2d6;margin-top:auto}
+.dash-mini-track i{display:block;width:0;height:100%;background:var(--green);transition:width .2s ease}
+.dash-stat-featured .dash-mini-track{display:none}
+.dashboard-lower{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(230px,.8fr);gap:25px;align-items:stretch}
+.dashboard-subhead{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;margin-bottom:15px}
+.dashboard-subhead h3,.dashboard-next h3{font:700 clamp(23px,2.5vw,31px)/1.15 "Playfair Display",serif;letter-spacing:-.5px;margin:8px 0 0}
+.dashboard-subhead>a{font-size:11px;color:var(--green);white-space:nowrap}
+.topic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.topic-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;min-height:205px;padding:18px;background:#fbfaf6;border:1px solid var(--line);transition:transform .18s ease,border-color .18s ease}
+.topic-mark{position:absolute;right:18px;top:15px;color:var(--green);font-size:16px}
+.topic-number{font-size:9px}
+.topic-card strong{font:700 21px/1.2 "Playfair Display",serif;margin:24px 0 8px;max-width:90%}
+.topic-card p{font-size:12px;line-height:1.65;color:var(--muted);margin:0 0 15px}
+.topic-link{margin-top:auto;font-size:11px;color:var(--green);font-weight:600}
+.topic-food{border-top:3px solid #c9512f}.topic-travel{border-top:3px solid #597b8a}.topic-energy{border-top:3px solid #8a9a58}.topic-shopping{border-top:3px solid #a87a55}
+.dashboard-next{padding:25px;background:#e1e8d9;border:1px solid #d0dbc8;display:flex;flex-direction:column;align-items:flex-start}
+.dashboard-next h3{font-size:29px;margin:13px 0 10px}
+.dashboard-next>p{font-size:12px;line-height:1.75;color:#536352;margin:0 0 18px}
+.next-link{width:100%;display:flex;justify-content:space-between;gap:10px;padding:14px 0;border-top:1px solid #c8d4bf;font-size:12px;font-weight:600;color:#315b3d}
+.next-link span{font-size:16px}
+.dashboard-note{margin-top:auto;padding-top:18px;font-size:10px;line-height:1.7;color:#647361}
+:root[data-theme="dark"] .dashboard-section{background:#1c211b}
+:root[data-theme="dark"] .dash-stat,:root[data-theme="dark"] .topic-card{background:#20251f;color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] .dash-stat-featured{background:#30432e;color:#f1f0e7;border-color:#4b6146}
+:root[data-theme="dark"] .dash-stat-featured .dash-stat-label,:root[data-theme="dark"] .dash-stat-featured small{color:#d8e5d0}
+:root[data-theme="dark"] .dashboard-next{background:#293327;border-color:#414d3c}
+:root[data-theme="dark"] .dashboard-next>p,:root[data-theme="dark"] .dashboard-note{color:#c1cabb}
+:root[data-theme="dark"] .next-link{color:#cce0bd;border-color:#465440}
+:root[data-theme="dark"] .dash-mini-track{background:#414b3c}
+@media(max-width:900px){.dashboard-section{padding-inline:6%}.dashboard-topline{align-items:flex-start;flex-direction:column}.dashboard-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.dashboard-lower{grid-template-columns:1fr}.dashboard-next{min-height:260px}.dashboard-note{margin-top:20px}}
+@media(max-width:650px){.dashboard-section{padding:44px 5%}.dashboard-stats{grid-template-columns:1fr;gap:9px}.dash-stat{min-height:130px}.topic-grid{grid-template-columns:1fr}.topic-card{min-height:185px}.dashboard-subhead{align-items:flex-start;flex-direction:column}.dashboard-main-action{width:100%;justify-content:space-between}.dashboard-topline h2{font-size:43px}}
 </style>
 <script>
 (function(){
@@ -220,11 +270,30 @@ body.route-saved .app-sidebar .side-links a[href="/saved"],body.route-faq .app-s
 </script>
 </head>
 <body>
-<header class="top"><a class="brand" href="#home">GreenSwap<span>.</span></a><nav><a href="/explore">Explore catalog</a><a href="/saved">Saved swaps</a><a href="/resources">Resources</a><a href="/faq">FAQ</a><a href="/methodology">Methodology</a></nav><a class="pill" href="#recommend">Find my swaps ↗</a></header>
+<header class="top"><a class="brand" href="#home">GreenSwap<span>.</span></a><nav><a class="nav-dashboard" href="#dashboard">Dashboard</a><a href="#recommend">Recommendations</a><a href="/explore">Explore topics</a><a href="/saved">Saved swaps</a><a href="/resources">Resources</a></nav><a class="pill" href="#recommend">Find my swaps ↗</a></header>
 <main>
 <section class="hero" id="home"><div><div class="eyebrow">● PRACTICAL · INDIA-AWARE · EVIDENCE-AWARE</div><h1>Make a lighter<br>footprint.<br><em>Keep the good life.</em></h1><p>Small changes that fit your real routine. Find practical alternatives for travel, energy, food and waste—with transparent reasoning, not guilt.</p><div class="actions"><a class="btn dark" href="#recommend">Build my recommendations →</a><a class="btn outline" href="#explore">Explore the swaps</a></div><div class="small-note">Small steps, clear evidence. No guilt. Just useful next moves.</div></div>
 <div class="visual"><div class="orbit"></div><div class="planet"></div><div class="preview"><div class="preview-head">INTERACTIVE SPECIMEN // LIVE PREVIEW</div><div class="preview-body"><h3>Trade the car for the metro</h3><p>Adjust your commute to preview a potential monthly difference.</p><div class="range-label">One-way distance <strong id="distv">8 km</strong></div><input id="dist" type="range" min="1" max="30" value="8"><div class="range-label">Weekly frequency <strong id="freqv">5 days / week</strong></div><input id="freq" type="range" min="1" max="7" value="5"><div class="impact"><small>ILLUSTRATIVE DIFFERENCE / MONTH</small><h2 id="impactv">≈ 54 kg CO₂e</h2><small>Estimate only; real outcomes vary by route, vehicle and local transit.</small></div></div></div></div></section>
 <div class="strip"><span>01 / PERSONALISE</span><strong>Good choices start with your routine.</strong><span>02 / TAKE ACTION</span></div>
+<section class="dashboard-section" id="dashboard" aria-labelledby="dashboard-title">
+  <div class="dashboard-topline"><div><div class="eyebrow">YOUR GREENSWAP OVERVIEW</div><h2 id="dashboard-title">Your dashboard<span>.</span></h2><p>A clear starting point for everyday sustainable choices. Pick a priority, explore a topic, and keep track of small actions.</p></div><a class="dashboard-main-action" href="#recommend">Personalise my swaps <span>↗</span></a></div>
+  <div class="dashboard-stats" aria-label="Your activity summary">
+    <a class="dash-stat dash-stat-featured" href="#recommend"><span class="dash-stat-icon">✳</span><span class="dash-stat-label">PERSONALISED IDEAS</span><strong id="dash-recommendations">Ready when you are</strong><small>Match ideas to your routine and budget</small></a>
+    <a class="dash-stat" href="/saved"><span class="dash-stat-icon">♡</span><span class="dash-stat-label">SAVED SWAPS</span><strong id="dash-saved-count">0</strong><small>Ideas you want to try</small></a>
+    <a class="dash-stat" href="#week"><span class="dash-stat-icon">↗</span><span class="dash-stat-label">7-DAY ACTION PLAN</span><strong id="dash-plan-count">0 / 7</strong><small id="dash-plan-caption">Actions marked complete</small><span class="dash-mini-track"><i id="dash-plan-bar"></i></span></a>
+  </div>
+  <div class="dashboard-lower">
+    <div class="dashboard-topics"><div class="dashboard-subhead"><div><span class="eyebrow">FOCUS AREAS</span><h3>Important topics</h3></div><a href="/explore">View all topics ↗</a></div>
+      <div class="topic-grid">
+        <a class="topic-card topic-food" href="/explore"><span class="topic-number">01 / FOOD</span><span class="topic-mark">↗</span><strong>Prevent food waste</strong><p>Plan meals, use leftovers first, and buy what your household can use.</p><span class="topic-link">Explore practical ideas →</span></a>
+        <a class="topic-card topic-travel" href="/explore"><span class="topic-number">02 / TRANSPORT</span><span class="topic-mark">↗</span><strong>Choose smarter trips</strong><p>Consider transit, walking, cycling or sharing a ride when practical.</p><span class="topic-link">Explore practical ideas →</span></a>
+        <a class="topic-card topic-energy" href="/explore"><span class="topic-number">03 / ENERGY</span><span class="topic-mark">↗</span><strong>Use energy thoughtfully</strong><p>Start with everyday habits before spending money on new equipment.</p><span class="topic-link">Explore practical ideas →</span></a>
+        <a class="topic-card topic-shopping" href="/explore"><span class="topic-number">04 / BUY LESS, USE LONGER</span><span class="topic-mark">↗</span><strong>Reuse, repair, borrow</strong><p>Make the most of items you already own before buying replacements.</p><span class="topic-link">Explore practical ideas →</span></a>
+      </div>
+    </div>
+    <aside class="dashboard-next"><span class="eyebrow">YOUR NEXT STEP</span><h3>Start with what fits your life.</h3><p>You do not need to change everything at once. Choose a small, affordable action you can repeat.</p><a href="#recommend" class="next-link">1. Build my recommendations <span>→</span></a><a href="#week" class="next-link">2. Open the 7-day plan <span>→</span></a><a href="/saved" class="next-link">3. Review saved swaps <span>→</span></a><div class="dashboard-note">No account needed. Your saved ideas and checklist stay in this browser.</div></aside>
+  </div>
+</section>
 <section class="section" id="recommend"><div class="heading"><div><div class="eyebrow">YOUR ROUTINE, YOUR NEXT MOVE</div><h2>Find your best swaps.</h2></div><p>Tell us a little about your habits. Get alternatives chosen for practicality, likely impact and a low-budget starting point.</p></div><div class="builder"><form class="formbox" id="prefs"><div class="fields">
 <label>How do you usually travel?<select id="travel"><option value="mixed">A mix of transport</option><option value="car">Mostly car / taxi</option><option value="two">Two-wheeler</option><option value="public">Bus / metro / train</option><option value="walk">Walk / cycle</option></select></label>
 <label>What best describes your diet?<select id="diet"><option value="mixed">Mixed diet</option><option value="meat">Meat most days</option><option value="veg">Mostly vegetarian</option><option value="plant">Plant-based</option></select></label>
@@ -412,4 +481,30 @@ function update(){const km=+$('#dist').value,days=+$('#freq').value;$('#distv').
  }
 })();
 
+
+/* Keep dashboard highlights in sync with the browser-local plan and shortlist. */
+(function(){
+ const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch(e){return fallback}};
+ function refreshDashboard(){
+  const saved=read('greenswap-saved-swaps',[]);
+  const progress=read('greenswap-weekly-plan',{});
+  const count=Array.isArray(saved)?saved.length:0;
+  const done=Array.from({length:7},(_,i)=>!!progress[i]).filter(Boolean).length;
+  const savedEl=document.getElementById('dash-saved-count');
+  const planEl=document.getElementById('dash-plan-count');
+  const caption=document.getElementById('dash-plan-caption');
+  const bar=document.getElementById('dash-plan-bar');
+  if(savedEl)savedEl.textContent=String(count);
+  if(planEl)planEl.textContent=done+' / 7';
+  if(caption)caption.textContent=done===7?'All actions checked off':done+' action'+(done===1?'':'s')+' marked complete';
+  if(bar)bar.style.width=Math.round(done/7*100)+'%';
+  const recommendationEl=document.getElementById('dash-recommendations');
+  if(recommendationEl){const prefs=read('greenswap-preferences',{});recommendationEl.textContent=Object.keys(prefs).length?'Preferences saved':'Build your shortlist';}
+ }
+ document.addEventListener('click',()=>window.setTimeout(refreshDashboard,80));
+ document.addEventListener('change',()=>window.setTimeout(refreshDashboard,80));
+ document.addEventListener('submit',()=>window.setTimeout(refreshDashboard,80));
+ window.addEventListener('storage',refreshDashboard);
+ refreshDashboard();
+})();
 </script></body></html>
