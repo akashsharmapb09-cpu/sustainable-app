@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getLocalProfile } from "../../shared/lib/localStore";
 
-export default function OnboardingPage() {
+export function OnboardingPage() {
   const navigate = useNavigate();
   const [commute, setCommute] = useState("bike");
   const [budget, setBudget] = useState("medium");
@@ -66,3 +66,4 @@ export default function OnboardingPage() {
     </div>
   );
 }
+export default OnboardingPage;
