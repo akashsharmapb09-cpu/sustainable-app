@@ -280,6 +280,43 @@ nav .nav-dashboard{color:var(--green);font-weight:700}
 :root[data-theme="dark"] .hero-deck-controls .deck-arrow{border-color:var(--line)}
 @media(max-width:700px){.hero-deck-controls{margin-top:20px}.hero-deck-status{display:none}.hero-copy-slide h1{font-size:clamp(44px,13vw,66px)}}
 @media(prefers-reduced-motion:reduce){.hero-copy-slide,.hero-visual-slide{animation:none!important}.hero-deck-controls .deck-arrow,.hero-deck-dot,.hero .visual,.hero .preview{transition:none!important}}
+
+/* Readability pass: larger, stronger typography across the whole site */
+html{font-size:16px}
+body{font-size:16px;font-weight:500}
+nav,.app-sidebar .side-links{font-weight:600}
+.app-sidebar .side-links a{font-size:14px;font-weight:600;color:#465248}
+.app-sidebar .side-profile strong{font-weight:700}
+.app-sidebar .side-bottom{font-size:12px;font-weight:500}
+.eyebrow{font-size:12px;font-weight:600}
+nav{font-size:12px;font-weight:600}
+.hero p,.heading>p,.about p{font-size:15px;font-weight:500}
+.small-note{font-size:13px;font-weight:500}
+.pill,.btn{font-size:14px;font-weight:700}
+.fields label,.account-panel>label:not(.switch){font-size:14px;font-weight:700}
+.fields select,.account-panel input[type="text"],.account-panel input[type="email"]{font-size:14px;font-weight:600}
+.cardtop{font-size:12px;font-weight:600}
+.card h3{font-size:20px;font-weight:700}
+.card p,.rec p,.results>p,.empty p,.day p,.methodgrid p,.tablewrap p{font-size:14px;font-weight:500;line-height:1.75}
+.cardfoot,.cardfoot button{font-size:13px;font-weight:700}
+.filter{font-size:12px;font-weight:700}
+.day small,.rec small,.impact small,.preview-head,.range-label{font-size:12px;font-weight:600}
+.day h3{font-size:19px;font-weight:700}
+.methodgrid h3{font-size:21px;font-weight:700}
+table{font-size:14px}
+th{font-size:12px;font-weight:700}
+td{font-weight:600}
+.factor-table td:nth-child(2){font-size:14px;font-weight:700}
+.factor-table td:nth-child(3),.factor-table td:nth-child(4){font-size:12px;font-weight:600}
+.category-label{font-size:11px;font-weight:700}
+.account-intro p,.account-note,.form-hint{font-size:14px;font-weight:500}
+.setting-row p,.profile-preference{font-size:14px}
+@media(max-width:650px){
+ body{font-size:15px}
+ .app-sidebar .side-links a{font-size:13px}
+ .card p,.day p,.methodgrid p,.tablewrap p{font-size:14px}
+}
+
 </style>
 <script>
 (function(){
