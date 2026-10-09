@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 type BasicProfile = {
@@ -35,12 +35,8 @@ const fieldClass = 'mt-2 w-full rounded-xl border border-black/15 bg-white px-4 
 const labelClass = 'block text-sm font-semibold text-[#252820]';
 
 export function ProfilePage() {
-  const [profile, setProfile] = useState<BasicProfile>(basicDefaults);
+  const [profile, setProfile] = useState<BasicProfile>(() => ({ ...basicDefaults, ...readBasicProfile() }));
   const [saved, setSaved] = useState(false);
-
-  useEffect(() => {
-    setProfile({ ...basicDefaults, ...readBasicProfile() });
-  }, []);
 
   const update = <K extends keyof BasicProfile>(key: K, value: BasicProfile[K]) => {
     setProfile(current => ({ ...current, [key]: value }));

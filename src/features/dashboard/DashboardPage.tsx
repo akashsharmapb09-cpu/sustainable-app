@@ -227,28 +227,19 @@ export function DashboardPage() {
   const [done, setDone] = useState<boolean[]>(readRituals);
   const [toast, setToast] = useState('');
   const [email, setEmail] = useState('');
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(() => reduceMotion ? 0.7 : 0);
   const complete = done.filter(Boolean).length;
   const isFinished = complete === 7;
   const shareText = useMemo(() => `I’m building lighter habits with GreenSwap: practical sustainable swaps for real life. #GreenSwap2026`, []);
   useEffect(() => { saveEvent('dashboard_view'); }, []);
   useEffect(() => {
-    if (reduceMotion) { setCount(0.7); return; }
+    if (reduceMotion) return;
     let start: number | undefined;
     let frame = 0;
     const tick = (time: number) => { if (start === undefined) start = time; const p = Math.min((time - start) / 700, 1); setCount(0.7 * (1 - Math.pow(1 - p, 3))); if (p < 1) frame = requestAnimationFrame(tick); };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
   }, [reduceMotion]);
-  useEffect(() => {
-    if (!isFinished) return;
-    const key = 'greenswap-confetti-shown';
-    if (localStorage.getItem(key)) return;
-    localStorage.setItem(key, '1');
-    setToast('Seven small rituals. A lovely start.');
-    const timer = window.setTimeout(() => setToast(''), 3600);
-    return () => window.clearTimeout(timer);
-  }, [isFinished]);
   function toggleSwap(id: string) {
     const next = saved.includes(id) ? saved.filter(v => v !== id) : [...saved, id];
     setSaved(next);
@@ -259,6 +250,14 @@ export function DashboardPage() {
     const next = done.map((v, i) => i === index ? !v : v);
     setDone(next);
     localStorage.setItem('greenswap-weekly-plan', JSON.stringify(Object.fromEntries(next.map((v, i) => [String(i), v]))));
+    if (next.every(Boolean)) {
+      const key = 'greenswap-confetti-shown';
+      if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, '1');
+        setToast('Seven small rituals. A lovely start.');
+        window.setTimeout(() => setToast(''), 3600);
+      }
+    }
   }
   async function shareImpact() {
     try { if (navigator.share) await navigator.share({ title: 'My GreenSwap practice', text: shareText, url: window.location.origin }); else { await navigator.clipboard.writeText(shareText + ' ' + window.location.origin); setToast('Share text copied.'); window.setTimeout(() => setToast(''), 2500); } } catch { /* A dismissed share sheet is not an error. */ }

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getLocalProfile } from "../../shared/lib/localStore";
-import type { FormEvent } from "react";
 
 export function OnboardingPage() {
   const navigate = useNavigate();
@@ -13,7 +12,7 @@ export function OnboardingPage() {
    const submit = async () => {
     setLoading(true);
     try {
-      const profile = getLocalProfile() || { id: "demo-user", email: "demo@greenswap.app" };
+      const profile = getLocalProfile("demo-user") || { id: "demo-user", email: "demo@greenswap.app" };
       const updated = {
         ...profile,
         primary_commute: commute,

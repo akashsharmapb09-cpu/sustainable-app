@@ -1,5 +1,5 @@
 export * from './context/authContextDef';
-export * from './context/AuthContext';
+export { AuthProvider } from './context/AuthContext';
 export * from './lib/passwordSecurity';
 export * from './lib/rateLimiter';
 export * from './components/LoginForm';

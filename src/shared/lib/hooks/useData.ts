@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useConvex } from "convex/react";
 import { useMemo } from "react";
+import { isConvexConfigured } from "../../config/env";
 import { api } from "../../../../convex/_generated/api";
 import { validateActivityLogForm, type ActivityLogFormInput } from "../../../features/activities/data/activityCatalog";
 import { ALL_ALTERNATIVES } from "../../../features/explore/data/alternativesData";
@@ -90,7 +91,7 @@ export function useUpdateProfile() {
   const { user, refreshProfile } = useAuth();
   return useMutation({
        mutationFn: async (updates: ProfileUpdates) => {
-      const uid = user?.id || localStorage.getItem("greenswap_user_id") || "demo-user";
+      const uid = user?.id ?? "demo-user";
       const current = getLocalProfile(uid) 
         ?? defaultProfile(uid, user?.email ?? "", user?.user_metadata?.full_name)
       const next: Profile = {
@@ -100,7 +101,7 @@ export function useUpdateProfile() {
         email: user?.email ?? current.email,
         updated_at: new Date().toISOString(),
       };
-      if (uid === "demo-user" || !isConvexConfigured()) {
+      if (!user?.id || uid === "demo-user" || !isConvexConfigured()) {
         setLocalProfile(next);
         return next;
       }
