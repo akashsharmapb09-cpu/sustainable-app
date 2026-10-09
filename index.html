@@ -317,6 +317,85 @@ td{font-weight:600}
  .card p,.day p,.methodgrid p,.tablewrap p{font-size:14px}
 }
 
+
+/* Premium editorial dashboard refresh */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+.dashboard-section{position:relative;isolation:isolate;overflow:hidden;padding:clamp(42px,5vw,74px) clamp(22px,7.5%,112px);background-color:#f0eee7;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");background-blend-mode:multiply}
+.editorial-dashboard-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:32px;position:relative}
+.editorial-dashboard-head h2{font:400 clamp(48px,5vw,56px)/.98 'Instrument Serif',serif;letter-spacing:-.04em;margin:13px 0 12px;color:#111110}
+.editorial-dashboard-head h2 span{color:#c9512f}
+.editorial-dashboard-head p{max-width:540px;color:#5f625b;font-size:13px;line-height:1.75;margin:0}
+.dashboard-edition{font:10px 'DM Mono',monospace;letter-spacing:.08em;color:#5e625b;white-space:nowrap;padding-bottom:7px}
+.editorial-bento{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px;align-items:stretch}
+.impact-feature{grid-column:span 8;min-height:270px;background:#111110;color:#f7f5f0;padding:clamp(22px,3vw,36px);display:flex;flex-direction:column;justify-content:space-between;border:1px solid #111110;position:relative;overflow:hidden;transition:transform .2s ease,border-color .2s ease}
+.impact-feature:before{content:"";position:absolute;width:330px;height:330px;right:-90px;top:-165px;border:1px solid #ffffff13;border-radius:50%;box-shadow:0 0 0 26px #ffffff05,0 0 0 54px #ffffff04;pointer-events:none}
+.impact-top,.impact-bottom{display:flex;justify-content:space-between;gap:12px;font:10px 'DM Mono',monospace;letter-spacing:.08em;color:#c5c5ba;position:relative}
+.impact-number{font:400 clamp(60px,7.3vw,92px)/.98 'Instrument Serif',serif;letter-spacing:-.045em;margin:22px 0 10px;position:relative}
+.impact-number span{display:block;font:10px 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#c7c8bd;margin-top:12px}
+.impact-caveat{font-size:11px;line-height:1.6;color:#a9aaa0;max-width:410px;margin:0 0 25px}
+.impact-bottom{border-top:1px solid #ffffff2b;padding-top:14px;align-items:center}
+.impact-arrow{font-size:22px;color:#f7f5f0}
+.ritual-card{grid-column:span 4;min-height:270px;padding:22px;background:#e2e0d7;border:1px solid #1111101c;display:flex;flex-direction:column;align-items:flex-start}
+.ritual-label{width:100%;display:flex;justify-content:space-between;gap:8px;font:10px 'DM Mono',monospace;letter-spacing:.06em;color:#55584f}
+.ritual-ring{position:relative;width:154px;height:154px;align-self:center;margin:10px auto 4px}
+.ritual-ring svg{width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+.ritual-ring circle{fill:none;stroke-width:12}
+.ritual-track{stroke:#c6c5bb}
+.ritual-progress{stroke:#111110;stroke-linecap:round;stroke-dasharray:452.39;stroke-dashoffset:452.39;transition:stroke-dashoffset .4s ease}
+.ritual-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ritual-center strong{font:400 43px/.9 'Instrument Serif',serif;letter-spacing:-.04em;color:#111110}
+.ritual-center strong span{font-size:20px;color:#77786f;margin-left:3px}
+.ritual-center small{font:9px 'DM Mono',monospace;letter-spacing:.13em;margin-top:8px}
+.ritual-card h3{font:400 25px 'Instrument Serif',serif;margin:5px 0}
+.ritual-card>p{font-size:11px;line-height:1.5;color:#64665d;margin:0 0 10px}
+.ritual-link{margin-top:auto;border-top:1px solid #c5c4b9;width:100%;padding-top:12px;display:flex;justify-content:space-between;font-size:11px}
+.topic-heading{grid-column:1/-1;display:flex;align-items:center;gap:14px;margin:16px 0 0;padding:0 0 2px;font:10px 'DM Mono',monospace;letter-spacing:.12em;color:#50534c}
+.topic-heading-line{height:1px;background:#1111102b;flex:1}
+.topic-heading strong{font-weight:400;color:#111110}
+.editorial-topic{grid-column:span 3;min-width:0;min-height:300px;background:#f7f5f0;border:1px solid #1111101a;padding:19px;display:flex;flex-direction:column;position:relative;transition:transform .2s ease,border-color .2s ease}
+.editorial-topic:hover{transform:translateY(-2px);border-color:#1111104d}
+.editorial-topic-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;font:9px 'DM Mono',monospace;letter-spacing:.07em;color:#676a62}
+.line-icon{width:30px;height:30px;border:1px solid #11111070;border-radius:50%;display:grid;place-items:center;flex:0 0 auto}
+.line-icon i{display:block;width:10px;height:10px;border:1px solid #111110}
+.food-icon i{border-radius:2px 8px 2px 8px;transform:rotate(-35deg)}
+.route-icon i{width:13px;height:8px;border:0;border-top:1px solid #111110;border-bottom:1px solid #111110;transform:skew(-25deg)}
+.energy-icon i{width:8px;height:13px;border-width:1px 0 0 1px;transform:skew(-18deg) rotate(25deg)}
+.reuse-icon i{width:12px;height:12px;border-radius:50%;border-right-color:transparent}
+.editorial-topic h3{font:400 clamp(26px,2.3vw,34px)/.98 'Instrument Serif',serif;letter-spacing:-.025em;margin:25px 0 12px;position:relative}
+.hover-arrow{position:absolute;right:0;top:0;font:20px 'DM Mono',monospace;opacity:0;transform:translate(-4px,4px);transition:opacity .18s,transform .18s}
+.editorial-topic:hover .hover-arrow{opacity:1;transform:translate(0,0)}
+.editorial-topic>p{font-size:11px;line-height:1.7;color:#686b63;margin:0 0 15px}
+.food-levels{display:flex;gap:4px;margin:8px 0 14px;align-items:flex-end;height:26px}
+.food-levels i{display:block;width:28px;border:1px solid #11111080;height:9px}
+.food-levels i:nth-child(2){height:17px}.food-levels i:nth-child(3){height:26px;background:#d4d9c8}
+.route-doodle{height:38px;position:relative;margin:1px 0 10px;background:linear-gradient(160deg,transparent 45%,#11111025 46%,#11111025 47%,transparent 48%),linear-gradient(20deg,transparent 55%,#11111025 56%,#11111025 57%,transparent 58%)}
+.route-doodle:before{content:"";position:absolute;left:12%;top:5px;width:57%;height:25px;border:1px solid #11111080;border-left-color:transparent;border-radius:50%;transform:rotate(-10deg)}
+.route-doodle i{position:absolute;width:6px;height:6px;border:1px solid #111110;background:#f7f5f0;border-radius:50%;z-index:1}
+.route-doodle i:nth-child(1){left:12%;top:23px}.route-doodle i:nth-child(2){left:43%;top:7px}.route-doodle i:nth-child(3){left:72%;top:24px}
+.route-doodle b{position:absolute;right:10%;top:8px;width:8px;height:8px;border:1px solid #111110;border-radius:50%}
+.energy-metric{font:400 clamp(29px,2.8vw,39px)/1 'Instrument Serif',serif;letter-spacing:-.03em;margin:6px 0 3px}
+.energy-metric span{font:9px 'DM Mono',monospace;letter-spacing:.03em}
+.editorial-topic .metric-note{font:9px 'DM Mono',monospace;color:#77796f;margin:0 0 10px}
+.editorial-checklist{list-style:none;margin:3px 0 14px;padding:0;display:grid;gap:9px;font-size:10px;color:#53564f}
+.editorial-checklist span{font-family:'DM Mono',monospace;color:#111110;margin-right:5px}
+.topic-foot{display:flex;justify-content:space-between;gap:7px;margin-top:auto;padding-top:13px;border-top:1px solid #11111020;font:8px 'DM Mono',monospace;letter-spacing:.04em;color:#6a6c64}
+.topic-foot small{font-size:8px;white-space:nowrap}
+.editorial-next{grid-column:span 4;grid-row:span 1;background:#e5e4dc;border:1px solid #1111101b;padding:24px;position:sticky;top:22px;align-self:start}
+.next-kicker{font:9px 'DM Mono',monospace;letter-spacing:.1em;color:#65675f}
+.editorial-next h3{font:400 clamp(28px,2.5vw,36px)/1 'Instrument Serif',serif;letter-spacing:-.03em;margin:18px 0 9px}
+.editorial-next>p{font-size:11px;line-height:1.7;color:#62645c;margin:0 0 19px}
+.editorial-step{display:grid;grid-template-columns:34px 1fr 16px;align-items:center;gap:8px;padding:15px 0;border-top:1px solid #11111020;font-size:11px}
+.editorial-step>span:first-child{font:10px 'DM Mono',monospace;color:#686a62}
+.editorial-step b{font-weight:400;opacity:0;transition:opacity .18s}
+.editorial-step:hover{border-top-color:#11111070}.editorial-step:hover b{opacity:1}
+.editorial-cta{display:flex;justify-content:space-between;align-items:center;background:#111110;color:#f7f5f0;border-radius:999px;padding:14px 17px;margin-top:12px;font-size:12px}
+.editorial-cta span{font-size:18px;transition:transform .18s}.editorial-cta:hover span{transform:translateX(3px)}
+.editorial-next-foot{font:8px 'DM Mono',monospace;letter-spacing:.1em;color:#74766d;margin-top:22px}
+.dashboard-source-note{display:flex;justify-content:space-between;gap:12px;margin-top:20px;padding-top:12px;border-top:1px solid #11111024;font:8px 'DM Mono',monospace;letter-spacing:.06em;color:#74766d}
+@media(max-width:1050px){.editorial-topic{grid-column:span 4}.editorial-next{grid-column:span 4}.impact-feature{grid-column:span 8}.ritual-card{grid-column:span 4}}
+@media(max-width:760px){.editorial-dashboard-head{align-items:flex-start;flex-direction:column}.editorial-bento{gap:10px}.impact-feature{grid-column:span 12;min-height:250px}.ritual-card{grid-column:span 12;min-height:260px}.editorial-topic{grid-column:span 6;min-height:280px}.editorial-next{grid-column:span 12;position:static}.dashboard-source-note{flex-direction:column;gap:7px}.editorial-dashboard-head h2{font-size:49px}}
+@media(max-width:480px){.editorial-topic{grid-column:span 12;min-height:245px}.editorial-topic h3{font-size:32px}.impact-number{font-size:68px}.dashboard-edition{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.editorial-topic,.impact-feature,.hover-arrow{transition:none}}
 </style>
 <script>
 (function(){
@@ -337,23 +416,27 @@ td{font-weight:600}
 <div class="visual hero-visual-slide" id="hero-visual"><div class="orbit"></div><div class="planet"></div><div class="preview"><div class="preview-head" id="hero-preview-head">INTERACTIVE SPECIMEN // LIVE PREVIEW</div><div class="preview-body"><h3>Trade the car for the metro</h3><p>Adjust your commute to preview a potential monthly difference.</p><div class="range-label">One-way distance <strong id="distv">8 km</strong></div><input id="dist" type="range" min="1" max="30" value="8"><div class="range-label">Weekly frequency <strong id="freqv">5 days / week</strong></div><input id="freq" type="range" min="1" max="7" value="5"><div class="impact"><small>ILLUSTRATIVE DIFFERENCE / MONTH</small><h2 id="impactv">≈ 54 kg CO₂e</h2><small>Estimate only; real outcomes vary by route, vehicle and local transit.</small></div></div></div></div><div class="hero-deck-controls" aria-label="Homepage featured slides"><button class="deck-arrow" id="hero-prev" type="button" aria-label="Previous slide">←</button><div class="hero-deck-dots"><button class="hero-deck-dot" data-slide="0" type="button" aria-label="Show slide 1" aria-pressed="true"></button><button class="hero-deck-dot" data-slide="1" type="button" aria-label="Show slide 2" aria-pressed="false"></button><button class="hero-deck-dot" data-slide="2" type="button" aria-label="Show slide 3" aria-pressed="false"></button></div><span class="hero-deck-count" id="hero-deck-count">01 / 03</span><span class="hero-deck-status">AUTO-PLAY · PAUSE ON HOVER</span><button class="deck-arrow" id="hero-next" type="button" aria-label="Next slide">→</button></div></section>
 <div class="strip"><span>01 / PERSONALISE</span><strong>Good choices start with your routine.</strong><span>02 / TAKE ACTION</span></div>
 <section class="dashboard-section" id="dashboard" aria-labelledby="dashboard-title">
-  <div class="dashboard-topline"><div><div class="eyebrow">YOUR GREENSWAP OVERVIEW</div><h2 id="dashboard-title">Your dashboard<span>.</span></h2><p>A clear starting point for everyday sustainable choices. Pick a priority, explore a topic, and keep track of small actions.</p></div><a class="dashboard-main-action" href="#recommend">Personalise my swaps <span>↗</span></a></div>
-  <div class="dashboard-stats" aria-label="Your activity summary">
-    <a class="dash-stat dash-stat-featured" href="#recommend"><span class="dash-stat-icon">✳</span><span class="dash-stat-label">PERSONALISED IDEAS</span><strong id="dash-recommendations">Ready when you are</strong><small>Match ideas to your routine and budget</small></a>
-    <a class="dash-stat" href="/saved"><span class="dash-stat-icon">♡</span><span class="dash-stat-label">SAVED SWAPS</span><strong id="dash-saved-count">0</strong><small>Ideas you want to try</small></a>
-    <a class="dash-stat" href="#week"><span class="dash-stat-icon">↗</span><span class="dash-stat-label">7-DAY ACTION PLAN</span><strong id="dash-plan-count">0 / 7</strong><small id="dash-plan-caption">Actions marked complete</small><span class="dash-mini-track"><i id="dash-plan-bar"></i></span></a>
-  </div>
-  <div class="dashboard-lower">
-    <div class="dashboard-topics"><div class="dashboard-subhead"><div><span class="eyebrow">FOCUS AREAS</span><h3>Important topics</h3></div><a href="/explore">View all topics ↗</a></div>
-      <div class="topic-grid">
-        <a class="topic-card topic-food" href="/explore"><span class="topic-number">01 / FOOD</span><span class="topic-mark">↗</span><strong>Prevent food waste</strong><p>Plan meals, use leftovers first, and buy what your household can use.</p><span class="topic-link">Explore practical ideas →</span></a>
-        <a class="topic-card topic-travel" href="/explore"><span class="topic-number">02 / TRANSPORT</span><span class="topic-mark">↗</span><strong>Choose smarter trips</strong><p>Consider transit, walking, cycling or sharing a ride when practical.</p><span class="topic-link">Explore practical ideas →</span></a>
-        <a class="topic-card topic-energy" href="/explore"><span class="topic-number">03 / ENERGY</span><span class="topic-mark">↗</span><strong>Use energy thoughtfully</strong><p>Start with everyday habits before spending money on new equipment.</p><span class="topic-link">Explore practical ideas →</span></a>
-        <a class="topic-card topic-shopping" href="/explore"><span class="topic-number">04 / BUY LESS, USE LONGER</span><span class="topic-mark">↗</span><strong>Reuse, repair, borrow</strong><p>Make the most of items you already own before buying replacements.</p><span class="topic-link">Explore practical ideas →</span></a>
-      </div>
+  <div class="editorial-dashboard-head"><div><div class="eyebrow">GREENSWAP / FIELD NOTES 01—04</div><h2 id="dashboard-title">Your dashboard<span>.</span></h2><p>A considered view of the small changes that can fit your real life. Start with what matters; leave the rest for later.</p></div><span class="dashboard-edition">EDITION 2026&nbsp; / &nbsp;VOL. 01</span></div>
+  <div class="editorial-bento">
+    <a class="impact-feature" href="#recommend" aria-label="Personalise your sustainable lifestyle recommendations">
+      <div class="impact-top"><span>YOUR PERSONAL BRIEF</span><span>01 / IMPACT</span></div>
+      <div class="impact-number">0.7t <span>CO₂e saved / month</span></div>
+      <p class="impact-caveat">Illustrative potential, not a measured personal result. Actual outcomes depend on your choices and what they replace.</p>
+      <div class="impact-bottom"><span>BUILD A PLAN AROUND YOUR ROUTINE</span><span class="impact-arrow">↗</span></div>
+    </a>
+    <div class="ritual-card">
+      <div class="ritual-label">WEEKLY PRACTICE <span>02 / RITUAL</span></div>
+      <div class="ritual-ring" role="img" aria-label="0 of 7 weekly actions completed"><svg viewBox="0 0 180 180" aria-hidden="true"><circle class="ritual-track" cx="90" cy="90" r="72"></circle><circle class="ritual-progress" id="ritual-progress" cx="90" cy="90" r="72"></circle></svg><div class="ritual-center"><strong id="ritual-count">0<span>/7</span></strong><small>STEPS</small></div></div>
+      <h3>Ritual completion</h3><p id="ritual-caption">One repeatable action is a good beginning.</p><a href="#week" class="ritual-link">Open your 7-day plan <span>↗</span></a>
     </div>
-    <aside class="dashboard-next"><span class="eyebrow">YOUR NEXT STEP</span><h3>Start with what fits your life.</h3><p>You do not need to change everything at once. Choose a small, affordable action you can repeat.</p><a href="#recommend" class="next-link">1. Build my recommendations <span>→</span></a><a href="#week" class="next-link">2. Open the 7-day plan <span>→</span></a><a href="/saved" class="next-link">3. Review saved swaps <span>→</span></a><div class="dashboard-note">No account needed. Your saved ideas and checklist stay in this browser.</div></aside>
+    <div class="topic-heading"><span>IMPORTANT TOPICS</span><span class="topic-heading-line"></span><strong>[04]</strong></div>
+    <a class="editorial-topic topic-food" href="/explore"><div class="editorial-topic-top"><span>01 / FOOD SYSTEMS</span><span class="line-icon food-icon" aria-hidden="true"><i></i></span></div><h3>Prevent<br>food waste<span class="hover-arrow">↗</span></h3><p>Shop with a plan. Give ingredients a second life before they are forgotten.</p><div class="food-levels" aria-label="Three practical food-waste prevention levels"><i></i><i></i><i></i></div><div class="topic-foot"><span>START IN THE KITCHEN</span><small>GUIDE / 01</small></div></a>
+    <a class="editorial-topic topic-travel" href="/explore"><div class="editorial-topic-top"><span>02 / MOBILITY</span><span class="line-icon route-icon" aria-hidden="true"><i></i></span></div><h3>Choose<br>smarter trips<span class="hover-arrow">↗</span></h3><p>For suitable journeys, compare public transit, walking, cycling and sharing.</p><div class="route-doodle" aria-hidden="true"><i></i><i></i><i></i><b></b></div><div class="topic-foot"><span>MAKE THE TRIP FIT</span><small>GUIDE / 02</small></div></a>
+    <a class="editorial-topic topic-energy" href="/explore"><div class="editorial-topic-top"><span>03 / HOME ENERGY</span><span class="line-icon energy-icon" aria-hidden="true"><i></i></span></div><h3>Use energy<br>thoughtfully<span class="hover-arrow">↗</span></h3><div class="energy-metric">≈ 42 <span>kWh / week</span></div><p class="metric-note">Illustrative household reference, not a personal reading.</p><div class="topic-foot"><span>START WITH EVERYDAY HABITS</span><small>GUIDE / 03</small></div></a>
+    <a class="editorial-topic topic-reuse" href="/explore"><div class="editorial-topic-top"><span>04 / CIRCULAR LIVING</span><span class="line-icon reuse-icon" aria-hidden="true"><i></i></span></div><h3>Reuse, repair,<br>borrow<span class="hover-arrow">↗</span></h3><ul class="editorial-checklist"><li><span>[ ]</span> Repair before replacing</li><li><span>[ ]</span> Borrow occasional-use items</li><li><span>[ ]</span> Pass useful things along</li></ul><div class="topic-foot"><span>KEEP MATERIALS IN USE</span><small>GUIDE / 04</small></div></a>
+    <aside class="editorial-next"><div class="next-kicker">A NOTE TO BEGIN WITH</div><h3>Start with what fits your life.</h3><p>Three small steps. No perfect routine required.</p><a class="editorial-step" href="#recommend"><span>01</span><span>Tell us about your routine</span><b>↗</b></a><a class="editorial-step" href="/explore"><span>02</span><span>Find practical alternatives</span><b>↗</b></a><a class="editorial-step" href="#week"><span>03</span><span>Choose one for this week</span><b>↗</b></a><a href="#recommend" class="editorial-cta">Find my swaps <span>→</span></a><div class="editorial-next-foot">YOUR PACE. YOUR PRIORITIES.</div></aside>
   </div>
+  <div class="dashboard-source-note"><span>FIELD GUIDE / 2026</span><span>ENERGY REFERENCES ARE ILLUSTRATIVE · VERIFY LOCAL DATA BEFORE COMPARISON</span><span>SMALL STEPS, CLEAR EVIDENCE.</span></div>
 </section>
 <section class="section" id="recommend"><div class="heading"><div><div class="eyebrow">YOUR ROUTINE, YOUR NEXT MOVE</div><h2>Find your best swaps.</h2></div><p>Tell us a little about your habits. Get alternatives chosen for practicality, likely impact and a low-budget starting point.</p></div><div class="builder"><form class="formbox" id="prefs"><div class="fields">
 <label>How do you usually travel?<select id="travel"><option value="mixed">A mix of transport</option><option value="car">Mostly car / taxi</option><option value="two">Two-wheeler</option><option value="public">Bus / metro / train</option><option value="walk">Walk / cycle</option></select></label>
@@ -485,7 +568,7 @@ function showResults(list,subtitle='Based on your preferences'){const root=$('#r
 $('#prefs').addEventListener('submit',e=>{e.preventDefault();const t=$('#travel').value,d=$('#diet').value,en=$('#energy').value,w=$('#waste').value,b=$('#budget').value,p=$('#priority').value;let list=[];if(t==='car'||t==='mixed')list.push(swaps[0],swaps[2]);else if(t==='two')list.push(swaps[2],swaps[1]);else list.push(swaps[1],swaps[2]);if(d==='meat'||d==='mixed')list.push(swaps[6]);else list.push(swaps[7]);if(en!=='low')list.push(swaps[3],swaps[4]);if(w!=='rarely')list.push(swaps[7],swaps[9],swaps[8]);list.push(swaps[11]);if(b==='low')list=list.filter(s=>s.t!=='Set AC thoughtfully');if(p==='money')list.sort((a,b)=>Number(/lower|save|No-cost|Very low|No extra/i.test(b.cost))-Number(/lower|save|No-cost|Very low|No extra/i.test(a.cost)));else if(p==='impact')list.sort((a,b)=>Number(/emissions|electricity|waste/i.test(b.impact))-Number(/emissions|electricity|waste/i.test(a.impact)));saved=[...new Map(list.map(s=>[s.t,s])).values()].slice(0,4);showResults(saved);});
 $('#filters').addEventListener('click',e=>{const b=e.target.closest('button[data-cat]');if(!b)return;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderCards(b.dataset.cat);});
 days.forEach((d,i)=>{const el=document.createElement('article');el.className='day';el.innerHTML='<small>'+d[0].toUpperCase()+'</small><h3>'+d[1]+'</h3><p>'+d[2]+'</p><label><input type="checkbox" data-day="'+i+'"> Mark complete</label>';const cb=el.querySelector('input');cb.checked=!!readLocal('greenswap-weekly-plan',{})[i];el.classList.toggle('done',cb.checked);cb.addEventListener('change',e=>{el.classList.toggle('done',e.target.checked);const progress=readLocal('greenswap-weekly-plan',{});progress[i]=e.target.checked;writeLocal('greenswap-weekly-plan',progress);updatePlanProgress();});$('#week').appendChild(el);});
-function updatePlanProgress(){const progress=readLocal('greenswap-weekly-plan',{});const count=days.reduce((n,_,i)=>n+(progress[i]?1:0),0);const label=$('#plan-progress-label'),percent=$('#plan-progress-percent'),bar=$('#plan-progress-bar');if(label)label.textContent=count+' of '+days.length+' actions complete';if(percent)percent.textContent=Math.round(count/days.length*100)+'%';if(bar)bar.style.width=(count/days.length*100)+'%';}
+function updatePlanProgress(){const ritualProgress=document.getElementById('ritual-progress');const ritualCount=document.getElementById('ritual-count');const ritualCaption=document.getElementById('ritual-caption');if(ritualProgress)ritualProgress.style.strokeDashoffset=String(452.39-(452.39*(days.reduce((n,_,i)=>n+(progress[i]?1:0),0)/days.length)));if(ritualCount)ritualCount.innerHTML=days.reduce((n,_,i)=>n+(progress[i]?1:0),0)+'<span>/7</span>';if(ritualCaption)ritualCaption.textContent=days.reduce((n,_,i)=>n+(progress[i]?1:0),0)===7?'All seven actions completed.':days.reduce((n,_,i)=>n+(progress[i]?1:0),0)+' of 7 actions completed. Keep it practical.';const progress=readLocal('greenswap-weekly-plan',{});const count=days.reduce((n,_,i)=>n+(progress[i]?1:0),0);const label=$('#plan-progress-label'),percent=$('#plan-progress-percent'),bar=$('#plan-progress-bar');if(label)label.textContent=count+' of '+days.length+' actions complete';if(percent)percent.textContent=Math.round(count/days.length*100)+'%';if(bar)bar.style.width=(count/days.length*100)+'%';}
 function renderSavedPage(){const root=$('#saved-cards'),empty=$('#saved-empty'),count=$('#saved-count');if(!root)return;root.innerHTML='';if(count)count.textContent=saved.length+' SAVED IDEA'+(saved.length===1?'':'S');if(empty)empty.style.display=saved.length?'none':'block';saved.forEach(s=>{const el=document.createElement('article');el.className='card';el.innerHTML='<div class="cardtop"><span>'+s.c.toUpperCase()+'</span><span class="tag">SAVED</span></div><div class="cardbody"><h3>'+s.t+'</h3><p>'+s.d+'</p><p class="saved-impact"><strong>Potential benefit:</strong> '+s.impact+'.</p><div class="cardfoot"><span>'+s.cost+'</span><button type="button">Remove ×</button></div></div>';el.querySelector('button').addEventListener('click',()=>{saved=saved.filter(x=>x.t!==s.t);writeLocal('greenswap-saved-swaps',saved);renderSavedPage();renderCards(activeCategory,$('#catalog-search')?.value||'')});root.appendChild(el)});}
 const searchBox=$('#catalog-search');if(searchBox)searchBox.addEventListener('input',()=>renderCards(activeCategory,searchBox.value));
 const exportButton=$('#export-plan');if(exportButton)exportButton.addEventListener('click',()=>{const profile=readLocal('greenswap-profile',{}),prefs=readLocal('greenswap-preferences',{}),progress=readLocal('greenswap-weekly-plan',{});const lines=['GREENSWAP — PERSONAL SUSTAINABLE LIFESTYLE PLAN','','Prepared locally in your browser','Name: '+(profile.name||'Not provided'),'','PREFERENCES',...Object.entries(prefs).map(([k,v])=>k+': '+v),'','SAVED SWAPS',...(saved.length?saved.map((x,i)=>(i+1)+'. '+x.t+' ['+x.c+'] — '+x.d+' Potential benefit: '+x.impact):['No swaps saved yet.']),'','7-DAY ACTION PLAN',...days.map((d,i)=>d[0]+': '+d[1]+' — '+d[2]+' ['+(progress[i]?'Complete':'Not marked complete')+']'),'','Note: benefits are directional, not guaranteed. Outcomes depend on local conditions and what each action replaces.'].join('\n');const blob=new Blob([lines],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='greenswap-action-plan.txt';a.click();URL.revokeObjectURL(url);const status=$('#saved-status');if(status)status.textContent='Your action plan export has been prepared.';});
