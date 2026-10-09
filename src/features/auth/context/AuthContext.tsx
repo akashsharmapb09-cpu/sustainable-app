@@ -2,8 +2,15 @@ import React, { createContext, useContext, useMemo } from "react";
 import { useConvexAuth } from "convex/react";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { getLocalProfile, getStoredProfiles, type Profile, type UserRoleType } from "../../../shared/lib/localStore";
-
+import { getLocalProfile } from "../../../shared/lib/localStore";
+type Profile = any;
+type UserRoleType = any;
+const getStoredProfiles = () => {
+  try {
+    const raw = localStorage.getItem("sustainable_profiles") || localStorage.getItem("profiles") || "[]";
+    return JSON.parse(raw);
+  } catch { return []; }
+};
 type AuthUser = {
   id: string;
   email: string | null;
