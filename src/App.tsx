@@ -1,8 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Suspense } from 'react';
-import LandingPage from './features/public/LandingPage';
-import OnboardingPage from './features/onboarding/OnboardingPage';
-import DashboardPage from './features/dashboard/DashboardPage';
+import { Suspense, lazy } from 'react';
+
+const LandingPage = lazy(() => import('./features/public/LandingPage').then(m => ({ default: m.LandingPage })));
+const OnboardingPage = lazy(() => import('./features/onboarding/OnboardingPage').then(m => ({ default: m.OnboardingPage })));
+const DashboardPage = lazy(() => import('./features/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })));
 
 function App() {
   return (
