@@ -16,9 +16,9 @@ concurrency:
 
 jobs:
   quality:
-    name: Link audit, lint, tests, production build
+    name: Route, device-width, lint, tests, production build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Check out source
         uses: actions/checkout@v6
@@ -29,10 +29,8 @@ jobs:
           node-version: 22
           package-manager-cache: false
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 10.34.6
+      - name: Install pnpm
+        run: npm install --global pnpm@10.34.6
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
@@ -48,3 +46,9 @@ jobs:
 
       - name: Production build
         run: pnpm run build
+
+      - name: Install Chromium for browser QA
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Responsive, direct-route and image smoke tests
+        run: pnpm run qa:browser

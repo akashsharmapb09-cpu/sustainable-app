@@ -13,7 +13,8 @@
     "convex:dev": "convex dev",
     "convex:codegen": "convex codegen",
     "convex:check": "tsc -p convex/tsconfig.json --noEmit",
-    "qa:links": "node scripts/qa-links.mjs"
+    "qa:links": "node scripts/qa-links.mjs",
+    "qa:browser": "node scripts/qa-browser.mjs"
   },
   "dependencies": {
     "@auth/core": "^0.41.3",
@@ -43,7 +44,8 @@
     "oxlint": "^1.81.0",
     "typescript": "~6.0.2",
     "vite": "^8.3.0",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.3",
+    "playwright": "^1.55.0"
   },
   "packageManager": "pnpm@10.34.6",
   "engines": {
