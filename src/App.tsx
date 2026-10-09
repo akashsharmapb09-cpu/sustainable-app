@@ -52,7 +52,7 @@ export default function App() {
             <Route path="/explore" element={<ExplorePage />} />
           </Route>
 
-         <Route path="/login" element={<LandingPage />} />
+         <Route path="/login" element={<OnboardingPage />} />
          <Route path="/signup" element={<OnboardingPage />} />
 
           <Route element={<ProtectedRoute />}>
