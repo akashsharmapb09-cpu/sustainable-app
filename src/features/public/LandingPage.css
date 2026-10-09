@@ -1,10 +1,28 @@
 .landing-page {
   overflow: clip;
+  --color-bg: #071321;
+  --color-surface: #0e2030;
+  --color-surface-muted: #13283a;
+  --color-surface-subtle: #1c3549;
+  --color-ink: #edf4f5;
+  --color-ink-muted: #afc0c9;
+  --color-ink-faint: #8196a3;
+  --color-border: #284052;
+  --color-border-strong: #3b5a6c;
+  --color-moss: #79c7b5;
+  --color-clay: #e6ad7c;
+  --color-burnt: #ed936a;
+  --color-bone: #0e2030;
+  --ring-focus: rgba(121, 199, 181, 0.55);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(37, 91, 125, 0.24), transparent 48%),
+    radial-gradient(ellipse at 92% 36%, rgba(18, 82, 112, 0.12), transparent 42%),
+    #071321;
 }
 
 .landing-header {
-  border-bottom: 1px solid var(--color-border);
-  background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 84%, transparent);
   backdrop-filter: blur(18px);
 }
 
@@ -62,8 +80,12 @@
   padding-top: clamp(3rem, 7vw, 6.5rem);
   padding-bottom: 1.75rem;
   background:
-    radial-gradient(ellipse at 80% 35%, color-mix(in srgb, var(--color-moss) 10%, transparent), transparent 40%),
-    linear-gradient(180deg, var(--color-bg), color-mix(in srgb, var(--color-bg) 92%, var(--color-surface-muted)));
+    radial-gradient(circle at 12% 18%, rgba(198, 228, 255, 0.8) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 67% 14%, rgba(198, 228, 255, 0.55) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 89% 42%, rgba(198, 228, 255, 0.65) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 31% 73%, rgba(198, 228, 255, 0.45) 0 1px, transparent 1.6px),
+    radial-gradient(ellipse at 82% 35%, rgba(24, 108, 153, 0.18), transparent 42%),
+    linear-gradient(180deg, #071321, #0a1b2b 74%, #0d2030);
 }
 
 .landing-hero__inner {
@@ -79,7 +101,9 @@
 .landing-proof {
   border-radius: 999px;
   padding: 0.6rem 0.9rem;
-  box-shadow: 0 8px 22px rgba(35, 54, 38, 0.04);
+  border-color: color-mix(in srgb, var(--color-border-strong) 74%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
 }
 
 .landing-proof__dot {
@@ -187,18 +211,24 @@
   left: -1.5rem;
   height: 455px;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--color-moss) 14%, transparent);
+  border: 1px solid rgba(115, 193, 226, 0.2);
   border-radius: 48% 48% 34% 34% / 42% 42% 25% 25%;
   background:
-    radial-gradient(ellipse at 50% 44%, color-mix(in srgb, #d6e5cf 72%, var(--color-bg)), transparent 57%),
-    linear-gradient(160deg, color-mix(in srgb, var(--color-bg) 65%, #dae7d5), color-mix(in srgb, var(--color-bg) 92%, #c7d8c2));
+    radial-gradient(circle at 19% 23%, rgba(205, 237, 255, 0.8) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 78% 18%, rgba(205, 237, 255, 0.7) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 87% 62%, rgba(205, 237, 255, 0.55) 0 1px, transparent 1.6px),
+    radial-gradient(ellipse at 48% 42%, rgba(31, 100, 139, 0.42), transparent 61%),
+    linear-gradient(160deg, #06111f, #0b2032 64%, #081727);
   isolation: isolate;
 }
 
 .dark .landing-scene {
   background:
-    radial-gradient(ellipse at 50% 44%, #304636 0%, transparent 58%),
-    linear-gradient(160deg, #202c23, #18201b);
+    radial-gradient(circle at 19% 23%, rgba(205, 237, 255, 0.8) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 78% 18%, rgba(205, 237, 255, 0.7) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 87% 62%, rgba(205, 237, 255, 0.55) 0 1px, transparent 1.6px),
+    radial-gradient(ellipse at 48% 42%, rgba(31, 100, 139, 0.42), transparent 61%),
+    linear-gradient(160deg, #06111f, #0b2032 64%, #081727);
 }
 
 .landing-scene__glow {
@@ -208,8 +238,8 @@
   width: 70%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(213, 228, 203, 0.2) 48%, transparent 72%);
-  filter: blur(10px);
+  background: radial-gradient(circle, rgba(205, 238, 255, 0.68), rgba(78, 175, 218, 0.16) 48%, transparent 72%);
+  filter: blur(14px);
 }
 
 .landing-scene__grid {
@@ -221,8 +251,8 @@
   transform: rotateX(62deg);
   transform-origin: top center;
   background-image:
-    linear-gradient(rgba(49, 87, 57, 0.13) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(49, 87, 57, 0.13) 1px, transparent 1px);
+    linear-gradient(rgba(100, 184, 222, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 184, 222, 0.12) 1px, transparent 1px);
   background-size: 34px 34px;
   mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 75%, transparent);
 }
@@ -235,16 +265,17 @@
   aspect-ratio: 1;
   transform: translateX(-50%) rotateX(-8deg);
   transform-style: preserve-3d;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(149, 225, 255, 0.8);
   border-radius: 50%;
   background:
-    radial-gradient(ellipse at 30% 26%, rgba(255, 255, 255, 0.92), transparent 20%),
-    radial-gradient(ellipse at 37% 33%, #b8d2a5 0%, #6e9c69 24%, #386846 52%, #183b32 78%, #122c27 100%);
+    radial-gradient(ellipse at 27% 23%, rgba(229, 250, 255, 0.95), transparent 16%),
+    radial-gradient(ellipse at 31% 31%, #92d8e8 0%, #397f9c 25%, #174867 52%, #0a2944 78%, #06182c 100%);
   box-shadow:
-    inset -22px -18px 38px rgba(8, 28, 23, 0.42),
-    inset 12px 10px 24px rgba(255, 255, 255, 0.36),
-    0 32px 68px rgba(38, 73, 46, 0.25),
-    0 0 0 18px rgba(255, 255, 255, 0.13);
+    inset -26px -20px 42px rgba(1, 12, 27, 0.72),
+    inset 10px 8px 28px rgba(208, 247, 255, 0.46),
+    0 0 28px rgba(80, 190, 239, 0.3),
+    0 32px 68px rgba(0, 7, 18, 0.48),
+    0 0 0 12px rgba(86, 183, 220, 0.08);
   animation: globe-float 7s ease-in-out infinite;
 }
 
@@ -258,21 +289,21 @@
 }
 
 .landing-globe::before {
-  background: repeating-linear-gradient(0deg, transparent 0 27px, rgba(235, 247, 223, 0.17) 28px 29px);
+  background: repeating-linear-gradient(0deg, transparent 0 27px, rgba(204, 238, 250, 0.13) 28px 29px);
   mask-image: radial-gradient(ellipse, #000 57%, transparent 70%);
 }
 
 .landing-globe::after {
-  background: linear-gradient(110deg, transparent 36%, rgba(255, 255, 255, 0.18) 50%, transparent 64%);
+  background: linear-gradient(110deg, transparent 36%, rgba(208, 244, 255, 0.19) 50%, transparent 64%);
   transform: rotate(-24deg) scale(1.02);
 }
 
 .landing-globe__land {
   position: absolute;
   z-index: 1;
-  background: linear-gradient(145deg, #d4dfa7 0%, #82aa6e 38%, #487953 100%);
-  filter: drop-shadow(0 3px 2px rgba(15, 51, 37, 0.22));
-  opacity: 0.9;
+  background: linear-gradient(145deg, #d5d4ad 0%, #83b18e 38%, #34776f 100%);
+  filter: drop-shadow(0 3px 3px rgba(2, 19, 35, 0.42));
+  opacity: 0.82;
 }
 
 .landing-globe__land--one {
@@ -308,7 +339,7 @@
   z-index: 2;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.36), transparent 35% 76%, rgba(8, 34, 27, 0.16));
+  background: linear-gradient(120deg, rgba(235, 251, 255, 0.34), transparent 35% 68%, rgba(2, 16, 32, 0.5));
 }
 
 .landing-orbit {
@@ -317,7 +348,7 @@
   left: 50%;
   width: 112%;
   height: 62%;
-  border: 1px solid rgba(49, 87, 57, 0.28);
+  border: 1px solid rgba(110, 192, 224, 0.28);
   border-radius: 50%;
   transform: translateX(-50%) rotate(-22deg) rotateX(67deg);
   transform-style: preserve-3d;
@@ -331,7 +362,7 @@
   top: 11%;
   width: 92%;
   height: 82%;
-  border-color: rgba(163, 90, 56, 0.2);
+  border-color: rgba(225, 173, 124, 0.2);
   transform: translateX(-50%) rotate(55deg) rotateX(72deg);
   animation: orbit-turn-reverse 25s linear infinite;
 }
@@ -342,10 +373,10 @@
   left: 18%;
   width: 0.7rem;
   height: 0.7rem;
-  border: 2px solid var(--color-bg);
+  border: 2px solid #c4efff;
   border-radius: 50%;
-  background: var(--color-clay);
-  box-shadow: 0 0 20px rgba(163, 90, 56, 0.55);
+  background: #75d0ef;
+  box-shadow: 0 0 20px rgba(83, 194, 238, 0.65);
 }
 
 .landing-orbit--inner span {
@@ -355,7 +386,7 @@
   left: auto;
   width: 0.45rem;
   height: 0.45rem;
-  background: #d9c98e;
+  background: #e6ad7c;
 }
 
 .landing-scene__spark {
@@ -365,7 +396,7 @@
   height: 0.38rem;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 0 15px 4px rgba(255, 255, 255, 0.72);
+  box-shadow: 0 0 15px 4px rgba(150, 221, 255, 0.72);
 }
 
 .landing-scene__spark--one {
@@ -378,7 +409,7 @@
   right: 17%;
   width: 0.28rem;
   height: 0.28rem;
-  background: #d4a173;
+  background: #e6ad7c;
 }
 
 .landing-scene__stamp,
@@ -398,7 +429,7 @@
 }
 
 .landing-scene__stamp strong {
-  color: var(--color-moss);
+  color: #91d9eb;
   font-size: 0.75rem;
 }
 
@@ -414,9 +445,9 @@
   width: min(100%, 430px);
   margin: 13.5rem auto 0;
   border-radius: 1rem;
-  border-color: color-mix(in srgb, var(--color-border) 75%, white);
-  background: color-mix(in srgb, var(--color-surface) 91%, transparent);
-  box-shadow: 0 22px 55px rgba(25, 42, 29, 0.13), 0 3px 10px rgba(25, 42, 29, 0.06);
+  border-color: color-mix(in srgb, var(--color-border-strong) 75%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  box-shadow: 0 22px 55px rgba(0, 6, 16, 0.36), 0 3px 10px rgba(0, 6, 16, 0.2);
   backdrop-filter: blur(18px);
 }
 
@@ -437,7 +468,7 @@
   border: 1px solid var(--color-border);
   border-radius: 1rem;
   background: color-mix(in srgb, var(--color-surface) 76%, transparent);
-  box-shadow: 0 12px 32px rgba(35, 54, 38, 0.035);
+  box-shadow: 0 12px 32px rgba(0, 6, 16, 0.16);
 }
 
 .landing-metrics > div {
@@ -470,7 +501,7 @@
 .landing-principle,
 .landing-swap-card {
   border-radius: 1rem;
-  box-shadow: 0 6px 22px rgba(33, 48, 37, 0.035);
+  box-shadow: 0 6px 22px rgba(0, 6, 16, 0.16);
   transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
 }
 
@@ -478,7 +509,7 @@
 .landing-swap-card:hover {
   transform: translateY(-5px);
   border-color: color-mix(in srgb, var(--color-moss) 45%, var(--color-border));
-  box-shadow: 0 18px 35px rgba(33, 48, 37, 0.09);
+  box-shadow: 0 18px 35px rgba(0, 6, 16, 0.3);
 }
 
 .landing-principle {

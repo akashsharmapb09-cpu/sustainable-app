@@ -48,6 +48,10 @@ pnpm dev
 
 The Convex CLI deploys functions and generates local API types. Production builds require a real HTTPS Convex Cloud URL when `VITE_ENABLE_MOCK_FALLBACK=false`; local URLs are rejected. With the fallback enabled, the app runs as a browser-local field demo and account/backend features are unavailable. Netlify is configured to build with the demo fallback and serve client-side routes; add a real `VITE_CONVEX_URL` and disable the fallback in Netlify environment settings to enable a Convex-backed deployment.
 
+### AI assistant
+
+The floating GreenSwap assistant sends conversations to a Convex server action, which calls the OpenAI Responses API. Deploy the Convex backend, configure `VITE_CONVEX_URL` in the frontend hosting environment, and add `OPENAI_API_KEY` to the Convex deployment environment variables. Optionally set `OPENAI_MODEL` there (defaults to `gpt-4.1-mini`). Keep OpenAI credentials server-side; never add them to a `VITE_` variable. Conversations are held in page memory and are sent to OpenAI with response storage disabled.
+
 The previous Supabase TOTP feature has been retired; Convex Auth does not provide a drop-in TOTP replacement. Administrative routes still require an authenticated user with the admin role.
 
 ### Validation

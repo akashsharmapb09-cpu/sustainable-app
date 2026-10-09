@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { ProtectedRoute } from './features/auth/guards/ProtectedRoute';
 import { AdminRoute } from './features/auth/guards/AdminRoute';
@@ -34,49 +34,53 @@ function PageLoader() {
 }
 
 export default function App() {
+  const location = useLocation();
+
   return (
     <Suspense fallback={<PageLoader />}>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/methodology" element={<MethodologyPage />} />
-        <Route path="/styleguide" element={<StyleGuidePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="/cookies" element={<CookiesPage />} />
+      <div className="route-enter" key={location.pathname}>
+        <Routes location={location}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/methodology" element={<MethodologyPage />} />
+          <Route path="/styleguide" element={<StyleGuidePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/cookies" element={<CookiesPage />} />
 
-        <Route element={<MaybeShell />}>
-          <Route path="/explore" element={<ExplorePage />} />
-        </Route>
+          <Route element={<MaybeShell />}>
+            <Route path="/explore" element={<ExplorePage />} />
+          </Route>
 
-        <Route path="/login" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/signup" element={<Navigate to="/onboarding" replace />} />
+          <Route path="/login" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/signup" element={<Navigate to="/onboarding" replace />} />
 
-        <Route element={<ProtectedRoute />}>
-          <Route element={<OnboardingGate />}>
-            <Route path="/onboarding" element={<OnboardingPage />} />
-            <Route element={<AppShell />}>
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/log" element={<LogActivityPage />} />
-              <Route path="/recommendations" element={<RecommendationsPage />} />
-              <Route path="/progress" element={<ProgressPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route element={<OnboardingGate />}>
+              <Route path="/onboarding" element={<OnboardingPage />} />
+              <Route element={<AppShell />}>
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/log" element={<LogActivityPage />} />
+                <Route path="/recommendations" element={<RecommendationsPage />} />
+                <Route path="/progress" element={<ProgressPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+              </Route>
             </Route>
           </Route>
-        </Route>
 
-        <Route path="/auth/verify-email" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/auth/reset-password" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/auth/verify-email" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/auth/reset-password" element={<Navigate to="/dashboard" replace />} />
 
-        <Route element={<AdminRoute />}>
-          <Route element={<AppShell />}>
-            <Route path="/admin" element={<AdminPage />} />
+          <Route element={<AdminRoute />}>
+            <Route element={<AppShell />}>
+              <Route path="/admin" element={<AdminPage />} />
+            </Route>
           </Route>
-        </Route>
 
-        <Route path="/404" element={<NotFoundPage />} />
-        <Route path="*" element={<Navigate to="/404" replace />} />
-      </Routes>
+          <Route path="/404" element={<NotFoundPage />} />
+          <Route path="*" element={<Navigate to="/404" replace />} />
+        </Routes>
+      </div>
     </Suspense>
   );
 }
