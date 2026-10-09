@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 
 const shots = [
-  { src: '/launch-home.jpg', alt: 'GreenSwap home page with the main headline and routine preview', title: '01 / HOME', description: 'A clear starting point for practical everyday swaps.' },
-  { src: '/launch-explore.jpg', alt: 'GreenSwap alternative catalog with category filters and recommendation cards', title: '02 / EXPLORE', description: 'Browse transport, food, energy, waste and shopping alternatives.' },
-  { src: '/launch-methodology.jpg', alt: 'GreenSwap methodology view with cited environmental data sources', title: '03 / METHODOLOGY', description: 'See the sources behind the guidance and estimates.' },
+  { src: '/launch-home.svg', alt: 'GreenSwap home page with the main headline and routine preview', title: '01 / HOME', description: 'A clear starting point for practical everyday swaps.' },
+  { src: '/launch-explore.svg', alt: 'GreenSwap alternative catalog with category filters and recommendation cards', title: '02 / EXPLORE', description: 'Browse transport, food, energy, waste and shopping alternatives.' },
+  { src: '/launch-methodology.svg', alt: 'GreenSwap methodology view with cited environmental data sources', title: '03 / METHODOLOGY', description: 'See the sources behind the guidance and estimates.' },
 ];
 
 export function LaunchPage() {
@@ -46,7 +46,7 @@ export function LaunchPage() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             {shots.map(shot => (
               <article key={shot.src} className="min-w-0 border border-black/10 bg-[#F7F5F0] p-3">
-                <img src={shot.src} alt={shot.alt} width="640" height="310" loading="lazy" className="block aspect-[640/310] w-full object-cover" />
+                <img src={shot.src} alt={shot.alt} width="760" height="368" loading="lazy" className="block aspect-[760/368] w-full object-cover" />
                 <div className="px-2 pb-2 pt-4"><p className="font-mono text-[10px] tracking-widest text-black/50">{shot.title}</p><p className="mt-2 text-sm leading-6 text-black/65">{shot.description}</p></div>
               </article>
             ))}
