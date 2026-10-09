@@ -2,8 +2,7 @@ import React, { createContext, useContext, useMemo } from "react";
 import { useConvexAuth } from "convex/react";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { getLocalProfile, getStoredProfiles } from "../../../shared/lib/storage";
-import type { Profile, UserRoleType } from "../../../shared/lib/types";
+import { getLocalProfile, getStoredProfiles, type Profile, type UserRoleType } from "../../../shared/lib/localStore";
 
 type AuthUser = {
   id: string;
