@@ -39,6 +39,188 @@ function LineIcon({ type }: { type: string }) {
   if (type === 'energy') return <span className="topic-energy" aria-hidden="true">≈</span>;
   return <span className="font-mono text-sm" aria-hidden="true">[ ]<br/>[ ]<br/>[ ]</span>;
 }
+
+type LifestylePreferencesData = {
+  travel: string;
+  diet: string;
+  foodWaste: string;
+  electricity: string;
+  budget: string;
+  effort: string;
+  priority: string;
+  interests: string[];
+};
+
+const lifestyleDefaults: LifestylePreferencesData = {
+  travel: 'mixed',
+  diet: 'mixed',
+  foodWaste: 'often',
+  electricity: 'medium',
+  budget: 'low',
+  effort: 'moderate',
+  priority: 'impact',
+  interests: ['Food waste', 'Energy saving', 'Reuse & repair'],
+};
+
+const lifestyleTopics = ['Travel', 'Food choices', 'Food waste', 'Energy saving', 'Reuse & repair', 'Shopping less', 'Water saving'];
+
+function readLifestylePreferences(): LifestylePreferencesData {
+  try {
+    const raw = localStorage.getItem('sustainable_profile') || localStorage.getItem('profile');
+    const value = raw ? JSON.parse(raw) as Record<string, unknown> : {};
+    const commute = String(value.travel ?? value.primary_commute ?? 'mixed');
+    const travel = ['walk', 'bike', 'walk_cycle'].includes(commute) ? 'walk_cycle'
+      : ['public', 'public_transit'].includes(commute) ? 'public_transit'
+      : ['two_wheeler', 'car', 'carpool'].includes(commute) ? commute : 'mixed';
+    const interests = Array.isArray(value.interests)
+      ? value.interests.filter((item): item is string => typeof item === 'string')
+      : lifestyleDefaults.interests;
+    const effortValue = String(value.effort ?? value.effort_tolerance ?? 'moderate');
+    const effort = effortValue === 'medium' ? 'moderate' : effortValue === 'high' ? 'committed' : effortValue;
+    const priorityValue = String(value.priority ?? 'impact');
+    const priority = ['impact', 'cost', 'convenience', 'health', 'waste'].includes(priorityValue) ? priorityValue : 'impact';
+    return {
+      ...lifestyleDefaults,
+      travel,
+      diet: String(value.diet ?? 'mixed'),
+      foodWaste: String(value.foodWaste ?? 'often'),
+      electricity: String(value.electricity ?? 'medium'),
+      budget: String(value.budget ?? value.budget_sensitivity ?? 'low'),
+      effort: ['easy', 'moderate', 'committed', 'low', 'medium', 'high'].includes(effort) ? effort : 'moderate',
+      priority,
+      interests,
+    };
+  } catch {
+    return lifestyleDefaults;
+  }
+}
+
+function LifestylePreferences() {
+  const [preferences, setPreferences] = useState<LifestylePreferencesData>(readLifestylePreferences);
+  const [saved, setSaved] = useState(false);
+
+  function update<K extends keyof LifestylePreferencesData>(key: K, value: LifestylePreferencesData[K]) {
+    setPreferences(current => ({ ...current, [key]: value }));
+    setSaved(false);
+  }
+
+  function toggleTopic(topic: string) {
+    update('interests', preferences.interests.includes(topic)
+      ? preferences.interests.filter(item => item !== topic)
+      : [...preferences.interests, topic]);
+  }
+
+  function savePreferences(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    let existing: Record<string, unknown> = {};
+    try {
+      existing = JSON.parse(localStorage.getItem('sustainable_profile') || localStorage.getItem('profile') || '{}') as Record<string, unknown>;
+    } catch {
+      existing = {};
+    }
+    const updated = {
+      ...existing,
+      travel: preferences.travel,
+      primary_commute: preferences.travel,
+      diet: preferences.diet,
+      foodWaste: preferences.foodWaste,
+      electricity: preferences.electricity,
+      budget: preferences.budget,
+      budget_sensitivity: preferences.budget,
+      effort: preferences.effort,
+      effort_tolerance: preferences.effort,
+      priority: preferences.priority,
+      interests: preferences.interests,
+      updatedAt: new Date().toISOString(),
+    };
+    localStorage.setItem('sustainable_profile', JSON.stringify(updated));
+    localStorage.setItem('profile', JSON.stringify(updated));
+    setSaved(true);
+  }
+
+  const fieldClass = 'mt-2 w-full border border-black/15 bg-white px-3 py-3 text-sm outline-none focus:border-[#315b3d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#315b3d]';
+
+  return (
+    <section id="lifestyle-preferences" className="mb-10 scroll-mt-8" aria-labelledby="lifestyle-heading">
+      <div className="mb-5 border-b border-black/15 pb-4">
+        <p className="taxonomy-label">PERSONALISE / YOUR ROUTINE</p>
+        <h2 id="lifestyle-heading" className="mt-2 font-serif text-4xl sm:text-5xl">Your everyday choices<span className="text-[#b64b2c]">.</span></h2>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-black/60">Tell GreenSwap what life looks like for you. These choices shape practical suggestions; they are not a score, and you can change them any time.</p>
+      </div>
+
+      <form onSubmit={savePreferences} className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <fieldset className="premium-card">
+          <legend className="px-1 font-serif text-2xl">Everyday lifestyle</legend>
+          <p className="mb-4 mt-1 text-sm leading-5 text-black/55">Choose what most closely fits your current routine.</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block text-sm font-medium">Travel habits
+              <select className={fieldClass} value={preferences.travel} onChange={event => update('travel', event.target.value)}>
+                <option value="mixed">A mix of walking, transit and vehicles</option><option value="walk_cycle">Mostly walk or cycle</option><option value="public_transit">Mostly public transport</option><option value="two_wheeler">Mostly two-wheeler</option><option value="car">Mostly car</option><option value="carpool">Carpool when possible</option>
+              </select>
+            </label>
+            <label className="block text-sm font-medium">Food choices
+              <select className={fieldClass} value={preferences.diet} onChange={event => update('diet', event.target.value)}>
+                <option value="mixed">Mixed diet</option><option value="vegetarian">Vegetarian</option><option value="vegan">Vegan</option><option value="flexitarian">Mostly plant-based, flexible</option><option value="pescatarian">Pescatarian</option>
+              </select>
+            </label>
+            <label className="block text-sm font-medium">Food waste at home
+              <select className={fieldClass} value={preferences.foodWaste} onChange={event => update('foodWaste', event.target.value)}>
+                <option value="rarely">Rarely</option><option value="sometimes">Sometimes</option><option value="often">Often</option>
+              </select>
+            </label>
+            <label className="block text-sm font-medium">Electricity use
+              <select className={fieldClass} value={preferences.electricity} onChange={event => update('electricity', event.target.value)}>
+                <option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="unsure">Not sure</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset className="premium-card">
+          <legend className="px-1 font-serif text-2xl">What works for you?</legend>
+          <p className="mb-4 mt-1 text-sm leading-5 text-black/55">Keep suggestions realistic for your budget, time and priorities.</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block text-sm font-medium">Budget for changes
+              <select className={fieldClass} value={preferences.budget} onChange={event => update('budget', event.target.value)}>
+                <option value="low">Low, prefer free or low-cost changes</option><option value="medium">Medium, some flexibility</option><option value="high">High, willing to invest</option>
+              </select>
+            </label>
+            <label className="block text-sm font-medium">Effort level
+              <select className={fieldClass} value={preferences.effort} onChange={event => update('effort', event.target.value)}>
+                <option value="easy">Easy, quick changes</option><option value="moderate">Moderate, build a new habit</option><option value="committed">Committed, bigger lifestyle changes</option><option value="low">Low effort only</option><option value="medium">Medium effort</option><option value="high">High effort</option>
+              </select>
+            </label>
+            <label className="block text-sm font-medium sm:col-span-2">Main priority
+              <select className={fieldClass} value={preferences.priority} onChange={event => update('priority', event.target.value)}>
+                <option value="impact">Meaningful environmental impact</option><option value="cost">Save money</option><option value="convenience">Convenience and time</option><option value="health">Health and wellbeing</option><option value="waste">Reduce waste</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset className="premium-card lg:col-span-2">
+          <legend className="px-1 font-serif text-2xl">Topics you care about</legend>
+          <p className="mb-4 mt-1 text-sm leading-5 text-black/55">Pick any topics you want GreenSwap to focus on.</p>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {lifestyleTopics.map(topic => (
+              <label key={topic} className={`flex cursor-pointer items-center gap-3 border px-4 py-3 text-sm transition ${preferences.interests.includes(topic) ? 'border-[#315b3d] bg-[#e9ece3]' : 'border-black/10 hover:border-black/30'}`}>
+                <input type="checkbox" className="h-4 w-4 accent-[#315b3d]" checked={preferences.interests.includes(topic)} onChange={() => toggleTopic(topic)} />
+                {topic}
+              </label>
+            ))}
+          </div>
+          <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-black/10 pt-4">
+            <button type="submit" className="bg-[#0E0E0E] px-5 py-3 text-sm text-white transition hover:bg-black/80">Save everyday choices</button>
+            {saved && <p role="status" className="text-sm text-[#315b3d]">Saved on this device.</p>}
+            <Link to="/profile" className="ml-auto text-sm underline underline-offset-4">Edit basic profile details</Link>
+          </div>
+          <p className="mt-3 text-xs leading-5 text-black/45">Preferences stay in this browser on this device. They are not synced to other devices.</p>
+        </fieldset>
+      </form>
+    </section>
+  );
+}
+
 export function DashboardPage() {
   const reduceMotion = useReducedMotion();
   const [saved, setSaved] = useState<string[]>(readSaved);
@@ -105,6 +287,7 @@ export function DashboardPage() {
       </header>
       <div className="mx-auto max-w-[1440px] px-5 py-9 sm:px-10 lg:px-[8%]">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-5"><div><p className="taxonomy-label">FIELD NOTES / EDITION 2026 · FIG. 04</p><h1 className="mt-3 font-serif text-6xl tracking-[-.04em] sm:text-7xl">Your dashboard<span className="text-[#b64b2c]">.</span></h1><p className="mt-3 max-w-xl text-sm leading-6 text-black/60">A practical starting point for a lighter routine. Keep what fits; leave what doesn’t.</p></div><Link to="/profile" className="border border-black/20 px-4 py-3 text-sm hover:border-black/50">Tune my preferences ↗</Link></div>
+        <LifestylePreferences />
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
           <section className="premium-card editorial-grain bg-[#111110] text-[#F7F5F0] lg:col-span-8" aria-labelledby="saved-title">
             <div className="flex items-start justify-between gap-4"><p className="taxonomy-label text-white/60">YOUR PRACTICE / INDICATIVE VALUE</p><span className="font-mono text-[10px] text-white/50">FIG. 01</span></div>
