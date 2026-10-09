@@ -7,6 +7,7 @@ const OnboardingPage = lazy(() => import('./features/onboarding/OnboardingPage')
 const DashboardPage = lazy(() => import('./features/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })));
 const ProfilePage = lazy(() => import('./features/profile/ProfilePage').then(m => ({ default: m.ProfilePage })));
 const ProPage = lazy(() => import('./features/pro/ProPage').then(m => ({ default: m.ProPage })));
+const TermsPage = lazy(() => import('./features/legal/TermsPage').then(m => ({ default: m.TermsPage })));
 
 function RouteMotion({ children }: { children: React.ReactNode }) {
   return <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -3 }} transition={{ duration: 0.4, ease: 'easeOut' }}>{children}</motion.div>;
