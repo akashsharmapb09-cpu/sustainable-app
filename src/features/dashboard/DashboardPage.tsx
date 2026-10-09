@@ -1,98 +1,35 @@
+import { Link } from 'react-router-dom';
+
 export function DashboardPage() {
   return (
     <div className="min-h-screen bg-[#fdfcf8] text-[#1a1a1a]">
-      {/* HEADER SAME AS HOMEPAGE */}
-      <header className="flex items-center justify-between px-8 py-4 border-b border-black/10">
-        <div className="flex items-center gap-3">
+      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-black/10 px-5 py-4 sm:px-8">
+        <Link to="/" className="flex items-center gap-3">
           <span className="text-[9px] tracking-widest border border-black/20 px-2 py-1 rounded-full">EDITION 2026 / VOL. 01</span>
           <span className="font-serif font-black text-xl">GreenSwap.</span>
-        </div>
-        <div className="hidden md:flex gap-6 text-[11px] tracking-widest">
-          <span>Explore Catalog</span><span>Methodology & Citations</span><span>About</span>
-        </div>
-        <div className="bg-[#2d4a22] text-white text-xs px-4 py-2 rounded-full">Get started →</div>
+        </Link>
+        <nav className="flex flex-wrap items-center gap-3 text-xs sm:gap-6 sm:text-[11px] sm:tracking-widest">
+          <Link to="/dashboard" className="hover:text-[#2d4a22]">Explore Catalog</Link>
+          <a href="#methodology" className="hover:text-[#2d4a22]">Methodology &amp; Citations</a>
+          <Link to="/profile" className="rounded-full bg-[#e8eee3] px-4 py-2 font-semibold tracking-normal text-[#2d4a22] hover:bg-[#dbe6d3]">My profile ↗</Link>
+        </nav>
       </header>
-
-      <div className="max-w-[1280px] mx-auto px-8 py-10 grid grid-cols-12 gap-8">
-        {/* LEFT - YOUR BASELINE */}
+      <div className="max-w-[1280px] mx-auto px-5 py-8 sm:px-8 sm:py-10 grid grid-cols-12 gap-8">
         <div className="col-span-12 lg:col-span-7">
-          <div className="inline-flex items-center gap-2 text-[9px] tracking-widest border border-black/10 px-3 py-1 rounded-full mb-6">
-            <span className="w-2 h-2 bg-green-600 rounded-full"></span> EVIDENCE-LED • INDIA-CALIBRATED • BUILT FOR REAL LIFE
+          <div className="inline-flex items-center gap-2 text-[9px] tracking-widest border border-black/10 px-3 py-1 rounded-full mb-6"><span className="w-2 h-2 bg-green-600 rounded-full"></span> PRACTICAL • PERSONAL • BUILT FOR REAL LIFE</div>
+          <h1 className="font-serif text-4xl font-black leading-[0.95] tracking-tight sm:text-[56px]">Your everyday choices.<br/><span className="text-[#2d4a22] font-light italic">Your kind of change.</span></h1>
+          <p className="mt-5 max-w-xl text-sm leading-6 text-black/60 sm:text-base">Explore realistic sustainable alternatives for food, travel, energy and waste—shaped around your habits, budget and priorities.</p>
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Link to="/profile" className="group rounded-2xl border border-black/10 bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#2d4a22]/40 hover:shadow-sm">
+              <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#59704d]">01 · Personalise</span><h2 className="mt-3 font-serif text-2xl font-bold">Your lifestyle profile</h2><p className="mt-2 text-sm leading-6 text-black/60">Set your travel habits, diet, budget, food waste and interests so suggestions fit you.</p><span className="mt-4 inline-block text-sm font-semibold text-[#2d4a22]">Edit preferences →</span>
+            </Link>
+            <div className="rounded-2xl border border-black/10 bg-[#e8eee3] p-5"><span className="text-xs font-bold uppercase tracking-[0.15em] text-[#59704d]">02 · Start small</span><h2 className="mt-3 font-serif text-2xl font-bold">A more useful next step</h2><p className="mt-2 text-sm leading-6 text-black/65">Pick one change that suits your week—like planning leftovers, switching off idle devices or repairing before replacing.</p><Link to="/profile" className="mt-4 inline-block text-sm font-semibold text-[#2d4a22]">Tune your recommendations →</Link></div>
           </div>
-
-          <h1 className="font-serif text-[56px] font-black leading-[0.9] tracking-tight">
-            Your baseline.<br/>
-            <span className="text-[#2d4a22] font-light italic">Keep the good life.</span>
-          </h1>
-
-          <div className="grid grid-cols-2 gap-4 mt-10">
-            <div className="bg-white border border-black/10 p-6 rounded-xl">
-              <p className="text-[10px] tracking-widest">MONTHLY FOOTPRINT</p>
-              <p className="font-serif text-4xl font-bold mt-2">124 kg <span className="text-sm font-sans font-normal">CO2e / mo</span></p>
-              <div className="mt-4 h-1.5 bg-black/10 rounded-full"><div className="h-full w-[62%] bg-black rounded-full"></div></div>
-              <p className="text-[10px] mt-2 opacity-60">Goal: 100kg • 62% of monthly goal</p>
-            </div>
-            <div className="bg-[#111] text-[#fdfcf8] p-6 rounded-xl">
-              <p className="text-[10px] tracking-widest opacity-60">TOTAL SAVED</p>
-              <p className="font-serif text-4xl font-bold mt-2">200 kg</p>
-              <p className="text-sm mt-2 opacity-80">Equal to planting 12 trees.</p>
-              <p className="text-[10px] mt-3 opacity-60">This month: +42kg ↑ 12%</p>
-            </div>
-          </div>
-
-          <h3 className="font-serif text-2xl font-bold mt-12 mb-4">Recommended for you</h3>
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              {cut:'91% CUT', title:'Switch Commute to Metro Transit'},
-              {cut:'59% CUT', title:'Adopt an Electric Two-Wheeler'},
-              {cut:'60% CUT', title:'Shared E-Rickshaw'},
-            ].map((c,i)=>(
-              <div key={i} className="bg-white border border-black/10 p-4 rounded-xl">
-                <div className="flex justify-between"><span className="text-[8px] border px-2 py-0.5 rounded-full">TRANSPORT</span><span className="text-[8px] bg-black text-white px-2 py-0.5 rounded-full">{c.cut}</span></div>
-                <p className="font-serif font-bold text-sm mt-3 leading-tight">{c.title}</p>
-                <p className="text-[11px] mt-2">-₹3,200/mo</p>
-              </div>
-            ))}
-          </div>
+          <section id="methodology" className="mt-10 border-t border-black/10 pt-6"><p className="text-xs font-bold uppercase tracking-[0.15em] text-[#59704d]">How recommendations work</p><h2 className="mt-2 font-serif text-2xl font-bold">Fit first. Perfection never.</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-black/60">GreenSwap prioritises options that match your stated budget, effort level and interests. Environmental benefits are explained in plain language, without promising unsupported savings.</p></section>
         </div>
-
-        {/* RIGHT - GLOBE + INTERACTIVE LIKE HOMEPAGE */}
-        <div className="col-span-12 lg:col-span-5">
-          <div className="sticky top-8">
-            <div className="relative bg-[#f4f1eb] border border-black/10 rounded-[24px] p-6 overflow-hidden">
-              <div className="flex justify-between text-[9px] tracking-widest mb-4">
-                <span>.FIELD NOTE<br/>01 / 04</span>
-                <span className="w-24 h-24 bg-gradient-to-br from-[#a8c69f] to-[#2d4a22] rounded-full blur-[0.5px] relative -top-6 shadow-xl"></span>
-              </div>
-
-              <div className="bg-white border border-black/10 rounded-xl p-4">
-                <div className="flex justify-between items-center">
-                  <p className="text-[9px] tracking-widest">INTERACTIVE SPECIMEN // CALIBRATION PREVIEW</p>
-                  <span className="text-[8px] border px-2 py-1">LIVE PREVIEW</span>
-                </div>
-                <h4 className="font-serif font-bold mt-4">Trade the car for the metro</h4>
-                <p className="text-[11px] opacity-60 mt-1">Adjust your commute to preview a practical monthly difference</p>
-
-                <div className="mt-6">
-                  <div className="flex justify-between text-[10px]"><span>One-Way Distance:</span><span className="font-bold">15 km</span></div>
-                  <div className="h-1 bg-black/10 mt-2 rounded-full"><div className="h-full w-[60%] bg-[#c45a2c] rounded-full"></div></div>
-                </div>
-                <div className="mt-4">
-                  <div className="flex justify-between text-[10px]"><span>Weekly Frequency:</span><span className="font-bold">5 days / week</span></div>
-                  <div className="h-1 bg-black/10 mt-2 rounded-full"><div className="h-full w-[70%] bg-[#c45a2c] rounded-full"></div></div>
-                </div>
-
-                <div className="mt-6 bg-[#fdfcf8] border border-black/5 p-3 rounded-lg">
-                  <p className="text-[9px] tracking-widest">PROJECTED MONTHLY MITIGATION</p>
-                  <p className="text-[10px] mt-2">Carbon Reduction Range:</p>
-                  <p className="font-bold">90.9 - 111.1 kg CO2e/mo</p>
-                  <p className="text-[10px] mt-2">Net Expenditure Delta: <span className="float-right">-₹3,248/mo</span></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <aside className="col-span-12 lg:col-span-5"><div className="rounded-[24px] border border-black/10 bg-[#f4f1eb] p-6 sm:p-7"><div className="flex items-center justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#59704d]">Field note · 01</p><h2 className="mt-2 font-serif text-2xl font-bold">Try this this week</h2></div><span aria-hidden="true" className="grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-[#a8c69f] to-[#2d4a22] text-2xl">✳</span></div><div className="mt-6 rounded-xl border border-black/10 bg-white p-5"><span className="rounded-full bg-[#e8eee3] px-3 py-1 text-xs font-semibold text-[#2d4a22]">Food · No-cost</span><h3 className="mt-4 font-serif text-xl font-bold">Give leftovers a plan</h3><p className="mt-2 text-sm leading-6 text-black/60">Before shopping, check the fridge and plan one meal around food you already have. Store leftovers clearly and freeze what you will not eat in time.</p><p className="mt-4 border-t border-black/10 pt-4 text-sm leading-6"><strong>Why it helps:</strong> Preventing edible food from being discarded also avoids wasting the water, energy and resources used to produce it.</p></div><Link to="/profile" className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-[#2d4a22] px-5 py-3 text-sm font-semibold text-white hover:bg-[#203619]">Personalise my suggestions →</Link></div></aside>
       </div>
     </div>
-  )
+  );
 }
+export default DashboardPage;
