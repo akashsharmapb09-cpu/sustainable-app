@@ -52,8 +52,8 @@ export default function App() {
             <Route path="/explore" element={<ExplorePage />} />
           </Route>
 
-          <Route path="/login" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/signup" element={<Navigate to="/onboarding" replace />} />
+         <Route path="/login" element={<LandingPage />} />
+         <Route path="/signup" element={<OnboardingPage />} />
 
           <Route element={<ProtectedRoute />}>
             <Route element={<OnboardingGate />}>
