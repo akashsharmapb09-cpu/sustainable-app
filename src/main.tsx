@@ -6,7 +6,6 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './shared/lib/queryClient';
 import { convex } from './shared/lib/convex';
 import { AuthProvider } from './features/auth';
-import { AssistantWidget, ToastProvider } from './shared/ui';
 import './index.css';
 import App from './App';
 
