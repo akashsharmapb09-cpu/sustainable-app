@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const panels = {
-  routine: { label: 'YOUR ROUTINE, YOUR NEXT MOVE', title: <>Make room for<br />better habits<span>.</span></>, body: 'Practical alternatives for travel, food, energy and waste—shaped around your priorities, budget and real life.' },
+  routine: { label: 'YOUR ROUTINE, YOUR NEXT MOVE', title: <>Make room for<br />better habits<span>.</span></>, body: 'Practical alternatives for travel, food, energy and waste, shaped around your priorities, budget and real life.' },
   food: { label: 'FOOD / WASTE LESS', title: <>Use what you have.<br /><em>Waste less.</em></>, body: 'Plan around ingredients already in your kitchen, give leftovers a future, and shop with a short list.' },
   lowCost: { label: 'LOW COST / SMALL STEPS', title: <>Small changes.<br /><em>Real life.</em></>, body: 'Try no-cost habits first: switch off idle devices, repair before replacing, and walk when it works for your trip.' },
 };
@@ -73,6 +73,7 @@ export function LandingPage() {
         </div>
         <p className="mx-auto mt-8 max-w-6xl border-t border-black/10 pt-3 font-mono text-[9px] tracking-widest text-black/45">GREEN SWAP FIELD NOTES · RECOMMENDATIONS, NOT PERSONALIZED SCIENTIFIC MEASUREMENTS</p>
       </section>
+      <footer className="border-t border-black/10 px-5 py-6 sm:px-10 lg:px-[8%]"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3"><p className="text-sm text-black/55">Built to make a lighter footprint. Keep the good life.</p><nav aria-label="Legal links" className="flex gap-4 text-xs"><Link to="/terms" className="underline underline-offset-4">Terms and conditions</Link><Link to="/privacy" className="underline underline-offset-4">Privacy</Link></nav></div></footer>
     </main>
   );
 }
