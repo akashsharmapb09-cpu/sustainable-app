@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "convex:dev": "convex dev",
     "convex:codegen": "convex codegen",
-    "convex:check": "tsc -p convex/tsconfig.json --noEmit"
+    "convex:check": "tsc -p convex/tsconfig.json --noEmit",
+    "qa:links": "node scripts/qa-links.mjs"
   },
   "dependencies": {
     "@auth/core": "^0.41.3",
@@ -43,5 +44,9 @@
     "typescript": "~6.0.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.3"
+  },
+  "packageManager": "pnpm@10.34.6",
+  "engines": {
+    "node": ">=22.0.0"
   }
 }
