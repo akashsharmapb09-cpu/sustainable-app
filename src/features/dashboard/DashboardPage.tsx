@@ -48,7 +48,7 @@ export function DashboardPage() {
   const [count, setCount] = useState(0);
   const complete = done.filter(Boolean).length;
   const isFinished = complete === 7;
-  const shareText = useMemo(() => `I’m building lighter habits with GreenSwap — practical sustainable swaps for real life. #GreenSwap2026`, []);
+  const shareText = useMemo(() => `I’m building lighter habits with GreenSwap: practical sustainable swaps for real life. #GreenSwap2026`, []);
   useEffect(() => { saveEvent('dashboard_view'); }, []);
   useEffect(() => {
     if (reduceMotion) { setCount(0.7); return; }
@@ -109,7 +109,7 @@ export function DashboardPage() {
           <section className="premium-card editorial-grain bg-[#111110] text-[#F7F5F0] lg:col-span-8" aria-labelledby="saved-title">
             <div className="flex items-start justify-between gap-4"><p className="taxonomy-label text-white/60">YOUR PRACTICE / INDICATIVE VALUE</p><span className="font-mono text-[10px] text-white/50">FIG. 01</span></div>
             <h2 id="saved-title" className="mt-8 font-serif text-5xl leading-none sm:text-7xl"><motion.span key={count.toFixed(2)}>{count.toFixed(1)}</motion.span><span className="text-2xl sm:text-3xl">t CO₂e</span></h2>
-            <p className="mt-4 text-sm text-white/65">saved / month <span className="mx-2">—</span> illustrative example, not a measured personal result</p>
+            <p className="mt-4 text-sm text-white/65">saved / month <span className="mx-2">·</span> illustrative example, not a measured personal result</p>
             <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/15 pt-4"><span className="font-mono text-[9px] uppercase tracking-widest text-white/45">SRC: DEMO FIGURE · NOT A VERIFIED ESTIMATE</span><button onClick={() => void shareImpact()} className="border border-white/30 px-4 py-2 text-xs hover:bg-white hover:text-black" aria-label="Share GreenSwap impact">Share my impact ↗</button></div>
           </section>
           <section className="premium-card flex flex-col justify-between lg:col-span-4" aria-labelledby="ritual-progress-title">
