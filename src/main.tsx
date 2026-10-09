@@ -17,7 +17,6 @@ createRoot(document.getElementById('root')!).render(
           <AuthProvider>
             <ToastProvider>
               <App />
-              <AssistantWidget />
             </ToastProvider>
           </AuthProvider>
         </ConvexAuthProvider>
