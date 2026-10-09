@@ -180,7 +180,44 @@ body.route-saved #saved-page,body.route-faq #faq-page,body.route-resources #reso
 body.route-saved .app-sidebar .side-links a[href="/saved"],body.route-faq .app-sidebar .side-links a[href="/faq"],body.route-resources .app-sidebar .side-links a[href="/resources"]{border-left-color:var(--green);color:var(--green);background:#f0f2eb}
 @media(max-width:1050px){.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){body.route-saved .app-sidebar,body.route-faq .app-sidebar,body.route-resources .app-sidebar{position:sticky;top:0;width:100%;height:auto;padding:12px 16px;display:block;border-right:0;border-bottom:1px solid var(--line)}body.route-saved main,body.route-faq main,body.route-resources main{margin-left:0}body.route-saved .app-sidebar .side-profile,body.route-faq .app-sidebar .side-profile,body.route-resources .app-sidebar .side-profile,body.route-saved .app-sidebar .side-bottom,body.route-faq .app-sidebar .side-bottom,body.route-resources .app-sidebar .side-bottom{display:none}body.route-saved .app-sidebar .side-links,body.route-faq .app-sidebar .side-links,body.route-resources .app-sidebar .side-links{display:flex;overflow-x:auto;gap:4px}body.route-saved .app-sidebar .side-links a,body.route-faq .app-sidebar .side-links a,body.route-resources .app-sidebar .side-links a{white-space:nowrap;padding:9px 10px;border-left:0;border-bottom:2px solid transparent;font-size:12px}body.route-saved .app-sidebar .side-links a.active,body.route-faq .app-sidebar .side-links a.active,body.route-resources .app-sidebar .side-links a.active{border-bottom-color:var(--green)}body.route-saved .app-sidebar .side-icon,body.route-faq .app-sidebar .side-icon,body.route-resources .app-sidebar .side-icon{display:none}.saved-cards,.resource-grid{grid-template-columns:1fr}.saved-actions{align-items:flex-start}.saved-actions .factor-count{margin-bottom:5px}}
+
+/* Accessible light/dark appearance */
+:root{color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark;--paper:#171a16;--ink:#f1f0e7;--muted:#b9beb2;--line:#383e35;--green:#b5d0a2;--clay:#e2a58f}
+:root[data-theme="dark"] body,:root[data-theme="dark"] .account-page{background:radial-gradient(ellipse at 80% 0%,#252c22 0,transparent 42%),var(--paper);color:var(--ink)}
+:root[data-theme="dark"] .top,:root[data-theme="dark"] footer,:root[data-theme="dark"] .app-sidebar,:root[data-theme="dark"] .account-panel,:root[data-theme="dark"] .resource-card,:root[data-theme="dark"] .card,:root[data-theme="dark"] .day,:root[data-theme="dark"] .rec,:root[data-theme="dark"] .empty,:root[data-theme="dark"] .saved-empty{background:#20251f;color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] .app-sidebar{background:#1b201a}
+:root[data-theme="dark"] .side-links a,:root[data-theme="dark"] .brand,:root[data-theme="dark"] .side-brand{color:var(--ink)}
+:root[data-theme="dark"] .side-profile,:root[data-theme="dark"] .side-bottom,:root[data-theme="dark"] .card p,:root[data-theme="dark"] .resource-card p,:root[data-theme="dark"] .account-intro p,:root[data-theme="dark"] .account-note,:root[data-theme="dark"] .privacy-content p{color:var(--muted)}
+:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea,:root[data-theme="dark"] .catalog-tools input{background:#20251f;color:var(--ink);border-color:#485044}
+:root[data-theme="dark"] .account-note,:root[data-theme="dark"] .privacy-disclaimer,:root[data-theme="dark"] .saved-empty{background:#292f27;color:var(--muted)}
+:root[data-theme="dark"] .filter{color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] .filter.active,:root[data-theme="dark"] .side-links a.active{background:#303b2c;color:#d7e8ca}
+:root[data-theme="dark"] .btn.outline{color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] .btn.dark{background:#d8e5cd;color:#1c2818}
+:root[data-theme="dark"] .tag,:root[data-theme="dark"] .category-label{background:#30382d;color:#d7e8ca}
+:root[data-theme="dark"] table th,:root[data-theme="dark"] table td,:root[data-theme="dark"] .faq-list details{border-color:var(--line)}
+:root[data-theme="dark"] .faq-list summary{color:var(--ink)}
+:root[data-theme="dark"] .progress-track{background:#3a4436}
+:root[data-theme="dark"] .switch-ui{background:#555d50}
+:root[data-theme="dark"] .theme-choice{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:3px;padding:9px 12px;font-size:12px;cursor:pointer}
+.theme-options{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.theme-choice{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:3px;padding:9px 12px;font-size:12px;cursor:pointer}
+.theme-choice[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#1b2618}
+.theme-choice:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+@media(prefers-color-scheme:dark){:root[data-theme="system"]{color-scheme:dark}}
 </style>
+<script>
+(function(){
+ const key='greenswap-theme';
+ function saved(){try{return localStorage.getItem(key)||'system'}catch(e){return 'system'}}
+ function apply(mode){const actual=mode==='system'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):mode;document.documentElement.dataset.theme=actual;document.documentElement.dataset.themeChoice=mode;document.documentElement.style.colorScheme=actual;document.querySelectorAll('[data-theme-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.themeChoice===mode)));}
+ let mode=saved();apply(mode);
+ window.addEventListener('storage',e=>{if(e.key===key){mode=e.newValue||'system';apply(mode)}});
+ document.addEventListener('click',e=>{const b=e.target.closest('[data-theme-choice]');if(!b)return;mode=b.dataset.themeChoice;try{localStorage.setItem(key,mode)}catch(err){}apply(mode)});
+ if(window.matchMedia){const media=window.matchMedia('(prefers-color-scheme: dark)');media.addEventListener?.('change',()=>{if(mode==='system')apply(mode)})}
+})();
+</script>
 </head>
 <body>
 <header class="top"><a class="brand" href="#home">GreenSwap<span>.</span></a><nav><a href="/explore">Explore catalog</a><a href="/saved">Saved swaps</a><a href="/resources">Resources</a><a href="/faq">FAQ</a><a href="/methodology">Methodology</a></nav><a class="pill" href="#recommend">Find my swaps ↗</a></header>
@@ -235,7 +272,7 @@ body.route-saved .app-sidebar .side-links a[href="/saved"],body.route-faq .app-s
 <div class="eyebrow">MAKE IT YOURS</div>
 <div class="account-intro"><h2>Settings</h2><p>Adjust how GreenSwap looks and behaves on this device.</p></div>
 <form id="settings-form" class="account-panel settings-panel">
-<div class="setting-row"><div><h3>Compact recommendation cards</h3><p>Reduce spacing so you can scan more alternatives at once.</p></div><label class="switch"><input type="checkbox" id="setting-compact"><span class="switch-ui"></span><span class="sr-only">Compact recommendation cards</span></label></div>
+<div class="setting-row"><div><h3>Appearance</h3><p>Choose light, dark, or follow your device preference. Your choice is remembered on this browser.</p></div><div class="theme-options" role="group" aria-label="Colour theme"><button type="button" class="theme-choice" data-theme-choice="light">☀ Light</button><button type="button" class="theme-choice" data-theme-choice="dark">☾ Dark</button><button type="button" class="theme-choice" data-theme-choice="system">◐ System</button></div></div><div class="setting-row"><div><h3>Compact recommendation cards</h3><p>Reduce spacing so you can scan more alternatives at once.</p></div><label class="switch"><input type="checkbox" id="setting-compact"><span class="switch-ui"></span><span class="sr-only">Compact recommendation cards</span></label></div>
 <div class="setting-row"><div><h3>Reduce motion</h3><p>Limit animated transitions and smooth scrolling where possible.</p></div><label class="switch"><input type="checkbox" id="setting-motion"><span class="switch-ui"></span><span class="sr-only">Reduce motion</span></label></div>
 <div class="setting-row"><div><h3>Show “why it fits” explanations</h3><p>Keep practical context with your recommendations.</p></div><label class="switch"><input type="checkbox" id="setting-explanations" checked><span class="switch-ui"></span><span class="sr-only">Show explanations</span></label></div>
 <div class="settings-actions"><button class="btn" type="submit">Save settings ↗</button><button class="btn outline" type="button" id="reset-local-data">Reset local profile & settings</button></div><p class="save-status" id="settings-status" role="status" aria-live="polite"></p>
