@@ -9,6 +9,7 @@ export function SessionManager() {
   const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [actionNotice, setActionNotice] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   if (!user) {
     return (
@@ -18,19 +19,27 @@ export function SessionManager() {
     );
   }
 
-  const handleGlobalSignOut = async () => {
-    setActionNotice('Terminating all active sessions...');
-    await logoutAllDevices();
-  };
-
   const handleDeleteAccount = async () => {
     if (deleteConfirmationText !== 'DELETE') return;
     setIsDeleting(true);
     const res = await deleteAccount();
     setIsDeleting(false);
     if (!res.success) {
-      setActionNotice(res.error || 'Failed to delete account.');
+      setActionError(res.error || 'Failed to delete account.');
+    } else {
+      setActionNotice('Your account and associated data were deleted.');
       setShowDeleteModal(false);
+    }
+  };
+
+  const handleGlobalSignOut = async () => {
+    setActionNotice('Invalidating all active sessions...');
+    setActionError(null);
+    try {
+      await logoutAllDevices();
+    } catch (error) {
+      setActionNotice(null);
+      setActionError(error instanceof Error ? error.message : 'Could not sign out all devices.');
     }
   };
 
@@ -39,6 +48,11 @@ export function SessionManager() {
       {actionNotice && (
         <div className="rounded border border-moss/30 bg-moss/10 p-3 text-xs text-moss font-mono">
           {actionNotice}
+        </div>
+      )}
+      {actionError && (
+        <div className="rounded border border-burnt/30 bg-burnt/10 p-3 text-xs text-burnt font-mono" role="alert">
+          {actionError}
         </div>
       )}
 
@@ -61,7 +75,7 @@ export function SessionManager() {
             <span className="font-semibold text-foreground uppercase">{role}</span>
           </div>
           <div>
-            <span className="text-ink-muted block mb-0.5">User UUID:</span>
+            <span className="text-ink-muted block mb-0.5">User ID:</span>
             <span className="font-mono text-ink-muted text-[11px] truncate block">{user.id}</span>
           </div>
           <div>
@@ -80,7 +94,7 @@ export function SessionManager() {
             <LogOut className="h-3.5 w-3.5" /> Sign Out (This Device)
           </button>
           <button
-            onClick={handleGlobalSignOut}
+            onClick={() => void handleGlobalSignOut()}
             className="inline-flex items-center gap-2 rounded border border-burnt/40 px-3 py-1.5 text-xs font-mono text-burnt hover:bg-burnt/10 transition-colors"
           >
             <Key className="h-3.5 w-3.5" /> Invalidate All Other Devices
@@ -96,8 +110,7 @@ export function SessionManager() {
         </div>
         <p className="text-xs text-ink-muted font-sans leading-relaxed mb-4">
           Permanently remove your account, profile data, activity logs, customized recommendations,
-          and badge achievements. In accordance with the India DPDP Act 2023 and GDPR Article 17,
-          this executes a hard cascade deletion across all Postgres database records.
+          and badge achievements from the active Convex account.
         </p>
 
         <button

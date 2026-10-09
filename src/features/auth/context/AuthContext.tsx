@@ -1,143 +1,117 @@
-import { useEffect, useState, useMemo, useCallback, type ReactNode } from 'react';
-import type { User, Session } from '@supabase/supabase-js';
-import { supabase } from '../../../shared/lib/supabase';
-import { queryClient } from '../../../shared/lib/queryClient';
-import type { Profile, UserRoleType } from '../../../shared/types/database';
-import { rateLimiter } from '../lib/rateLimiter';
-import { AuthContext } from './authContextDef';
+import { useAuthActions, useConvexAuth } from "@convex-dev/auth/react";
+import { useAction, useMutation, useQuery } from "convex/react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { api } from "../../../../convex/_generated/api";
+import { queryClient } from "../../../shared/lib/queryClient";
+import { isConvexConfigured } from "../../../shared/config/env";
+import {
+  clearLocalUserData,
+  defaultProfile,
+  getLocalProfile,
+  setLocalProfile,
+} from "../../../shared/lib/localStore";
+import type { Profile, UserRoleType } from "../../../shared/types/database";
+import { rateLimiter } from "../lib/rateLimiter";
+import { AuthContext, type AuthUser } from "./authContextDef";
 
-
-// Idle timeout limit: 30 minutes
+const DEMO_STORAGE_KEY = "greenswap-demo-session";
 const IDLE_TIMEOUT_MS = 30 * 60 * 1000;
 
+function demoUser(): AuthUser {
+  return {
+    id: "demo-user",
+    email: "demo@greenswap.local",
+    created_at: new Date().toISOString(),
+    email_confirmed_at: new Date().toISOString(),
+    user_metadata: { full_name: "Field Demo" },
+  };
+}
+
+function errorMessage(error: unknown, fallback: string): string {
+  return error instanceof Error ? error.message : fallback;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [role, setRole] = useState<UserRoleType>('user');
-  const [isLoading, setIsLoading] = useState(true);
+  const { signIn, signOut } = useAuthActions();
+  const { isAuthenticated, isLoading: authLoading } = useConvexAuth();
+  const currentUser = useQuery(api.users.current, isAuthenticated ? {} : "skip");
+  const storedProfiles = useQuery(
+    api.data.list,
+    isAuthenticated ? { collection: "profiles" } : "skip",
+  );
+  const deleteMyAccount = useMutation(api.data.deleteAccount);
+  const revokeSessions = useAction(api.users.logoutAllSessions);
+  const [demoActive, setDemoActive] = useState(
+    () => typeof window !== "undefined" && localStorage.getItem(DEMO_STORAGE_KEY) === "1",
+  );
   const [needsEmailVerification, setNeedsEmailVerification] = useState(false);
+  const demoProfile = demoActive ? getLocalProfile("demo-user") : null;
 
-  // Load profile and roles for user
-  const fetchProfileAndRole = useCallback(async (userId: string) => {
-    try {
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
+  const user = useMemo<AuthUser | null>(() => {
+    if (demoActive) return demoUser();
+    if (!currentUser) return null;
+    return {
+      id: currentUser.id,
+      email: currentUser.email,
+      created_at: new Date(currentUser.createdAt).toISOString(),
+      email_confirmed_at: currentUser.emailVerificationTime
+        ? new Date(currentUser.emailVerificationTime).toISOString()
+        : null,
+      user_metadata: { full_name: currentUser.name ?? "" },
+    };
+  }, [demoActive, currentUser]);
 
-      if (profileData) {
-        setProfile(profileData as Profile);
-      }
+  const profile = demoActive
+    ? demoProfile
+    : ((storedProfiles?.[0] as Profile | undefined) ?? null);
+  const role: UserRoleType = demoActive ? "user" : currentUser?.role ?? "user";
+  const isLoading = !demoActive
+    && isConvexConfigured()
+    && (authLoading || (isAuthenticated && currentUser === undefined));
 
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .maybeSingle();
-
-      if (roleData) {
-        const userRole = (roleData as { role?: UserRoleType }).role;
-        if (userRole) {
-          setRole(userRole);
-        }
-      }
-    } catch (err) {
-      console.warn('Failed to fetch profile/role:', err);
-    }
+  const enterDemoSession = useCallback(() => {
+    const user = demoUser();
+    const existing = getLocalProfile(user.id)
+      ?? defaultProfile(user.id, user.email ?? "", "Field Demo");
+    setLocalProfile(existing);
+    localStorage.setItem(DEMO_STORAGE_KEY, "1");
+    setDemoActive(true);
   }, []);
 
   const logout = useCallback(async () => {
-    try {
-      await supabase.auth.signOut({ scope: 'local' });
-    } finally {
-      setUser(null);
-      setSession(null);
-      setProfile(null);
-      setRole('user');
-      queryClient.clear(); // Complete cache scrub
-    }
-  }, []);
+    localStorage.removeItem(DEMO_STORAGE_KEY);
+    setDemoActive(false);
+    queryClient.clear();
+    if (!demoActive) await signOut();
+  }, [demoActive, signOut]);
 
   const logoutAllDevices = useCallback(async () => {
-    try {
-      await supabase.auth.signOut({ scope: 'global' });
-    } finally {
-      setUser(null);
-      setSession(null);
-      setProfile(null);
-      setRole('user');
-      queryClient.clear();
+    if (demoActive) {
+      await logout();
+      return;
     }
-  }, []);
+    await revokeSessions({});
+    await logout();
+  }, [demoActive, logout, revokeSessions]);
+
 
   useEffect(() => {
-    let mounted = true;
+    if (!isAuthenticated && !demoActive) queryClient.clear();
+  }, [isAuthenticated, demoActive]);
 
-    async function initSession() {
-      try {
-        const { data: { session: initialSession } } = await supabase.auth.getSession();
-        if (mounted) {
-          if (initialSession) {
-            setSession(initialSession);
-            setUser(initialSession.user);
-            await fetchProfileAndRole(initialSession.user.id);
-          }
-        }
-      } catch (err) {
-        console.warn('Error reading initial session:', err);
-      } finally {
-        if (mounted) setIsLoading(false);
-      }
-    }
-
-    initSession();
-
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, newSession) => {
-        if (!mounted) return;
-        setSession(newSession);
-        setUser(newSession?.user || null);
-
-        if (newSession?.user) {
-          await fetchProfileAndRole(newSession.user.id);
-        } else {
-          setProfile(null);
-          setRole('user');
-          queryClient.clear(); // Clear all cached queries on logout
-        }
-      }
-    );
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
-  }, [fetchProfileAndRole]);
-
-  // Idle session tracking
   useEffect(() => {
     if (!user) return;
-
     let timeoutId: ReturnType<typeof setTimeout>;
-
     const resetIdleTimer = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        // Idle timeout reached
-        logout();
-      }, IDLE_TIMEOUT_MS);
+      timeoutId = setTimeout(() => void logout(), IDLE_TIMEOUT_MS);
     };
-
-    const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
-    events.forEach((evt) => window.addEventListener(evt, resetIdleTimer, { passive: true }));
+    const events = ["mousedown", "keydown", "scroll", "touchstart"];
+    events.forEach((event) => window.addEventListener(event, resetIdleTimer, { passive: true }));
     resetIdleTimer();
-
     return () => {
       clearTimeout(timeoutId);
-      events.forEach((evt) => window.removeEventListener(evt, resetIdleTimer));
+      events.forEach((event) => window.removeEventListener(event, resetIdleTimer));
     };
   }, [user, logout]);
 
@@ -149,161 +123,144 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error: `Too many failed attempts. Please wait ${rateCheck.retryAfterSeconds} seconds.`,
       };
     }
-
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        rateLimiter.recordFailure(`login:${email}`);
-        return { success: false, error: 'Invalid email or password' };
-      }
-
+      const signedIn = await signIn("password", { email, password, flow: "signIn" });
       rateLimiter.recordSuccess(`login:${email}`);
-      if (data.user && !data.user.email_confirmed_at) {
+      if (!signedIn) {
         setNeedsEmailVerification(true);
+        return { success: false, error: "Check your email to verify your account before signing in." };
       }
+      setNeedsEmailVerification(false);
       return { success: true };
     } catch {
-      return { success: false, error: 'An unexpected error occurred. Please try again later.' };
+      rateLimiter.recordFailure(`login:${email}`);
+      return { success: false, error: "Invalid email or password." };
     }
-  }, []);
+  }, [signIn]);
 
-  const signupWithPassword = useCallback(async (email: string, password: string, fullName?: string) => {
+  const signupWithPassword = useCallback(async (
+    email: string,
+    password: string,
+    fullName?: string,
+  ) => {
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const signedIn = await signIn("password", {
         email,
         password,
-        options: {
-          data: { full_name: fullName || '' },
-          emailRedirectTo: `${window.location.origin}/auth/verify-email`,
-        },
+        name: fullName ?? "",
+        flow: "signUp",
+        redirectTo: `${window.location.origin}/auth/verify-email`,
       });
-
-      if (error) {
-        return { success: false, error: error.message };
-      }
-
-      const needsVerification = !data.session;
-      if (needsVerification) {
-        setNeedsEmailVerification(true);
-      }
+      const needsVerification = !signedIn;
+      setNeedsEmailVerification(needsVerification);
       return { success: true, needsVerification };
-    } catch {
-      return { success: false, error: 'Failed to create account. Please try again.' };
+    } catch (error) {
+      return { success: false, error: errorMessage(error, "Failed to create account.") };
     }
-  }, []);
+  }, [signIn]);
 
   const loginWithMagicLink = useCallback(async (email: string) => {
     const rateCheck = rateLimiter.check(`magic:${email}`, 3, 10 * 60 * 1000);
     if (rateCheck.isBlocked) {
-      return { success: false, error: 'Too many requests. Please wait before requesting another link.' };
+      return { success: false, error: "Too many requests. Please wait before requesting another link." };
     }
-
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      await signIn("resend", {
         email,
-        options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+        redirectTo: `${window.location.origin}/dashboard`,
       });
-      if (error) return { success: false, error: error.message };
       return { success: true };
-    } catch {
-      return { success: false, error: 'Unable to send magic link at this time.' };
+    } catch (error) {
+      return { success: false, error: errorMessage(error, "Unable to send a magic link.") };
     }
-  }, []);
+  }, [signIn]);
 
-  const loginWithOAuth = useCallback(async (provider: 'google' | 'github') => {
+  const loginWithOAuth = useCallback(async (provider: "google" | "github") => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: { redirectTo: `${window.location.origin}/dashboard` },
-      });
-      if (error) return { success: false, error: error.message };
+      await signIn(provider, { redirectTo: `${window.location.origin}/dashboard` });
       return { success: true };
-    } catch {
-      return { success: false, error: `Failed to initiate ${provider} login.` };
+    } catch (error) {
+      return { success: false, error: errorMessage(error, `Failed to initiate ${provider} login.`) };
     }
-  }, []);
+  }, [signIn]);
 
   const requestPasswordReset = useCallback(async (email: string) => {
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      await signIn("password", {
+        email,
+        flow: "reset",
         redirectTo: `${window.location.origin}/auth/reset-password`,
       });
-      if (error) return { success: false, error: error.message };
       return { success: true };
-    } catch {
-      return { success: false, error: 'Failed to send password reset link.' };
+    } catch (error) {
+      return { success: false, error: errorMessage(error, "Failed to send password reset link.") };
     }
-  }, []);
+  }, [signIn]);
 
-  const updatePassword = useCallback(async (password: string) => {
-    try {
-      const { error } = await supabase.auth.updateUser({ password });
-      if (error) return { success: false, error: error.message };
-      return { success: true };
-    } catch {
-      return { success: false, error: 'Failed to update passphrase.' };
+  const updatePassword = useCallback(async (password: string, email: string, code: string) => {
+    if (!email || !code) {
+      return { success: false, error: "The reset code is missing or expired. Request a new one." };
     }
-  }, []);
+    try {
+      await signIn("password", {
+        email,
+        code,
+        newPassword: password,
+        flow: "reset-verification",
+      });
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: errorMessage(error, "Failed to update passphrase.") };
+    }
+  }, [signIn]);
 
   const deleteAccount = useCallback(async () => {
-    if (!user) return { success: false, error: 'Not authenticated' };
-
-    try {
-      const { error } = await supabase.from('profiles').delete().eq('id', user.id);
-      if (error) return { success: false, error: error.message };
-
+    if (!user) return { success: false, error: "Not authenticated." };
+    if (user.id === "demo-user") {
+      clearLocalUserData(user.id);
       await logout();
       return { success: true };
-    } catch {
-      return { success: false, error: 'Failed to complete account deletion.' };
     }
-  }, [user, logout]);
+    try {
+      await deleteMyAccount({});
+      await logout();
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: errorMessage(error, "Account deletion could not be completed. Please try again."),
+      };
+    }
+  }, [user, logout, deleteMyAccount]);
 
   const refreshProfile = useCallback(async () => {
-    if (user) {
-      await fetchProfileAndRole(user.id);
-    }
-  }, [user, fetchProfileAndRole]);
+    await queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
+  }, [user?.id]);
 
-  const value = useMemo(
-    () => ({
-      user,
-      session,
-      profile,
-      role,
-      isLoading,
-      isAuthenticated: !!user,
-      needsEmailVerification,
-      loginWithPassword,
-      signupWithPassword,
-      loginWithMagicLink,
-      loginWithOAuth,
-      requestPasswordReset,
-      updatePassword,
-      logout,
-      logoutAllDevices,
-      deleteAccount,
-      refreshProfile,
-    }),
-    [
-      user,
-      session,
-      profile,
-      role,
-      isLoading,
-      needsEmailVerification,
-      loginWithPassword,
-      signupWithPassword,
-      loginWithMagicLink,
-      loginWithOAuth,
-      requestPasswordReset,
-      updatePassword,
-      logout,
-      logoutAllDevices,
-      deleteAccount,
-      refreshProfile,
-    ]
-  );
+  const value = useMemo(() => ({
+    user,
+    session: null,
+    profile,
+    role,
+    isLoading,
+    isAuthenticated: !!user,
+    needsEmailVerification,
+    loginWithPassword,
+    signupWithPassword,
+    loginWithMagicLink,
+    loginWithOAuth,
+    requestPasswordReset,
+    updatePassword,
+    logout,
+    logoutAllDevices,
+    deleteAccount,
+    refreshProfile,
+    enterDemoSession,
+  }), [
+    user, profile, role, isLoading, needsEmailVerification, loginWithPassword,
+    signupWithPassword, loginWithMagicLink, loginWithOAuth, requestPasswordReset,
+    updatePassword, logout, logoutAllDevices, deleteAccount, refreshProfile, enterDemoSession,
+  ]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

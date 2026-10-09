@@ -24,7 +24,7 @@ import { calculateLearningAdjustment } from './learningLoop';
 function deriveExplanationFactors(
   subScores: FactorSubScores,
   alt: Alternative,
-  co2eSavedMonthly: number
+  co2eSavedMonthly: number | null
 ): [string, string] {
   const reasons: Array<{ weight: number; text: string }> = [];
 
@@ -33,7 +33,9 @@ function deriveExplanationFactors(
     const pct = Math.round(alt.co2e_saved_ratio * 100);
     reasons.push({
       weight: subScores.impact * 1.2,
-      text: `Reduces carbon footprint by ${pct}% (~${Math.round(co2eSavedMonthly)} kg CO2e/month)`,
+      text: co2eSavedMonthly === null
+        ? `Could reduce a logged activity's CO2e by about ${pct}%`
+        : `Could reduce the logged activity's CO2e by about ${pct}% (~${Math.round(co2eSavedMonthly)} kg/month)`,
     });
   }
 
@@ -50,7 +52,7 @@ function deriveExplanationFactors(
   if (alt.difficulty === 'easy') {
     reasons.push({
       weight: (1 - subScores.effortPenalty) * 0.9,
-      text: 'Straightforward to adopt with zero lifestyle friction',
+      text: 'Rated as a low-effort change',
     });
   } else if (subScores.feasibility > 0.8) {
     reasons.push({
@@ -69,10 +71,10 @@ function deriveExplanationFactors(
 
   // Fallbacks if fewer than 2 reasons triggered
   if (reasons.length === 0) {
-    reasons.push({ weight: 0.5, text: 'Verified lower-emission alternative with established data' });
+    reasons.push({ weight: 0.5, text: 'Ranked using its estimated impact and your stated preferences' });
   }
   if (reasons.length === 1) {
-    reasons.push({ weight: 0.4, text: 'Pragmatic step toward household carbon reduction' });
+    reasons.push({ weight: 0.4, text: 'The estimate depends on the listed conditions and assumptions' });
   }
 
   reasons.sort((a, b) => b.weight - a.weight);
@@ -102,10 +104,11 @@ export function scoreAlternative(
   const impact = normalizeImpact(alternative.co2e_saved_ratio, co2eRange.expected);
   const feasibility = normalizeFeasibility(
     alternative.feasibility_score,
-    profile.region || 'IN',
+    profile.region,
     alternative.region_availability || ['GLOBAL'],
     alternative.prerequisites || []
   );
+  if (feasibility === 0) return null;
   const costSavings = normalizeCostSavings(alternative.cost_delta_monthly_inr);
   const preferenceMatch = computePreferenceMatch(
     alternative.category,
@@ -144,7 +147,11 @@ export function scoreAlternative(
   }
 
   // Generate plain English explanation factors
-  const explanationFactors = deriveExplanationFactors(subScores, alternative, co2eRange.expected);
+  const explanationFactors = deriveExplanationFactors(
+    subScores,
+    alternative,
+    co2eRange.expected > 0 ? co2eRange.expected : null
+  );
 
   return {
     alternative,
@@ -168,17 +175,13 @@ export function rankRecommendations(
   profile: UserScoringProfile,
   limit = 3
 ): ScoredRecommendation[] {
+  const resultLimit = Number.isFinite(limit) ? Math.max(0, Math.floor(limit)) : 0;
   const weights = getCalibratedWeights(profile);
 
   // Filter candidates matching the category
-  let candidates = allAlternatives.filter(
+  const candidates = allAlternatives.filter(
     (alt) => alt.category === activity.category && alt.is_active
   );
-
-  // If no candidates in direct category, fallback to all active
-  if (candidates.length === 0) {
-    candidates = allAlternatives.filter((alt) => alt.is_active);
-  }
 
   const scoredList: ScoredRecommendation[] = [];
 
@@ -193,7 +196,7 @@ export function rankRecommendations(
   scoredList.sort((a, b) => b.score - a.score);
 
   // Assign final rank indices
-  const topRanked = scoredList.slice(0, limit).map((rec, index) => ({
+  const topRanked = scoredList.slice(0, resultLimit).map((rec, index) => ({
     ...rec,
     rank: index + 1,
   }));
@@ -211,15 +214,15 @@ export function getColdStartRecommendations(
   profile: UserScoringProfile,
   limit = 3
 ): ScoredRecommendation[] {
-  // Synthetic baseline activity representing average urban household baseline
+  // No personal activity is available yet, so rank by relative impact and show
+  // no personalized CO2e savings estimate until the user records an activity.
   const syntheticActivity: ActivityContext = {
     category: 'energy',
-    activity_name: 'Average Urban Household Baseline',
-    quantity: 150,
-    unit: 'kWh',
-    frequency_per_week: 7,
-    calculated_co2e_monthly: 107.4, // Average 150 kWh grid baseline
-    emission_factor_uncertainty: 0.10,
+    activity_name: 'Cold-start estimate unavailable',
+    quantity: 0,
+    unit: '',
+    frequency_per_week: 0,
+    calculated_co2e_monthly: 0,
   };
 
   const weights = getCalibratedWeights(profile);
@@ -235,8 +238,10 @@ export function getColdStartRecommendations(
   // Sort descending by score
   scoredList.sort((a, b) => b.score - a.score);
 
-  return scoredList.slice(0, limit).map((rec, index) => ({
+  const resultLimit = Number.isFinite(limit) ? Math.max(0, Math.floor(limit)) : 0;
+  return scoredList.slice(0, resultLimit).map((rec, index) => ({
     ...rec,
     rank: index + 1,
+    co2e_saved_range: null,
   }));
 }

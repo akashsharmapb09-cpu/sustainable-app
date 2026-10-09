@@ -2,12 +2,20 @@ import type { ActivityCategory, EffortLevel, Alternative } from '../../../shared
 
 export interface UserScoringProfile {
   id?: string;
-  region: string;
+  region?: string | null;
   effort_level: EffortLevel;
   budget_sensitivity: 'low' | 'medium' | 'high';
   interests: string[];
   adopted_alternative_ids?: string[];
   dismissed_alternative_ids?: string[];
+  action_history?: Array<{
+    alternative_id: string;
+    status: 'adopted' | 'maybe_later' | 'not_for_me';
+    updated_at: string;
+    category?: ActivityCategory;
+    tags?: string[];
+  }>;
+  reference_time?: string;
   preferred_currency?: 'INR' | 'USD' | 'EUR';
 }
 
@@ -40,7 +48,7 @@ export interface ScoredRecommendation {
     low: number;
     expected: number;
     high: number;
-  };
+  } | null;
   cost_delta_range: {
     low: number;
     expected: number;

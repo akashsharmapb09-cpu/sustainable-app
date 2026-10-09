@@ -25,8 +25,12 @@ export function AppShell() {
   );
 
   const handleLogout = async () => {
+    if (user?.id === 'demo-user') {
+      navigate('/');
+      return;
+    }
     await logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const toggleTheme = () => {
@@ -113,7 +117,7 @@ export function AppShell() {
             className="flex w-full items-center gap-3 rounded px-3 py-2.5 text-sm text-ink-muted hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
           >
             <LogOut className="h-4 w-4 flex-shrink-0" strokeWidth={1.5} />
-            Sign out
+            {user?.id === 'demo-user' ? 'Return to home' : 'Sign out'}
           </button>
         </div>
       </aside>

@@ -7,51 +7,90 @@ export interface LearningAdjustment {
   reason?: string;
 }
 
+const ACTION_DECAY_DAYS = 90;
+const EXPLICIT_DISMISSAL_SUPPRESSION_DAYS = 30;
+
+function getActionRecency(actionDate: string, referenceTime: string): number {
+  const actionTimestamp = Date.parse(actionDate);
+  const referenceTimestamp = Date.parse(referenceTime);
+  if (!Number.isFinite(actionTimestamp) || !Number.isFinite(referenceTimestamp)) return 0;
+
+  const ageDays = Math.max(0, (referenceTimestamp - actionTimestamp) / 86_400_000);
+  return Math.exp(-ageDays / ACTION_DECAY_DAYS);
+}
+
+function getSimilarity(
+  category: string,
+  tags: string[],
+  actionCategory?: string,
+  actionTags: string[] = []
+): number {
+  if (!actionCategory) return 0;
+  const categoryMatch = category === actionCategory ? 0.5 : 0;
+  const candidateTags = new Set(tags.map((tag) => tag.toLowerCase()));
+  const priorTags = new Set(actionTags.map((tag) => tag.toLowerCase()));
+  if (candidateTags.size === 0 || priorTags.size === 0) return categoryMatch;
+
+  const overlap = [...candidateTags].filter((tag) => priorTags.has(tag)).length;
+  const tagMatch = (overlap / Math.max(candidateTags.size, priorTags.size)) * 0.5;
+  return categoryMatch + tagMatch;
+}
+
 /**
- * Evaluates user past actions (Adopted / Not for me) to tune candidate rankings
+ * Applies recent feedback with a 90-day exponential decay. An explicit dismissal
+ * suppresses that item for 30 days; older feedback becomes a diminishing penalty.
  */
 export function calculateLearningAdjustment(
   alternative: Alternative,
   profile: UserScoringProfile
 ): LearningAdjustment {
-  const dismissed = profile.dismissed_alternative_ids || [];
-  const adopted = profile.adopted_alternative_ids || [];
-
-  // Hard suppression: Never recommend an alternative the user explicitly marked "Not for me"
-  if (dismissed.includes(alternative.id)) {
-    return {
-      isSuppressed: true,
-      scoreDelta: -1.0,
-      reason: 'Previously dismissed by user',
-    };
+  const history = profile.action_history;
+  if (!history) {
+    const dismissed = profile.dismissed_alternative_ids || [];
+    const adopted = profile.adopted_alternative_ids || [];
+    if (dismissed.includes(alternative.id)) {
+      return { isSuppressed: true, scoreDelta: -1, reason: 'Previously dismissed by user' };
+    }
+    if (adopted.includes(alternative.id)) {
+      return { isSuppressed: true, scoreDelta: 0, reason: 'Already adopted' };
+    }
+    return { isSuppressed: false, scoreDelta: 0 };
   }
 
-  // Already adopted: filter out from active recommendations
-  if (adopted.includes(alternative.id)) {
-    return {
-      isSuppressed: true,
-      scoreDelta: 0.0,
-      reason: 'Already adopted',
-    };
-  }
+  let scoreDelta = 0;
+  let isSuppressed = false;
 
-  let delta = 0.0;
+  for (const action of history) {
+    if (action.status === 'maybe_later') continue;
 
-  // Category & tag affinity learning:
-  // If user has adopted items in the same category or with matching tags, apply affinity bonus
-  if (adopted.length > 0) {
-    // If user frequently adopts within this category, give a subtle boost
-    delta += 0.08;
-  }
+    const recency = getActionRecency(action.updated_at, profile.reference_time ?? '');
+    if (recency === 0) continue;
 
-  // If user has dismissed multiple items in this category, apply a soft penalty
-  if (dismissed.length > 0) {
-    // If dismissed items share category, apply penalty
-    delta -= 0.05;
+    if (action.alternative_id === alternative.id) {
+      if (action.status === 'adopted') {
+        isSuppressed = true;
+      } else if (recency >= Math.exp(-EXPLICIT_DISMISSAL_SUPPRESSION_DAYS / ACTION_DECAY_DAYS)) {
+        isSuppressed = true;
+      } else {
+        scoreDelta -= 0.2 * recency;
+      }
+      continue;
+    }
+
+    const similarity = getSimilarity(
+      alternative.category,
+      alternative.tags ?? [],
+      action.category,
+      action.tags
+    );
+    if (similarity > 0) {
+      scoreDelta += (action.status === 'adopted' ? 0.08 : -0.12) * recency * similarity;
+    }
   }
 
   return {
-    isSuppressed: false,
-    scoreDelta: Math.max(-0.25, Math.min(0.25, delta)),
+    isSuppressed,
+    scoreDelta: Math.max(-0.25, Math.min(0.25, scoreDelta)),
+    reason: isSuppressed ? 'Recently dismissed or already adopted' : undefined,
   };
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Badge } from '../../shared/ui';
 import { formatCurrency, formatRange } from '../../shared/lib/utils';
+import { publicNavLinkClass } from './PublicMasthead';
 import {
   ArrowRight,
   TrendingDown,
@@ -9,6 +10,7 @@ import {
   Zap,
   BookOpen,
 } from 'lucide-react';
+import './LandingPage.css';
 
 export function LandingPage() {
   const [sampleDistance, setSampleDistance] = useState(15);
@@ -23,120 +25,128 @@ export function LandingPage() {
   const rupeesSavedMonthly = monthlyKm * 7.5 - monthlyKm * 2.5; // ~₹5/km net savings
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Top Archival Masthead */}
-      <header className="border-b border-border bg-surface px-6 py-4 md:px-12">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="taxonomy-label border border-border px-2 py-0.5 rounded-sm">EDITION 2026 // VOL. 01</span>
-            <Link to="/" className="font-serif text-2xl font-bold tracking-tight text-foreground hover:opacity-90">
+    <div className="landing-page min-h-screen bg-background text-foreground">
+      <header className="landing-header sticky top-0 z-50">
+        <div className="landing-header__inner mx-auto flex max-w-7xl items-center justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="landing-edition taxonomy-label">EDITION 2026 <span aria-hidden="true">/</span> VOL. 01</span>
+            <Link to="/" className="landing-brand font-serif text-2xl font-bold tracking-tight text-foreground hover:opacity-90">
               GreenSwap<span className="text-burnt">.</span>
             </Link>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6 text-xs font-mono">
-            <Link to="/explore" className="text-ink-muted hover:text-foreground transition-colors">
+          <nav aria-label="Main navigation" className="landing-nav hidden md:flex items-center gap-6 text-xs font-mono">
+            <Link to="/explore" className={publicNavLinkClass}>
               Explore Catalog
             </Link>
-            <Link to="/methodology" className="text-ink-muted hover:text-foreground transition-colors">
+            <Link to="/methodology" className={publicNavLinkClass}>
               Methodology & Citations
             </Link>
-            <Link to="/about" className="text-ink-muted hover:text-foreground transition-colors">
+            <Link to="/about" className={publicNavLinkClass}>
               About
             </Link>
-            <Link to="/styleguide" className="text-ink-muted hover:text-foreground transition-colors">
+            <Link to="/styleguide" className={publicNavLinkClass}>
               Styleguide
             </Link>
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link to="/login">
-              <Button variant="outline" size="sm">
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button variant="primary" size="sm">
-                Begin Calibration
+            <Link to="/explore" className="landing-compact-explore">Explore</Link>
+            <Link to="/onboarding">
+              <Button
+                variant="primary"
+                size="md"
+                className="landing-header__cta rounded-full px-5 shadow-none transition hover:-translate-y-0.5"
+                rightIcon={<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />}
+              >
+                Get started
               </Button>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Main Editorial Hero (Asymmetric 12-Column Grid) */}
-      <section className="mx-auto max-w-7xl px-6 py-12 md:px-12 md:py-20 border-b border-border">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+      <main>
+      <section className="landing-hero mx-auto max-w-7xl px-6 py-12 md:px-12 md:py-16 border-b border-border">
+        <div className="landing-hero__inner grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
           {/* Main Statement (Cols 1-7) */}
-          <div className="md:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-2 border border-border bg-surface px-2.5 py-1 rounded-sm">
-              <span className="h-2 w-2 rounded-full bg-moss" />
-              <span className="taxonomy-label">PEER-REVIEWED FACTOR DATABASE // DEFRA 2024 & CEA INDIA</span>
+          <div className="landing-hero__copy md:col-span-7 space-y-6">
+            <div className="landing-proof inline-flex items-center gap-2 border border-border bg-surface px-2.5 py-1 rounded-sm">
+              <span className="landing-proof__dot h-2 w-2 rounded-full bg-moss" />
+              <span className="taxonomy-label">Evidence-led · India-calibrated · Built for real life</span>
             </div>
 
-            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.08] text-foreground">
-              Most carbon calculators give you guilt. We give you arithmetic.
+            <h1 className="landing-hero__title font-serif text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.08] text-foreground">
+              Make a lighter footprint. <em>Keep the good life.</em>
             </h1>
 
-            <p className="font-sans text-base text-ink-muted leading-relaxed max-w-xl">
-              Your commute and home energy account for over 60% of your personal footprint.
-              GreenSwap recommends verifiable, pragmatic lifestyle alternatives—quantified in
-              exact confidence ranges of CO2e and monthly rupees saved.
+            <p className="landing-hero__description font-sans text-base text-ink-muted leading-relaxed max-w-xl">
+              Find practical changes that fit your routine—and see the carbon and cost impact
+              with transparent, source-backed numbers.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="landing-hero__actions flex flex-wrap items-center gap-4 pt-2">
               <Link to="/onboarding">
                 <Button variant="primary" size="lg" rightIcon={<ArrowRight className="h-4 w-4" />}>
-                  Start 5-Minute Lifestyle Calibration
+                  Build my baseline
                 </Button>
               </Link>
               <Link to="/explore">
-                <Button variant="secondary" size="lg">
-                  Browse 60+ Alternatives
+                <Button variant="outline" size="lg">
+                  Explore the swaps
                 </Button>
               </Link>
             </div>
 
-            <div className="pt-6 border-t border-border grid grid-cols-3 gap-4 text-xs font-mono">
-              <div>
-                <span className="text-ink-muted block">GRID BENCHMARK:</span>
-                <span className="font-semibold text-foreground">0.716 kg CO2e/kWh</span>
+            <div className="landing-trust">
+              <div className="landing-trust__avatars" aria-hidden="true">
+                <span>G</span><span>+</span><span>CO₂</span>
               </div>
-              <div>
-                <span className="text-ink-muted block">UNCERTAINTY:</span>
-                <span className="font-semibold text-foreground">Explicit Ranges [±12%]</span>
-              </div>
-              <div>
-                <span className="text-ink-muted block">ALGORITHMIC MODEL:</span>
-                <span className="font-semibold text-foreground">Deterministic Pure TS</span>
-              </div>
+              <p><strong>Small steps, clear evidence.</strong><br />No guilt. No black boxes. Just useful next moves.</p>
             </div>
           </div>
 
           {/* Interactive Calibration Specimen Plate (Cols 8-12) */}
-          <div className="md:col-span-5">
+          <div className="landing-hero__visual md:col-span-5">
+            <div className="landing-scene" aria-hidden="true">
+              <div className="landing-scene__glow" />
+              <div className="landing-scene__grid" />
+              <div className="landing-orbit landing-orbit--outer"><span /></div>
+              <div className="landing-orbit landing-orbit--inner"><span /></div>
+              <div className="landing-globe">
+                <div className="landing-globe__land landing-globe__land--one" />
+                <div className="landing-globe__land landing-globe__land--two" />
+                <div className="landing-globe__land landing-globe__land--three" />
+                <div className="landing-globe__shine" />
+              </div>
+              <div className="landing-scene__spark landing-scene__spark--one" />
+              <div className="landing-scene__spark landing-scene__spark--two" />
+              <div className="landing-scene__stamp">FIELD NOTE<br /><strong>01 / 04</strong></div>
+              <div className="landing-scene__caption">ONE PLANET<br />MANY BETTER CHOICES</div>
+            </div>
             <Card
               taxonomyCode="INTERACTIVE SPECIMEN // CALIBRATION PREVIEW"
-              badge={<Badge variant="moss">LIVE ENGINE</Badge>}
-              className="bg-surface-muted/30"
+              badge={<Badge variant="moss">LIVE PREVIEW</Badge>}
+              className="landing-calculator bg-surface-muted/30"
             >
               <div className="space-y-5">
                 <div>
                   <h3 className="font-serif text-lg font-bold text-foreground">
-                    Petroleum Commute vs Metro Transit
+                    Trade the car for the metro
                   </h3>
                   <p className="text-xs text-ink-muted font-sans mt-0.5">
-                    Calibrate your weekly car commute to inspect immediate projected savings.
+                    Adjust your commute to preview a practical monthly difference.
                   </p>
                 </div>
 
                 <div className="space-y-4 font-mono text-xs">
                   <div>
-                    <div className="flex justify-between text-ink-muted mb-1">
+                    <label className="flex justify-between text-ink-muted mb-1" htmlFor="sample-distance">
                       <span>One-Way Distance:</span>
                       <strong className="text-foreground">{sampleDistance} km</strong>
-                    </div>
+                    </label>
                     <input
+                      id="sample-distance"
                       type="range"
                       min={5}
                       max={50}
@@ -144,15 +154,17 @@ export function LandingPage() {
                       value={sampleDistance}
                       onChange={(e) => setSampleDistance(Number(e.target.value))}
                       className="w-full accent-burnt"
+                      aria-label="One-way commute distance in kilometres"
                     />
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-ink-muted mb-1">
+                    <label className="flex justify-between text-ink-muted mb-1" htmlFor="sample-frequency">
                       <span>Weekly Frequency:</span>
                       <strong className="text-foreground">{sampleFrequency} days / week</strong>
-                    </div>
+                    </label>
                     <input
+                      id="sample-frequency"
                       type="range"
                       min={1}
                       max={7}
@@ -160,12 +172,13 @@ export function LandingPage() {
                       value={sampleFrequency}
                       onChange={(e) => setSampleFrequency(Number(e.target.value))}
                       className="w-full accent-burnt"
+                      aria-label="Commute days per week"
                     />
                   </div>
                 </div>
 
                 {/* Live Output Card */}
-                <div className="rounded border border-border bg-surface p-4 space-y-3">
+                <div className="landing-calculator__result rounded border border-border bg-surface p-4 space-y-3" aria-live="polite">
                   <div className="flex items-center justify-between border-b border-border pb-2 text-xs">
                     <span className="taxonomy-label">PROJECTED MONTHLY MITIGATION</span>
                     <TrendingDown className="h-4 w-4 text-moss" />
@@ -193,10 +206,15 @@ export function LandingPage() {
             </Card>
           </div>
         </div>
+        <div className="landing-metrics">
+          <div><strong>60+</strong><span>practical lifestyle swaps</span></div>
+          <div><strong>±12%</strong><span>uncertainty made visible</span></div>
+          <div><strong>India-first</strong><span>regional data and costs</span></div>
+        </div>
       </section>
 
       {/* Editorial Principles Section */}
-      <section className="mx-auto max-w-7xl px-6 py-16 md:px-12 border-b border-border">
+      <section className="landing-section mx-auto max-w-7xl px-6 py-20 md:px-12 border-b border-border">
         <div className="max-w-2xl mb-12">
           <p className="taxonomy-label mb-2">FOUNDATIONAL RULES</p>
           <h2 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
@@ -204,8 +222,8 @@ export function LandingPage() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="border border-border bg-surface p-6 rounded space-y-3">
+        <div className="landing-principles grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="landing-principle border border-border bg-surface p-6 rounded space-y-3">
             <span className="taxonomy-label block">RULE 01 // UNCERTAINTY BOUNDS</span>
             <h3 className="font-serif text-xl font-medium">No Fake Point Estimates</h3>
             <p className="text-xs text-ink-muted font-sans leading-relaxed">
@@ -214,7 +232,7 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="border border-border bg-surface p-6 rounded space-y-3">
+          <div className="landing-principle border border-border bg-surface p-6 rounded space-y-3">
             <span className="taxonomy-label block">RULE 02 // REGIONAL SENSITIVITY</span>
             <h3 className="font-serif text-xl font-medium">Grid-Calibrated Math</h3>
             <p className="text-xs text-ink-muted font-sans leading-relaxed">
@@ -223,7 +241,7 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="border border-border bg-surface p-6 rounded space-y-3">
+          <div className="landing-principle border border-border bg-surface p-6 rounded space-y-3">
             <span className="taxonomy-label block">RULE 03 // FULL TRANSPARENCY</span>
             <h3 className="font-serif text-xl font-medium">Open Formula Ranking</h3>
             <p className="text-xs text-ink-muted font-sans leading-relaxed">
@@ -235,7 +253,7 @@ export function LandingPage() {
       </section>
 
       {/* Featured Botanical Catalog Preview */}
-      <section className="mx-auto max-w-7xl px-6 py-16 md:px-12 border-b border-border">
+      <section className="landing-section landing-catalogue mx-auto max-w-7xl px-6 py-20 md:px-12 border-b border-border">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
           <div>
             <p className="taxonomy-label mb-1">FIELD CATALOGUE EXCERPTS</p>
@@ -250,8 +268,8 @@ export function LandingPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card taxonomyCode="SPEC.01 // ENERGY" badge={<Badge variant="moss">62% CUT</Badge>}>
+        <div className="landing-swaps grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <Card className="landing-swap-card" taxonomyCode="SPEC.01 // ENERGY" badge={<Badge variant="moss">62% CUT</Badge>}>
             <Zap className="h-5 w-5 text-moss mb-3" />
             <h3 className="font-serif text-base font-bold mb-1">5-Star BLDC Ceiling Fans</h3>
             <p className="text-xs text-ink-muted font-sans mb-3">
@@ -260,7 +278,7 @@ export function LandingPage() {
             <p className="font-mono text-xs text-moss font-semibold">Saves ₹320/fan monthly</p>
           </Card>
 
-          <Card taxonomyCode="SPEC.02 // FOOD" badge={<Badge variant="moss">35% CUT</Badge>}>
+          <Card className="landing-swap-card" taxonomyCode="SPEC.02 // FOOD" badge={<Badge variant="moss">35% CUT</Badge>}>
             <BookOpen className="h-5 w-5 text-clay mb-3" />
             <h3 className="font-serif text-base font-bold mb-1">Meatless Weekday Lunches</h3>
             <p className="text-xs text-ink-muted font-sans mb-3">
@@ -269,7 +287,7 @@ export function LandingPage() {
             <p className="font-mono text-xs text-moss font-semibold">Saves ~₹1,100/mo</p>
           </Card>
 
-          <Card taxonomyCode="SPEC.03 // WASTE" badge={<Badge variant="moss">86% CUT</Badge>}>
+          <Card className="landing-swap-card" taxonomyCode="SPEC.03 // WASTE" badge={<Badge variant="moss">86% CUT</Badge>}>
             <ShieldCheck className="h-5 w-5 text-burnt mb-3" />
             <h3 className="font-serif text-base font-bold mb-1">Aerobic Khamba Composting</h3>
             <p className="text-xs text-ink-muted font-sans mb-3">
@@ -278,7 +296,7 @@ export function LandingPage() {
             <p className="font-mono text-xs text-foreground font-semibold">Zero waste to landfill</p>
           </Card>
 
-          <Card taxonomyCode="SPEC.04 // ENERGY" badge={<Badge variant="moss">25% CUT</Badge>}>
+          <Card className="landing-swap-card" taxonomyCode="SPEC.04 // ENERGY" badge={<Badge variant="moss">25% CUT</Badge>}>
             <TrendingDown className="h-5 w-5 text-moss mb-3" />
             <h3 className="font-serif text-base font-bold mb-1">AC 24°C–26°C Setpoint</h3>
             <p className="text-xs text-ink-muted font-sans mb-3">
@@ -290,6 +308,7 @@ export function LandingPage() {
       </section>
 
       {/* Footer */}
+      </main>
       <footer className="border-t border-border bg-surface px-6 py-12 md:px-12 text-xs font-mono">
         <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>

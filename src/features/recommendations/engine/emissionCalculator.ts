@@ -15,12 +15,19 @@ export function calculateEmissionSavingsRange(
   baselineActivity: ActivityContext,
   alternative: Alternative
 ): UncertaintyRange {
-  const baselineMonthly = Math.max(0, baselineActivity.calculated_co2e_monthly || 0);
-  const ratio = Math.max(0, Math.min(1.0, alternative.co2e_saved_ratio));
+  const baselineMonthly = Number.isFinite(baselineActivity.calculated_co2e_monthly)
+    ? Math.max(0, baselineActivity.calculated_co2e_monthly)
+    : 0;
+  const ratio = Number.isFinite(alternative.co2e_saved_ratio)
+    ? Math.max(0, Math.min(1.0, alternative.co2e_saved_ratio))
+    : 0;
   const expected = baselineMonthly * ratio;
 
   // Uncertainty factor: standard 10% to 15% uncertainty in life-cycle analysis
-  const uncertainty = baselineActivity.emission_factor_uncertainty ?? 0.12;
+  const requestedUncertainty = baselineActivity.emission_factor_uncertainty ?? 0.12;
+  const uncertainty = Number.isFinite(requestedUncertainty)
+    ? Math.max(0, Math.min(0.5, requestedUncertainty))
+    : 0.12;
 
   const low = Number((expected * (1 - uncertainty)).toFixed(2));
   const high = Number((expected * (1 + uncertainty)).toFixed(2));
@@ -37,7 +44,9 @@ export function calculateEmissionSavingsRange(
  * Negative value denotes cost savings; positive denotes expense.
  */
 export function calculateCostDeltaRange(alternative: Alternative): UncertaintyRange {
-  const expected = alternative.cost_delta_monthly_inr;
+  const expected = Number.isFinite(alternative.cost_delta_monthly_inr)
+    ? alternative.cost_delta_monthly_inr
+    : 0;
   const variance = Math.abs(expected) * 0.15; // 15% regional price variance
 
   if (expected <= 0) {

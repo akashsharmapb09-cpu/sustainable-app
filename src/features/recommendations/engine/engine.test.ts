@@ -8,7 +8,14 @@ import {
 } from './engine';
 import { getCalibratedWeights } from './weights';
 import { calculateEmissionSavingsRange, calculateCostDeltaRange } from './emissionCalculator';
-import { clamp, computeEffortPenalty, normalizeImpact, normalizeCostSavings } from './normalizer';
+import {
+  clamp,
+  computeEffortPenalty,
+  normalizeImpact,
+  normalizeCostSavings,
+  normalizeFeasibility,
+} from './normalizer';
+import { calculateLearningAdjustment } from './learningLoop';
 
 // Sample Candidate Alternatives for Testing
 const mockAlternatives: Alternative[] = [
@@ -175,6 +182,31 @@ describe('Recommendation Scoring Engine Test Suite', () => {
       expect(range.low).toBeLessThan(range.expected); // greater savings: -3680
       expect(range.high).toBeGreaterThan(range.expected); // conservative savings: -2720
     });
+
+    it('keeps generated recommendation scores and ranges finite and bounded', () => {
+      for (let index = 0; index < 300; index++) {
+        const baseline = index * 0.73;
+        const ratio = (index % 121) / 100;
+        const activity = { ...mockActivity, calculated_co2e_monthly: baseline };
+        const alternative = { ...mockAlternatives[index % mockAlternatives.length], co2e_saved_ratio: ratio };
+        const scored = scoreAlternative(
+          alternative,
+          activity,
+          defaultProfile,
+          getCalibratedWeights(defaultProfile)
+        );
+        if (!scored) continue;
+
+        const range = scored.co2e_saved_range;
+        expect(range).not.toBeNull();
+        if (!range) continue;
+        expect(Number.isFinite(scored.score)).toBe(true);
+        expect(scored.score).toBeGreaterThanOrEqual(0);
+        expect(scored.score).toBeLessThanOrEqual(1);
+        expect(range.low).toBeLessThanOrEqual(range.expected);
+        expect(range.expected).toBeLessThanOrEqual(range.high);
+      }
+    });
   });
 
   describe('Adaptive Weight Calibration', () => {
@@ -252,6 +284,76 @@ describe('Recommendation Scoring Engine Test Suite', () => {
       const foundAdopted = results.some((r) => r.alternative.id === 'alt-metro-commute');
       expect(foundAdopted).toBe(false);
     });
+
+    it('suppresses a fresh dismissal and lets that suppression decay after 30 days', () => {
+      const action = {
+        alternative_id: 'alt-metro-commute',
+        status: 'not_for_me' as const,
+        updated_at: '2026-01-01T00:00:00.000Z',
+        category: 'transport' as const,
+        tags: ['transit', 'commute'],
+      };
+      const fresh = calculateLearningAdjustment(mockAlternatives[0], {
+        ...defaultProfile,
+        reference_time: '2026-01-15T00:00:00.000Z',
+        action_history: [action],
+      });
+      const old = calculateLearningAdjustment(mockAlternatives[0], {
+        ...defaultProfile,
+        reference_time: '2026-04-15T00:00:00.000Z',
+        action_history: [action],
+      });
+
+      expect(fresh.isSuppressed).toBe(true);
+      expect(old.isSuppressed).toBe(false);
+      expect(old.scoreDelta).toBeLessThan(0);
+    });
+
+    it('lowers similar alternatives after a dismissal, with recency decay', () => {
+      const recentAction = {
+        alternative_id: 'alt-other-transit',
+        status: 'not_for_me' as const,
+        updated_at: '2026-04-01T00:00:00.000Z',
+        category: 'transport' as const,
+        tags: ['transit', 'commute'],
+      };
+      const recent = calculateLearningAdjustment(mockAlternatives[0], {
+        ...defaultProfile,
+        reference_time: '2026-04-02T00:00:00.000Z',
+        action_history: [recentAction],
+      });
+      const old = calculateLearningAdjustment(mockAlternatives[0], {
+        ...defaultProfile,
+        reference_time: '2026-10-01T00:00:00.000Z',
+        action_history: [recentAction],
+      });
+
+      expect(recent.scoreDelta).toBeLessThan(0);
+      expect(Math.abs(old.scoreDelta)).toBeLessThan(Math.abs(recent.scoreDelta));
+    });
+
+    it('boosts similar alternatives after an adoption without rewarding unrelated items', () => {
+      const adoptedAction = {
+        alternative_id: 'alt-other-transit',
+        status: 'adopted' as const,
+        updated_at: '2026-04-01T00:00:00.000Z',
+        category: 'transport' as const,
+        tags: ['transit', 'commute'],
+      };
+      const similar = calculateLearningAdjustment(mockAlternatives[0], {
+        ...defaultProfile,
+        reference_time: '2026-04-02T00:00:00.000Z',
+        action_history: [adoptedAction],
+      });
+      const unrelated = calculateLearningAdjustment(mockAlternatives[4], {
+        ...defaultProfile,
+        reference_time: '2026-04-02T00:00:00.000Z',
+        action_history: [adoptedAction],
+      });
+
+      expect(similar.scoreDelta).toBeGreaterThan(0);
+      expect(unrelated.scoreDelta).toBe(0);
+    });
   });
 
   describe('Cold-Start Handling', () => {
@@ -262,6 +364,7 @@ describe('Recommendation Scoring Engine Test Suite', () => {
       expect(coldStart[0].rank).toBe(1);
       expect(coldStart[0].score).toBeGreaterThan(0);
       expect(coldStart[0].alternative.is_active).toBe(true);
+      expect(coldStart[0].co2e_saved_range).toBeNull();
     });
   });
 
@@ -276,6 +379,8 @@ describe('Recommendation Scoring Engine Test Suite', () => {
       const results = rankRecommendations(zeroActivity, mockAlternatives, defaultProfile, 3);
       expect(results.length).toBeGreaterThan(0);
       for (const r of results) {
+        expect(r.co2e_saved_range).not.toBeNull();
+        if (!r.co2e_saved_range) continue;
         expect(Number.isNaN(r.score)).toBe(false);
         expect(r.co2e_saved_range.expected).toBe(0);
       }
@@ -302,6 +407,41 @@ describe('Recommendation Scoring Engine Test Suite', () => {
 
       const results = rankRecommendations(mockActivity, mockAlternatives, allDismissedProfile, 3);
       expect(results).toHaveLength(0); // Gracefully returns empty array
+    });
+
+    it('does not use alternatives from unrelated categories as a fallback', () => {
+      const energyOnly = mockAlternatives.filter((alternative) => alternative.category === 'energy');
+      expect(rankRecommendations(mockActivity, energyOnly, defaultProfile, 3)).toEqual([]);
+    });
+
+    it('returns no results for an invalid recommendation limit', () => {
+      expect(rankRecommendations(mockActivity, mockAlternatives, defaultProfile, -1)).toEqual([]);
+      expect(rankRecommendations(mockActivity, mockAlternatives, defaultProfile, Number.NaN)).toEqual([]);
+    });
+
+    it('excludes alternatives not available in the user region', () => {
+      expect(normalizeFeasibility(0.9, 'IN', ['EU'], [])).toBe(0);
+      const euOnly = {
+        ...mockAlternatives[0],
+        region_availability: ['EU'],
+      };
+      expect(scoreAlternative(euOnly, mockActivity, defaultProfile, getCalibratedWeights(defaultProfile))).toBeNull();
+    });
+
+    it('keeps global alternatives available when the user region is missing', () => {
+      expect(normalizeFeasibility(0.9, undefined, ['GLOBAL'], [])).toBe(0.9);
+      expect(normalizeFeasibility(0.9, undefined, ['IN'], [])).toBe(0);
+    });
+
+    it('treats non-finite emission inputs as zero rather than producing NaN', () => {
+      const range = calculateEmissionSavingsRange(
+        { ...mockActivity, calculated_co2e_monthly: Number.NaN, emission_factor_uncertainty: Number.NaN },
+        mockAlternatives[0]
+      );
+      expect(range).toEqual({ low: 0, expected: 0, high: 0 });
+      expect(clamp(Number.NaN)).toBe(0);
+      expect(calculateCostDeltaRange({ ...mockAlternatives[0], cost_delta_monthly_inr: Number.NaN }))
+        .toEqual({ low: 0, expected: 0, high: 0 });
     });
 
     it('normalizes helper edge values properly', () => {

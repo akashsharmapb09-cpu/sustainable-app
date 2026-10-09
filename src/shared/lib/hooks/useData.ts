@@ -1,36 +1,83 @@
-/**
- * TanStack Query hooks for GreenSwap data layer.
- * All queries use typed Supabase client; RLS enforced server-side.
- */
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '../supabase';
-import { useAuth } from '../../../features/auth/context/authContextDef';
-import type { ActivityCategory, Database } from '../../types/database';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useConvex } from "convex/react";
+import { useMemo } from "react";
+import { api } from "../../../../convex/_generated/api";
+import { validateActivityLogForm, type ActivityLogFormInput } from "../../../features/activities/data/activityCatalog";
+import { ALL_ALTERNATIVES } from "../../../features/explore/data/alternativesData";
+import { useAuth } from "../../../features/auth/context/authContextDef";
+import { goalFormSchema, type GoalFormInput } from "../../../features/progress/goalTracking";
+import type { ActivityCategory, Database } from "../../types/database";
+import {
+  addLocalGoal,
+  awardLocalChallengeBadge,
+  defaultProfile,
+  deleteLocalLog,
+  DEMO_BADGES,
+  DEMO_CHALLENGES,
+  getLocalActions,
+  getLocalBadges,
+  getLocalChallenges,
+  getLocalGoals,
+  getLocalLogs,
+  getLocalProfile,
+  setLocalProfile,
+  upsertLocalAction,
+  upsertLocalChallenge,
+  upsertLocalLog,
+} from "../localStore";
 
-type Profile = Database['public']['Tables']['profiles']['Row'];
-type ActivityLog = Database['public']['Tables']['activity_logs']['Row'];
-type Alternative = Database['public']['Tables']['alternatives']['Row'];
-type UserAction = Database['public']['Tables']['user_actions']['Row'];
-type UserActionStatus = UserAction['status'];
-type Badge = Database['public']['Tables']['badges']['Row'];
-type UserBadge = Database['public']['Tables']['user_badges']['Row'];
-type Challenge = Database['public']['Tables']['challenges']['Row'];
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+type ActivityLog = Database["public"]["Tables"]["activity_logs"]["Row"];
+type UserAction = Database["public"]["Tables"]["user_actions"]["Row"];
+type UserActionStatus = UserAction["status"];
+type Badge = Database["public"]["Tables"]["badges"]["Row"];
+type UserBadge = Database["public"]["Tables"]["user_badges"]["Row"];
+type Challenge = Database["public"]["Tables"]["challenges"]["Row"];
+type UserChallenge = Database["public"]["Tables"]["user_challenges"]["Row"];
+type Goal = Database["public"]["Tables"]["goals"]["Row"];
+type ProfileUpdates = Partial<Omit<Profile, "id" | "email" | "created_at" | "updated_at">>;
+type UserCollection =
+  | "profiles"
+  | "activity_logs"
+  | "user_actions"
+  | "goals"
+  | "user_challenges"
+  | "user_badges";
 
-// ── Profile ──────────────────────────────────────────────────────────────────
+const getMonthStartIso = () => {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+};
+
+async function listRecords<T>(client: ReturnType<typeof useConvex>, collection: UserCollection): Promise<T[]> {
+  return await client.query(api.data.list, { collection }) as T[];
+}
+
+async function saveRecord<T>(
+  client: ReturnType<typeof useConvex>,
+  collection: UserCollection,
+  key: string,
+  data: object,
+): Promise<T> {
+  return await client.mutation(api.data.save, { collection, key, data }) as T;
+}
 
 export function useProfile() {
-  const { user } = useAuth();
+  const client = useConvex();
+  const { user, profile: authProfile } = useAuth();
   return useQuery({
-    queryKey: ['profile', user?.id],
+    queryKey: ["profile", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-      if (error) throw error;
-      return data as Profile;
+      if (user.id === "demo-user") {
+        return getLocalProfile(user.id)
+          ?? authProfile
+          ?? defaultProfile(user.id, user.email ?? "", user.user_metadata.full_name);
+      }
+      const profiles = await listRecords<Profile>(client, "profiles");
+      return profiles[0]
+        ?? authProfile
+        ?? defaultProfile(user.id, user.email ?? "", user.user_metadata.full_name);
     },
     enabled: !!user?.id,
     staleTime: 5 * 60 * 1000,
@@ -38,230 +85,370 @@ export function useProfile() {
 }
 
 export function useUpdateProfile() {
+  const client = useConvex();
   const qc = useQueryClient();
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   return useMutation({
-    mutationFn: async (updates: Partial<Profile>) => {
-      if (!user?.id) throw new Error('Not authenticated');
-      const { data, error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('id', user.id)
-        .select()
-        .single();
-      if (error) throw error;
-      return data as Profile;
+    mutationFn: async (updates: ProfileUpdates) => {
+      if (!user?.id) throw new Error("Not authenticated");
+      const current = getLocalProfile(user.id)
+        ?? defaultProfile(user.id, user.email ?? "", user.user_metadata.full_name);
+      const next: Profile = {
+        ...current,
+        ...updates,
+        id: user.id,
+        email: user.email ?? current.email,
+        updated_at: new Date().toISOString(),
+      };
+      if (user.id === "demo-user") {
+        setLocalProfile(next);
+        return next;
+      }
+      return saveRecord<Profile>(client, "profiles", user.id, next);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['profile', user?.id] }),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ["profile", user?.id] });
+      await refreshProfile();
+    },
   });
 }
 
-// ── Activity Logs ─────────────────────────────────────────────────────────────
-
 export function useActivityLogs() {
+  const client = useConvex();
   const { user } = useAuth();
   return useQuery({
-    queryKey: ['activity_logs', user?.id],
+    queryKey: ["activity_logs", user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
-      const { data, error } = await supabase
-        .from('activity_logs')
-        .select('*, activities(*)')
-        .eq('user_id', user.id)
-        .order('logged_at', { ascending: false });
-      if (error) throw error;
-      return data as (ActivityLog & { activities: Database['public']['Tables']['activities']['Row'] | null })[];
+      const logs = user.id === "demo-user"
+        ? getLocalLogs(user.id)
+        : await listRecords<ActivityLog>(client, "activity_logs");
+      return logs
+        .sort((a, b) => b.logged_at.localeCompare(a.logged_at))
+        .map((log) => ({ ...log, activities: null }));
     },
     enabled: !!user?.id,
   });
 }
 
 export function useCreateActivityLog() {
+  const client = useConvex();
   const qc = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async (input: Database['public']['Tables']['activity_logs']['Insert']) => {
-      const { data, error } = await supabase
-        .from('activity_logs')
-        .insert({ ...input, user_id: user!.id })
-        .select()
-        .single();
-      if (error) throw error;
-      return data as ActivityLog;
+    mutationFn: async (input: ActivityLogFormInput) => {
+      if (!user?.id) throw new Error("Not authenticated");
+      const parsed = validateActivityLogForm({
+        activity_id: input.activity_id,
+        quantity: input.quantity,
+        frequency_per_week: input.frequency_per_week,
+        notes: input.notes ?? "",
+        logged_at: input.logged_at,
+      });
+      if (!parsed.success) throw new Error(parsed.error.issues[0]?.message ?? "Check the activity details and try again.");
+
+      const { activity, quantity, frequency_per_week, notes, logged_at, calculated_co2e_monthly } = parsed.data;
+      const now = new Date().toISOString();
+      const row: ActivityLog = {
+        id: crypto.randomUUID(),
+        user_id: user.id,
+        activity_id: activity.id,
+        category: activity.category,
+        activity_name: activity.name,
+        quantity,
+        unit: activity.unit,
+        frequency_per_week,
+        calculated_co2e_monthly,
+        notes: notes || null,
+        logged_at: logged_at ?? now,
+        created_at: now,
+        updated_at: now,
+      };
+      if (user.id === "demo-user") {
+        upsertLocalLog(user.id, row);
+        return row;
+      }
+      return saveRecord<ActivityLog>(client, "activity_logs", row.id, row);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['activity_logs', user?.id] }),
+    onSuccess: async () => {
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["activity_logs", user?.id] }),
+        qc.invalidateQueries({ queryKey: ["monthly_footprint", user?.id] }),
+      ]);
+    },
   });
 }
 
 export function useDeleteActivityLog() {
+  const client = useConvex();
   const qc = useQueryClient();
   const { user } = useAuth();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from('activity_logs')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', user!.id);
-      if (error) throw error;
+      if (!user?.id) throw new Error("Not authenticated");
+      if (user.id === "demo-user") {
+        deleteLocalLog(user.id, id);
+        return;
+      }
+      await client.mutation(api.data.remove, { collection: "activity_logs", key: id });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['activity_logs', user?.id] }),
+    onSuccess: async () => {
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["activity_logs", user?.id] }),
+        qc.invalidateQueries({ queryKey: ["monthly_footprint", user?.id] }),
+      ]);
+    },
   });
 }
 
-// ── Alternatives ──────────────────────────────────────────────────────────────
-
 export function useAlternatives(category?: ActivityCategory) {
   return useQuery({
-    queryKey: ['alternatives', category],
-    queryFn: async () => {
-      let q = supabase
-        .from('alternatives')
-        .select('*')
-        .eq('is_active', true)
-        .order('title');
-      if (category) q = q.eq('category', category);
-      const { data, error } = await q;
-      if (error) throw error;
-      return data as Alternative[];
+    queryKey: ["alternatives", category],
+    queryFn: () => {
+      const catalog = ALL_ALTERNATIVES.filter((alternative) => alternative.is_active);
+      return category ? catalog.filter((alternative) => alternative.category === category) : catalog;
     },
     staleTime: 10 * 60 * 1000,
   });
 }
 
-// ── User Actions (adopted/dismissed) ─────────────────────────────────────────
-
 export function useUserActions() {
+  const client = useConvex();
   const { user } = useAuth();
   return useQuery({
-    queryKey: ['user_actions', user?.id],
+    queryKey: ["user_actions", user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
-      const { data, error } = await supabase
-        .from('user_actions')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return data as UserAction[];
+      if (user.id === "demo-user") return getLocalActions(user.id);
+      const actions = await listRecords<UserAction>(client, "user_actions");
+      return actions.sort((a, b) => b.updated_at.localeCompare(a.updated_at));
     },
     enabled: !!user?.id,
   });
 }
 
 export function useUpsertUserAction() {
+  const client = useConvex();
   const qc = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async (input: {
-      alternative_id: string;
-      status: UserActionStatus;
-    }) => {
-      const { data, error } = await supabase
-        .from('user_actions')
-        .upsert(
-          {
-            user_id: user!.id,
-            alternative_id: input.alternative_id,
-            status: input.status,
-            adopted_at: input.status === 'adopted' ? new Date().toISOString() : null,
-          },
-          { onConflict: 'user_id,alternative_id' }
-        )
-        .select()
-        .single();
-      if (error) throw error;
-      return data as UserAction;
+    mutationFn: async (input: { alternative_id: string; status: UserActionStatus }) => {
+      if (!user?.id) throw new Error("Not authenticated");
+      const updatedAt = new Date().toISOString();
+      if (user.id === "demo-user") return upsertLocalAction(user.id, input.alternative_id, input.status);
+      const current = (await listRecords<UserAction>(client, "user_actions"))
+        .find((action) => action.alternative_id === input.alternative_id);
+      return saveRecord<UserAction>(client, "user_actions", input.alternative_id, {
+        ...current,
+        user_id: user.id,
+        alternative_id: input.alternative_id,
+        status: input.status,
+        adopted_at: input.status === "adopted" ? updatedAt : null,
+        created_at: current?.created_at ?? updatedAt,
+        updated_at: updatedAt,
+      });
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['user_actions', user?.id] });
-      qc.invalidateQueries({ queryKey: ['recommendations', user?.id] });
+      void qc.invalidateQueries({ queryKey: ["user_actions", user?.id] });
+      void qc.invalidateQueries({ queryKey: ["recommendations", user?.id] });
     },
   });
 }
 
-// ── Badges ────────────────────────────────────────────────────────────────────
-
 export function useBadges() {
   return useQuery({
-    queryKey: ['badges'],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('badges').select('*').order('name');
-      if (error) throw error;
-      return data as Badge[];
-    },
+    queryKey: ["badges"],
+    queryFn: async () => DEMO_BADGES as Badge[],
     staleTime: 30 * 60 * 1000,
   });
 }
 
 export function useUserBadges() {
+  const client = useConvex();
   const { user } = useAuth();
   return useQuery({
-    queryKey: ['user_badges', user?.id],
+    queryKey: ["user_badges", user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
-      const { data, error } = await supabase
-        .from('user_badges')
-        .select('*, badges(*)')
-        .eq('user_id', user.id)
-        .order('awarded_at', { ascending: false });
-      if (error) throw error;
-      return data as (UserBadge & { badges: Badge | null })[];
+      const awards = user.id === "demo-user"
+        ? getLocalBadges(user.id)
+        : await listRecords<UserBadge>(client, "user_badges");
+      return awards
+        .sort((a, b) => b.awarded_at.localeCompare(a.awarded_at))
+        .map((award) => ({
+          ...award,
+          badges: DEMO_BADGES.find((badge) => badge.key === award.badge_key) ?? null,
+        }));
     },
     enabled: !!user?.id,
   });
 }
 
-// ── Challenges ────────────────────────────────────────────────────────────────
-
 export function useChallenges() {
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ['challenges'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('challenges')
-        .select('*')
-        .eq('is_active', true)
-        .order('title');
-      if (error) throw error;
-      return data as Challenge[];
-    },
+    queryKey: ["challenges"],
+    queryFn: async () => DEMO_CHALLENGES as Challenge[],
+    enabled: !!user?.id,
     staleTime: 60 * 60 * 1000,
   });
 }
 
-// ── Computed: Monthly CO2e footprint ──────────────────────────────────────────
+export function useUserChallenges() {
+  const client = useConvex();
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["user_challenges", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [] as UserChallenge[];
+      const records = user.id === "demo-user"
+        ? getLocalChallenges(user.id)
+        : await listRecords<UserChallenge>(client, "user_challenges");
+      return records.sort((a, b) => b.started_at.localeCompare(a.started_at));
+    },
+    enabled: !!user?.id,
+  });
+}
+
+export function useSetUserChallengeStatus() {
+  const client = useConvex();
+  const qc = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async (input: { challenge_id: string; status: UserChallenge["status"] }) => {
+      if (!user?.id) throw new Error("Not authenticated");
+      if (user.id === "demo-user") {
+        const updated = upsertLocalChallenge(user.id, input.challenge_id, input.status);
+        if (input.status === "completed") {
+          const challenge = DEMO_CHALLENGES.find((item) => item.id === input.challenge_id);
+          if (challenge) awardLocalChallengeBadge(user.id, challenge.badge_key);
+        }
+        return updated;
+      }
+
+      const existing = (await listRecords<UserChallenge>(client, "user_challenges"))
+        .find((item) => item.challenge_id === input.challenge_id);
+      const now = new Date().toISOString();
+      const updated: UserChallenge = {
+        id: existing?.id ?? crypto.randomUUID(),
+        user_id: user.id,
+        challenge_id: input.challenge_id,
+        status: input.status,
+        started_at: existing?.started_at ?? now,
+        completed_at: input.status === "completed" ? now : null,
+      };
+      const saved = await saveRecord<UserChallenge>(
+        client,
+        "user_challenges",
+        input.challenge_id,
+        updated,
+      );
+
+      if (input.status === "completed") {
+        const challenge = DEMO_CHALLENGES.find((item) => item.id === input.challenge_id);
+        if (challenge?.badge_key) {
+          const badge: UserBadge = {
+            id: crypto.randomUUID(),
+            user_id: user.id,
+            badge_key: challenge.badge_key,
+            awarded_at: now,
+          };
+          await saveRecord(client, "user_badges", challenge.badge_key, badge);
+        }
+      }
+      return saved;
+    },
+    onSuccess: async () => {
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["user_challenges", user?.id] }),
+        qc.invalidateQueries({ queryKey: ["user_badges", user?.id] }),
+      ]);
+    },
+  });
+}
+
+export function useGoals() {
+  const client = useConvex();
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["goals", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [] as Goal[];
+      const goals = user.id === "demo-user"
+        ? getLocalGoals(user.id)
+        : await listRecords<Goal>(client, "goals");
+      return goals.sort((a, b) => b.created_at.localeCompare(a.created_at));
+    },
+    enabled: !!user?.id,
+  });
+}
+
+export function useCreateGoal() {
+  const client = useConvex();
+  const qc = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async (
+      input: GoalFormInput & { baseline_co2e_monthly: number; baseline_month_start: string },
+    ) => {
+      if (!user?.id) throw new Error("Not authenticated");
+      const parsed = goalFormSchema.safeParse({
+        category: input.category,
+        target_co2e_reduction_pct: input.target_co2e_reduction_pct,
+        target_date: input.target_date,
+      });
+      if (!parsed.success) throw new Error(parsed.error.issues[0]?.message ?? "Check the goal details and try again.");
+      if (!Number.isFinite(input.baseline_co2e_monthly) || input.baseline_co2e_monthly <= 0) {
+        throw new Error("Log activity in this category before setting a reduction goal.");
+      }
+
+      const goal: Goal = {
+        id: crypto.randomUUID(),
+        user_id: user.id,
+        category: parsed.data.category,
+        target_co2e_reduction_pct: parsed.data.target_co2e_reduction_pct,
+        target_date: parsed.data.target_date,
+        baseline_co2e_monthly: input.baseline_co2e_monthly,
+        baseline_month_start: input.baseline_month_start,
+        achieved: false,
+        created_at: new Date().toISOString(),
+      };
+      if (user.id === "demo-user") return addLocalGoal(goal);
+      return saveRecord<Goal>(client, "goals", goal.id, goal);
+    },
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ["goals", user?.id] });
+    },
+  });
+}
 
 export function useMonthlyFootprint() {
+  const client = useConvex();
   const { user } = useAuth();
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const startOfMonth = useMemo(() => getMonthStartIso(), []);
 
   return useQuery({
-    queryKey: ['monthly_footprint', user?.id, startOfMonth],
+    queryKey: ["monthly_footprint", user?.id, startOfMonth],
     queryFn: async () => {
       if (!user?.id) return { total: 0, byCategory: {} as Record<string, number> };
-      const { data, error } = await supabase
-        .from('activity_logs')
-        .select('calculated_co2e_monthly, activities(category)')
-        .eq('user_id', user.id)
-        .gte('logged_at', startOfMonth);
-      if (error) throw error;
+      const logs = user.id === "demo-user"
+        ? getLocalLogs(user.id)
+        : await listRecords<ActivityLog>(client, "activity_logs");
+      const rows = logs
+        .filter((log) => log.logged_at >= startOfMonth)
+        .map((log) => ({
+          calculated_co2e_monthly: log.calculated_co2e_monthly,
+          category: log.category,
+        }));
 
       let total = 0;
       const byCategory: Record<string, number> = {};
-
-      for (const row of data ?? []) {
+      for (const row of rows) {
         const kg = row.calculated_co2e_monthly ?? 0;
-        // Type narrowing for nested join
-        const cat =
-          row.activities && typeof row.activities === 'object' && 'category' in row.activities
-            ? (row.activities as { category: string }).category
-            : 'Other';
+        const category = row.category ?? "Other";
         total += kg;
-        byCategory[cat] = (byCategory[cat] ?? 0) + kg;
+        byCategory[category] = (byCategory[category] ?? 0) + kg;
       }
-
       return { total, byCategory };
     },
     enabled: !!user?.id,

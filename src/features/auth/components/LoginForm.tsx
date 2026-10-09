@@ -10,7 +10,7 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onSuccess, onForgotPasswordClick, onSwitchToSignup }: LoginFormProps) {
-  const { loginWithPassword, loginWithMagicLink, loginWithOAuth } = useAuth();
+  const { loginWithPassword, loginWithMagicLink, loginWithOAuth, enterDemoSession } = useAuth();
 
   const [authMode, setAuthMode] = useState<'password' | 'magic_link'>('password');
   const [email, setEmail] = useState('');
@@ -57,6 +57,15 @@ export function LoginForm({ onSuccess, onForgotPasswordClick, onSwitchToSignup }
         setErrorMsg(res.error || 'Failed to send magic link.');
       }
     }
+  };
+
+  const handleOAuth = async (provider: 'google' | 'github') => {
+    setErrorMsg(null);
+    setSuccessNotice(null);
+    setIsSubmitting(true);
+    const result = await loginWithOAuth(provider);
+    setIsSubmitting(false);
+    if (!result.success) setErrorMsg(result.error || `Failed to initiate ${provider} login.`);
   };
 
   return (
@@ -182,20 +191,33 @@ export function LoginForm({ onSuccess, onForgotPasswordClick, onSwitchToSignup }
         </button>
       </form>
 
+      <button
+        type="button"
+        onClick={() => {
+          enterDemoSession();
+          onSuccess?.();
+        }}
+        className="mt-4 w-full rounded border border-border bg-surface-muted px-4 py-2.5 text-xs font-mono text-foreground hover:border-ink transition-colors"
+      >
+        Continue as field demo (no account)
+      </button>
+
       {/* OAuth Options */}
       <div className="mt-6 pt-6 border-t border-border">
         <p className="text-center taxonomy-label mb-3">OR VERIFY WITH IDENTITY PROVIDER</p>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
-            onClick={() => loginWithOAuth('google')}
+            onClick={() => void handleOAuth('google')}
+            disabled={isSubmitting}
             className="flex items-center justify-center gap-2 rounded border border-border bg-surface px-3 py-2 text-xs font-mono hover:border-ink hover:text-foreground transition-colors"
           >
             Google
           </button>
           <button
             type="button"
-            onClick={() => loginWithOAuth('github')}
+            onClick={() => void handleOAuth('github')}
+            disabled={isSubmitting}
             className="flex items-center justify-center gap-2 rounded border border-border bg-surface px-3 py-2 text-xs font-mono hover:border-ink hover:text-foreground transition-colors"
           >
             GitHub

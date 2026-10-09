@@ -3,8 +3,6 @@ export * from './context/AuthContext';
 export * from './lib/passwordSecurity';
 export * from './lib/rateLimiter';
 export * from './components/LoginForm';
-export * from './components/SignupForm';
-export * from './components/PasswordStrengthMeter';
 export * from './components/ForgotPasswordModal';
 export * from './components/SessionManager';
 export * from './guards/ProtectedRoute';

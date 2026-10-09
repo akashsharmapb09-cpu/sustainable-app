@@ -1,10 +1,17 @@
 import { createContext, useContext } from 'react';
-import type { User, Session } from '@supabase/supabase-js';
 import type { Profile, UserRoleType } from '../../../shared/types/database';
 
+export interface AuthUser {
+  id: string;
+  email: string | null;
+  created_at: string;
+  email_confirmed_at: string | null;
+  user_metadata: { full_name?: string };
+}
+
 export interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: AuthUser | null;
+  session: null;
   profile: Profile | null;
   role: UserRoleType;
   isLoading: boolean;
@@ -15,11 +22,12 @@ export interface AuthContextType {
   loginWithMagicLink: (email: string) => Promise<{ success: boolean; error?: string }>;
   loginWithOAuth: (provider: 'google' | 'github') => Promise<{ success: boolean; error?: string }>;
   requestPasswordReset: (email: string) => Promise<{ success: boolean; error?: string }>;
-  updatePassword: (password: string) => Promise<{ success: boolean; error?: string }>;
+  updatePassword: (password: string, email: string, code: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   logoutAllDevices: () => Promise<void>;
   deleteAccount: () => Promise<{ success: boolean; error?: string }>;
   refreshProfile: () => Promise<void>;
+  enterDemoSession: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

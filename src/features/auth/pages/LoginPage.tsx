@@ -25,12 +25,6 @@ export function LoginPage() {
             </h1>
           </div>
           <LoginForm />
-          <p className="mt-6 text-center text-sm text-ink-muted">
-            No account yet?{' '}
-            <Link to="/signup" className="text-moss font-medium hover:underline underline-offset-2">
-              Create one
-            </Link>
-          </p>
         </div>
       </div>
     </div>

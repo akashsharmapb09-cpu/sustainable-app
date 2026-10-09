@@ -4,6 +4,7 @@ import type { EffortLevel } from '../../../shared/types/database';
  * Clamps numeric value strictly between [min, max]
  */
 export function clamp(val: number, min = 0.0, max = 1.0): number {
+  if (!Number.isFinite(val)) return min;
   return Math.max(min, Math.min(max, val));
 }
 
@@ -34,20 +35,22 @@ export function normalizeCostSavings(costDeltaMonthlyInr: number): number {
  */
 export function normalizeFeasibility(
   baseFeasibility: number,
-  userRegion: string,
-  regionAvailability: string[],
-  prerequisites: string[]
+  userRegion: string | null | undefined,
+  regionAvailability: string[] = [],
+  prerequisites: string[] = []
 ): number {
-  const isRegionAvailable =
-    regionAvailability.includes('GLOBAL') || regionAvailability.includes(userRegion);
+  const isRegionAvailable = regionAvailability.some((region) =>
+    region.toUpperCase() === 'GLOBAL' ||
+    (userRegion ? region.toUpperCase() === userRegion.toUpperCase() : false)
+  );
 
   if (!isRegionAvailable) {
-    return 0.1; // Steep penalty if not available in region
+    return 0;
   }
 
   // Slight deduction for each prerequisite requirement
   const prereqDeduction = Math.min(0.2, (prerequisites?.length || 0) * 0.05);
-  return clamp(baseFeasibility - prereqDeduction, 0.1, 1.0);
+  return clamp(baseFeasibility - prereqDeduction, 0, 1.0);
 }
 
 /**

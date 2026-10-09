@@ -66,7 +66,7 @@ const config: Config = {
           50: '#FCFBF8',
           100: '#F8F6F0', // Light background
           200: '#F0ECE1',
-          300: '#E5DFCFC',
+          300: '#E5DFCF',
           400: '#D6CEBC',
           500: '#C2B7A0',
           DEFAULT: 'var(--color-bone)',

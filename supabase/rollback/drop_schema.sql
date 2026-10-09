@@ -1,7 +1,5 @@
--- =============================================================================
--- Migration: 20260101000004_rollback.sql
--- Description: Reversible rollback script for GreenSwap database schema
--- =============================================================================
+-- DESTRUCTIVE: drops all GreenSwap application tables and their dependent objects.
+-- Never run this as part of normal migration deployment. Back up the project first.
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 DROP FUNCTION IF EXISTS public.handle_new_user();

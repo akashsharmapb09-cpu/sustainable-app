@@ -32,3 +32,13 @@ export function formatCurrency(
     maximumFractionDigits: 0,
   }).format(amount);
 }
+
+export function safeHttpsUrl(value: string | null | undefined): string | null {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' ? url.href : null;
+  } catch {
+    return null;
+  }
+}

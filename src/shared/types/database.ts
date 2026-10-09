@@ -12,6 +12,17 @@ export type ActivityCategory =
 
 export type EffortLevel = 'easy' | 'moderate' | 'committed';
 
+export type Diet = 'vegan' | 'vegetarian' | 'pescatarian' | 'flexitarian' | 'omnivore';
+
+export type CommuteMode =
+  | 'walk_cycle'
+  | 'public_transit'
+  | 'two_wheeler'
+  | 'car_ev'
+  | 'car_petrol'
+  | 'car_diesel'
+  | 'carpool';
+
 export type UserActionStatus = 'adopted' | 'maybe_later' | 'not_for_me';
 
 export type UserRoleType = 'user' | 'admin';
@@ -28,8 +39,8 @@ export interface Database {
           full_name: string | null;
           region: string;
           household_size: number;
-          diet: string;
-          commute_mode: string;
+          diet: Diet;
+          commute_mode: CommuteMode;
           budget_sensitivity: 'low' | 'medium' | 'high';
           effort_level: EffortLevel;
           interests: string[];
@@ -190,8 +201,9 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database['public']['Tables']['user_actions']['Row'], 'id' | 'created_at' | 'updated_at' | 'adopted_at' | 'feedback_reason'> & {
+        Insert: Omit<Database['public']['Tables']['user_actions']['Row'], 'id' | 'created_at' | 'adopted_at' | 'feedback_reason'> & {
           id?: string;
+          updated_at?: string;
           adopted_at?: string | null;
           feedback_reason?: string | null;
         };
@@ -205,6 +217,8 @@ export interface Database {
           category: ActivityCategory | 'all';
           target_co2e_reduction_pct: number;
           target_date: string;
+          baseline_co2e_monthly: number | null;
+          baseline_month_start: string | null;
           achieved: boolean;
           created_at: string;
         };
@@ -329,6 +343,8 @@ export type ActivityLog = Database['public']['Tables']['activity_logs']['Row'];
 export type Alternative = Database['public']['Tables']['alternatives']['Row'];
 export type Recommendation = Database['public']['Tables']['recommendations']['Row'];
 export type UserAction = Database['public']['Tables']['user_actions']['Row'];
+export type UserChallenge = Database['public']['Tables']['user_challenges']['Row'];
 export type Goal = Database['public']['Tables']['goals']['Row'];
 export type Challenge = Database['public']['Tables']['challenges']['Row'];
 export type Badge = Database['public']['Tables']['badges']['Row'];
+export type UserBadge = Database['public']['Tables']['user_badges']['Row'];

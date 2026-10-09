@@ -54,8 +54,8 @@ export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProp
             <CheckCircle2 className="mx-auto h-10 w-10 text-moss mb-3" />
             <h3 className="font-serif text-xl font-bold text-foreground">Link Dispatched</h3>
             <p className="text-xs text-ink-muted mt-2 font-sans leading-relaxed">
-              If an account is associated with <strong>{email}</strong>, a single-use passphrase
-              reset link has been sent. This link expires in exactly 1 hour.
+              If an account is associated with <strong>{email}</strong>, passphrase reset
+              instructions have been sent. Check your inbox and spam folder.
             </p>
             <button
               onClick={onClose}
@@ -115,7 +115,7 @@ export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProp
                   ) : (
                     <>
                       <Mail className="h-3.5 w-3.5" />
-                      <span>Send Single-Use Link</span>
+                      <span>Send Reset Instructions</span>
                     </>
                   )}
                 </button>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { cn, formatRange, formatCurrency } from './utils';
+import { cn, formatRange, formatCurrency, safeHttpsUrl } from './utils';
 import { PALETTE, SPACING_SCALE } from '../config/tokens';
 
 describe('Shared Utilities and Tokens', () => {
@@ -17,6 +17,14 @@ describe('Shared Utilities and Tokens', () => {
   it('formats currency with locale defaults', () => {
     const formatted = formatCurrency(1250, 'INR', 'en-IN');
     expect(formatted).toContain('1,250');
+  });
+
+  it('only allows valid HTTPS URLs for external source links', () => {
+    expect(safeHttpsUrl('https://example.org/source')).toBe('https://example.org/source');
+    expect(safeHttpsUrl('http://example.org/source')).toBeNull();
+    expect(safeHttpsUrl('javascript:alert(1)')).toBeNull();
+    expect(safeHttpsUrl('not a url')).toBeNull();
+    expect(safeHttpsUrl(null)).toBeNull();
   });
 
   it('contains valid design token palette and spacing scale', () => {
