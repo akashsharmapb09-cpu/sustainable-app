@@ -6,7 +6,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './shared/lib/queryClient';
 import { convex } from './shared/lib/convex';
 import { AuthProvider } from './features/auth';
-import { ToastPrrovider } from './shared/ui/Toast.tsx'; 
+import { ToastProvider } from './shared/ui/Toast';
 import './index.css';
 import App from './App';
 
@@ -15,12 +15,12 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <ConvexAuthProvider client={convex}>
-  <AuthProvider>
-    <ToastProvider>
-      <App />
-    </ToastProvider>
-  </AuthProvider>
-</ConvexAuthProvider>
+          <AuthProvider>
+            <ToastProvider>
+              <App />
+            </ToastProvider>
+          </AuthProvider>
+        </ConvexAuthProvider>
       </QueryClientProvider>
     </BrowserRouter>
   </StrictMode>,
