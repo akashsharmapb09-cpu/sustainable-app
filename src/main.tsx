@@ -10,6 +10,14 @@ import { ToastProvider } from './shared/ui/Toast';
 import './index.css';
 import App from './App';
 
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    void navigator.serviceWorker.register('/sw.js').catch(() => {
+      // Offline support is progressive enhancement; the app remains usable without it.
+    });
+  });
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
