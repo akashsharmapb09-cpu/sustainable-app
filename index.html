@@ -400,6 +400,78 @@ td{font-weight:600}
 @media(prefers-reduced-motion:reduce){.editorial-topic,.impact-feature,.hover-arrow{transition:none}}
 
 body.route-dashboard .top{display:none}body.route-dashboard .app-sidebar{display:flex;position:fixed;inset:0 auto 0 0;width:264px;flex-direction:column;background:#fbfaf6;border-right:1px solid var(--line);padding:22px 20px;z-index:10}body.route-dashboard main{margin-left:264px}body.route-dashboard main>*:not(#dashboard),body.route-dashboard footer{display:none!important}body.route-dashboard #dashboard{display:block!important;min-height:100vh;padding-left:clamp(24px,4vw,64px);padding-right:clamp(24px,4vw,64px)}body.route-dashboard .app-sidebar .side-links a[href='/#recommend']{border-left-color:transparent}@media(max-width:760px){body.route-dashboard .app-sidebar{position:sticky;top:0;width:100%;height:auto;padding:12px 16px;display:block;border-right:0;border-bottom:1px solid var(--line)}body.route-dashboard .app-sidebar .side-brand{padding:0 0 10px;border:0}body.route-dashboard .app-sidebar .side-profile,body.route-dashboard .app-sidebar .side-bottom{display:none}body.route-dashboard .app-sidebar .side-links{display:flex;overflow-x:auto;gap:4px}body.route-dashboard .app-sidebar .side-links a{white-space:nowrap;padding:9px 10px;border-left:0;border-bottom:2px solid transparent;font-size:12px}body.route-dashboard main{margin-left:0}body.route-dashboard #dashboard{padding:38px 5%}}
+
+/* Mobile-first usability and performance polish */
+html{scroll-padding-top:72px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{min-width:320px;overflow-x:hidden}
+img,svg,video,canvas{max-width:100%}
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+button,a{touch-action:manipulation}
+a,button{outline-offset:3px}
+:focus-visible{outline:2px solid #315b3d;outline-offset:3px}
+@media(max-width:760px){
+  .top{height:auto;min-height:64px;padding:12px 5%;gap:12px;flex-wrap:wrap}
+  .brand{font-size:24px}
+  nav{order:3;width:100%;gap:0;justify-content:flex-start;overflow-x:auto;white-space:nowrap;padding:5px 0 3px;scrollbar-width:thin}
+  nav a{flex:0 0 auto;padding:10px 12px}
+  .top>.pill,.top>.btn{padding:11px 14px;font-size:12px;white-space:nowrap}
+  main{width:100%;min-width:0}
+  .hero{grid-template-columns:minmax(0,1fr)!important;gap:26px!important;padding:38px 5% 28px!important}
+  .hero-copy-slide{min-width:0}
+  .hero h1,.hero-copy-slide h1{font-size:clamp(43px,11vw,66px)!important;line-height:.98!important;overflow-wrap:normal}
+  .hero-copy-slide p{font-size:15px;line-height:1.65}
+  .hero-visual-slide,.hero-visual,.visual{width:100%;min-width:0;min-height:330px}
+  .planet{max-width:min(70vw,300px);max-height:min(70vw,300px)}
+  .preview{width:min(92%,400px);left:50%;right:auto;transform:translateX(-50%);bottom:12px}
+  .preview-body{padding:15px}
+  .hero-deck-controls{flex-wrap:wrap;gap:10px}
+  .strip{padding:14px 5%;gap:12px;flex-wrap:wrap;font-size:10px}
+  section:not(.hero):not(.dashboard-section){padding-left:5%!important;padding-right:5%!important}
+  .section-head{gap:12px;align-items:flex-start;flex-direction:column}
+  .section-head h2,.section-title{font-size:clamp(32px,8vw,46px)!important}
+  .grid,.cards,.catalog-grid,.recommend-grid,.feature-grid{grid-template-columns:minmax(0,1fr)!important}
+  .card,.swap-card,.recommend-card{min-width:0}
+  .actions{display:flex;flex-wrap:wrap;gap:10px}
+  .actions .btn,.actions a{min-height:46px;display:inline-flex;align-items:center;justify-content:center}
+  input[type="range"]{width:100%;min-height:28px;touch-action:pan-y}
+  input,select,textarea{max-width:100%;font-size:16px!important}
+  .app-sidebar{max-width:100%;box-sizing:border-box}
+  .editorial-dashboard-head h2{font-size:clamp(43px,11vw,56px)!important}
+  .editorial-bento{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .impact-feature{grid-column:1/-1;min-width:0;padding:22px}
+  .impact-number{font-size:clamp(58px,13vw,76px)}
+  .ritual-card{grid-column:1/-1;min-width:0}
+  .editorial-topic{grid-column:span 1;min-width:0;padding:15px;min-height:285px}
+  .editorial-topic h3{font-size:clamp(25px,6.5vw,32px)}
+  .editorial-next{grid-column:1/-1;position:static;min-width:0;padding:20px}
+  .dashboard-source-note{overflow-wrap:anywhere}
+  footer{padding-left:5%!important;padding-right:5%!important}
+}
+@media(max-width:420px){
+  .top{padding:10px 4%}
+  .brand{font-size:22px}
+  .top>.pill,.top>.btn{padding:10px 11px}
+  .hero{padding-top:30px!important}
+  .hero h1,.hero-copy-slide h1{font-size:43px!important}
+  .hero-visual-slide,.hero-visual,.visual{min-height:300px}
+  .preview{bottom:8px}
+  .preview-head{font-size:9px}
+  .editorial-bento{grid-template-columns:minmax(0,1fr)}
+  .editorial-topic{grid-column:1/-1;min-height:240px;padding:18px}
+  .editorial-topic h3{font-size:33px}
+  .topic-foot{font-size:8px}
+  .impact-top,.impact-bottom{font-size:9px}
+  .dashboard-section{padding-left:18px!important;padding-right:18px!important}
+  .ritual-ring{width:140px;height:140px}
+}
+@media(hover:none){
+  .editorial-topic:hover,.impact-feature:hover{transform:none}
+  .hover-arrow{opacity:1;transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
 </style>
 <script>
 (function(){
