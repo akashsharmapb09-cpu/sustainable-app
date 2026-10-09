@@ -131,3 +131,15 @@
     animation: none;
   }
 }
+
+/* Wireframe globe and premium responsive primitives */
+.wire-globe-wrap{position:relative;display:grid;min-height:390px;place-items:center;overflow:hidden}
+.wire-globe{position:relative;width:min(74vw,340px);aspect-ratio:1;border:1px solid rgba(14,14,14,.38);border-radius:50%;overflow:hidden;background:transparent;transform:rotate(-12deg)}
+.wire-globe:before,.wire-globe:after{content:"";position:absolute;inset:0;border:1px solid rgba(14,14,14,.28);border-radius:50%;pointer-events:none}
+.wire-globe:before{transform:scaleX(.58)}.wire-globe:after{transform:scaleX(.22)}
+.globe-latitude,.globe-longitude,.globe-meridian,.globe-axis{position:absolute;display:block;border:1px solid rgba(14,14,14,.25);border-radius:50%}
+.globe-latitude{left:-2%;width:104%;height:28%}.latitude-one{top:18%}.latitude-two{top:36%;height:28%}.latitude-three{top:58%;height:24%}
+.globe-longitude{inset:-1px 20%;}.longitude-one{transform:rotate(35deg)}.longitude-two{transform:rotate(-35deg)}
+.globe-meridian{inset:-1px 38%;transform:rotate(90deg)}.globe-axis{left:50%;top:-8%;height:116%;border-width:0 0 0 1px;border-radius:0;transform:rotate(12deg)}
+.globe-figure,.globe-coordinate{position:absolute;font:9px ui-monospace,monospace;letter-spacing:.1em;color:rgba(14,14,14,.55)}.globe-figure{left:0;bottom:20px}.globe-coordinate{right:0;top:24px;writing-mode:vertical-rl}
+@media(max-width:767px){.wire-globe-wrap{min-height:300px}.wire-globe{width:min(72vw,270px)}.globe-figure{left:4%;bottom:8px}.globe-coordinate{right:4%;top:8px}}
