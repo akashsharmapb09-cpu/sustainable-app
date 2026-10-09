@@ -20,7 +20,7 @@ function WireGlobe() {
         <span className="globe-meridian" />
         <span className="globe-axis" />
       </div>
-      <span className="globe-figure">FIG. 001 — A LIVING SYSTEM</span>
+      <span className="globe-figure">FIG. 001 / A LIVING SYSTEM</span>
       <span className="globe-coordinate">31°38′N / 74°52′E</span>
     </div>
   );
@@ -31,10 +31,10 @@ export function LandingPage() {
   const panel = panels[active];
 
   return (
-    <main className="min-h-screen bg-[#F7F5F0] text-[#0E0E0E]">
+    <main className="min-h-screen w-full max-w-full overflow-x-clip bg-[#F7F5F0] text-[#0E0E0E]">
       <header className="flex flex-wrap items-center justify-between gap-4 border-b border-black/10 px-5 py-5 sm:px-10 lg:px-[8%]">
         <Link to="/" className="font-serif text-2xl tracking-tight" aria-label="GreenSwap home">GreenSwap<span className="text-[#b64b2c]">.</span></Link>
-        <nav aria-label="Main navigation" className="flex items-center gap-5 text-xs">
+        <nav aria-label="Main navigation" className="flex flex-wrap items-center justify-end gap-3 text-xs sm:gap-5">
           <a href="#approach" className="hover:underline">Our approach</a>
           <Link to="/explore" className="hover:underline">Explore swaps</Link>
           <Link to="/onboarding" className="rounded-full bg-[#0E0E0E] px-5 py-3 text-[#F7F5F0] hover:bg-[#333]">Start building ↗</Link>
@@ -42,8 +42,8 @@ export function LandingPage() {
       </header>
 
       <section className="editorial-grain mx-auto grid max-w-[1440px] grid-cols-1 items-center gap-10 overflow-hidden px-5 py-14 sm:px-10 md:grid-cols-12 md:gap-6 md:py-20 lg:px-[8%]">
-        <div className="md:col-span-7">
-          <p className="taxonomy-label mb-6 flex items-center gap-3"><span className="inline-block h-2 w-2 rounded-full bg-[#315b3d]" /> EVIDENCE-AWARE · INDIA-CALIBRATED · MADE FOR REAL LIFE</p>
+        <div className="min-w-0 md:col-span-7">
+          <p className="taxonomy-label mb-6 flex flex-wrap items-center gap-3"><span className="inline-block h-2 w-2 shrink-0 rounded-full bg-[#315b3d]" /> EVIDENCE-AWARE · INDIA-CALIBRATED · MADE FOR REAL LIFE</p>
           <div className="mb-6 flex flex-wrap gap-2" aria-label="Choose a focus">
             {([['routine', 'Everyday routine'], ['food', 'Food waste'], ['lowCost', 'Low-cost habits']] as const).map(([key, label]) => (
               <button key={key} type="button" onClick={() => setActive(key)} aria-pressed={active === key} className={`border px-3 py-2 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#315b3d] ${active === key ? 'border-[#0E0E0E] bg-[#0E0E0E] text-[#F7F5F0]' : 'border-black/15 hover:border-black/40'}`}>{label}</button>
@@ -52,8 +52,9 @@ export function LandingPage() {
           <AnimatePresence mode="wait">
             <motion.div key={active} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
               <p className="taxonomy-label">{panel.label}</p>
-              <h1 className="mt-4 max-w-3xl font-serif text-6xl leading-[.91] tracking-[-.045em] sm:text-7xl lg:text-[88px]">{panel.title}</h1>
-              <p className="mt-7 max-w-xl text-base leading-7 text-black/65">{panel.body}</p>
+              <h1 className="mt-4 max-w-3xl break-words font-serif text-5xl leading-[.96] tracking-[-.045em] sm:text-6xl lg:text-[82px]">Make a lighter footprint.<span className="block font-normal">Keep the good life.</span></h1>
+              <p className="mt-7 max-w-xl text-base leading-7 text-black/75">Practical swaps backed by DEFRA, CEA, EPA data.</p>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-black/60">{panel.body}</p>
             </motion.div>
           </AnimatePresence>
           <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -62,7 +63,7 @@ export function LandingPage() {
           </div>
           <p className="mt-8 border-t border-black/10 pt-4 text-xs text-black/55">Small steps, clear reasoning. No guilt. Just useful next moves.</p>
         </div>
-        <div className="md:col-span-5"><WireGlobe /></div>
+        <div className="min-w-0 md:col-span-5"><WireGlobe /></div>
       </section>
 
       <section id="approach" className="border-y border-black/10 bg-[#efede6] px-5 py-7 sm:px-10 lg:px-[8%]">
@@ -73,7 +74,17 @@ export function LandingPage() {
         </div>
         <p className="mx-auto mt-8 max-w-6xl border-t border-black/10 pt-3 font-mono text-[9px] tracking-widest text-black/45">GREEN SWAP FIELD NOTES · RECOMMENDATIONS, NOT PERSONALIZED SCIENTIFIC MEASUREMENTS</p>
       </section>
-      <footer className="border-t border-black/10 px-5 py-6 sm:px-10 lg:px-[8%]"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3"><p className="text-sm text-black/55">Built to make a lighter footprint. Keep the good life.</p><nav aria-label="Legal links" className="flex gap-4 text-xs"><Link to="/terms" className="underline underline-offset-4">Terms and conditions</Link><Link to="/privacy" className="underline underline-offset-4">Privacy</Link></nav></div></footer>
+      <footer className="border-t border-black/10 px-5 py-6 sm:px-10 lg:px-[8%]">
+        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+          <p className="font-mono text-[10px] tracking-wide text-black/55">© 2026 GreenSwap • Data: DEFRA • No cookies</p>
+          <nav aria-label="Footer links" className="flex flex-wrap gap-x-4 gap-y-2 text-xs">
+            <Link to="/launch" className="underline underline-offset-4">Launch kit</Link>
+            <Link to="/methodology" className="underline underline-offset-4">Methodology</Link>
+            <Link to="/terms" className="underline underline-offset-4">Terms</Link>
+            <Link to="/privacy" className="underline underline-offset-4">Privacy</Link>
+          </nav>
+        </div>
+      </footer>
     </main>
   );
 }

@@ -1,8 +1,11 @@
 User-agent: *
 Allow: /
-Disallow: /profile
-Disallow: /onboarding
 Disallow: /dashboard
-Disallow: /pro
-Disallow: /terms
+Disallow: /profile
+Disallow: /settings
+Disallow: /log
+Disallow: /progress
+Disallow: /admin
+Disallow: /onboarding
+
 Sitemap: https://sustainable-app-qccf.vercel.app/sitemap.xml

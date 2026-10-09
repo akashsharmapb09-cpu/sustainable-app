@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://sustainable-app-qccf.vercel.app/</loc></url>
-  <url><loc>https://sustainable-app-qccf.vercel.app/onboarding</loc></url>
+  <url><loc>https://sustainable-app-qccf.vercel.app/launch</loc></url>
   <url><loc>https://sustainable-app-qccf.vercel.app/explore</loc></url>
+  <url><loc>https://sustainable-app-qccf.vercel.app/about</loc></url>
+  <url><loc>https://sustainable-app-qccf.vercel.app/methodology</loc></url>
+  <url><loc>https://sustainable-app-qccf.vercel.app/terms</loc></url>
+  <url><loc>https://sustainable-app-qccf.vercel.app/privacy</loc></url>
+  <url><loc>https://sustainable-app-qccf.vercel.app/cookies</loc></url>
 </urlset>

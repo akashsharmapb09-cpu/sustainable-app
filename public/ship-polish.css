@@ -1,0 +1,11 @@
+/* Launch QA: keep mobile layouts within the visible viewport. */
+html, body, #root { width: 100%; max-width: 100%; min-width: 0; }
+html, body { overflow-x: clip; }
+*, *::before, *::after { box-sizing: border-box; }
+img, video, canvas, svg { max-width: 100%; }
+main, section, header, footer, nav, article, aside { min-width: 0; }
+@media (max-width: 374px) {
+  h1, h2, h3 { overflow-wrap: anywhere; }
+  input, select, textarea, button { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { html:focus-within { scroll-behavior: auto; } }
