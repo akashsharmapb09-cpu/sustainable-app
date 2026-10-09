@@ -8,6 +8,7 @@ const DashboardPage = lazy(() => import('./features/dashboard/DashboardPage').th
 const ProfilePage = lazy(() => import('./features/profile/ProfilePage').then(m => ({ default: m.ProfilePage })));
 const ProPage = lazy(() => import('./features/pro/ProPage').then(m => ({ default: m.ProPage })));
 const TermsPage = lazy(() => import('./features/legal/TermsPage').then(m => ({ default: m.TermsPage })));
+const PrivacyPage = lazy(() => import('./features/legal/PrivacyPage').then(m => ({ default: m.PrivacyPage })));
 
 function RouteMotion({ children }: { children: React.ReactNode }) {
   return <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -3 }} transition={{ duration: 0.4, ease: 'easeOut' }}>{children}</motion.div>;
@@ -25,6 +26,7 @@ function App() {
           <Route path="/profile" element={<RouteMotion><ProfilePage /></RouteMotion>} />
           <Route path="/pro" element={<RouteMotion><ProPage /></RouteMotion>} />
           <Route path="/terms" element={<RouteMotion><TermsPage /></RouteMotion>} />
+          <Route path="/privacy" element={<RouteMotion><PrivacyPage /></RouteMotion>} />
           <Route path="/explore" element={<Navigate to="/dashboard#topics" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
