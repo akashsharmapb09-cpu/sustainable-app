@@ -82,6 +82,7 @@ export function LandingPage() {
             <Link to="/methodology" className="underline underline-offset-4">Methodology</Link>
             <Link to="/terms" className="underline underline-offset-4">Terms</Link>
             <Link to="/privacy" className="underline underline-offset-4">Privacy</Link>
+            <Link to="/faq" className="underline underline-offset-4">FAQ</Link>
           </nav>
         </div>
       </footer>

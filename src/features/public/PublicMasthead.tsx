@@ -40,6 +40,7 @@ export function PublicFooter() {
           <Link to="/terms" className="hover:text-foreground">Terms</Link>
           <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
           <Link to="/about" className="hover:text-foreground">About</Link>
+          <Link to="/faq" className="hover:text-foreground">FAQ</Link>
         </nav>
       </div>
     </footer>

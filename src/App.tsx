@@ -22,6 +22,7 @@ const AuthVerificationPage = lazy(() => import('./features/auth/pages/AuthVerifi
 const TermsPage = lazy(() => import('./features/legal/TermsPage').then(m => ({ default: m.TermsPage })));
 const PrivacyPage = lazy(() => import('./features/legal/PrivacyPage').then(m => ({ default: m.PrivacyPage })));
 const CookiesPage = lazy(() => import('./features/public/LegalPages').then(m => ({ default: m.CookiesPage })));
+const FAQPage = lazy(() => import('./features/public/LegalPages').then(m => ({ default: m.FAQPage })));
 const NotFoundPage = lazy(() => import('./features/public/LegalPages').then(m => ({ default: m.NotFoundPage })));
 
 function LoadingScreen() {
@@ -66,6 +67,7 @@ function App() {
           <Route path="/terms" element={<RouteMotion><TermsPage /></RouteMotion>} />
           <Route path="/privacy" element={<RouteMotion><PrivacyPage /></RouteMotion>} />
           <Route path="/cookies" element={<RouteMotion><CookiesPage /></RouteMotion>} />
+          <Route path="/faq" element={<RouteMotion><FAQPage /></RouteMotion>} />
           <Route path="*" element={<RouteMotion><NotFoundPage /></RouteMotion>} />
         </Routes>
       </AnimatePresence>

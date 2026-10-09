@@ -53,7 +53,7 @@ export function LaunchPage() {
           </div>
         </div>
       </section>
-      <footer className="px-5 py-7 sm:px-8 lg:px-12"><div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 sm:flex-row sm:items-center"><p className="font-mono text-[10px] tracking-wide text-black/55">© 2026 GreenSwap • Data: DEFRA • No cookies</p><nav aria-label="Launch footer" className="flex flex-wrap gap-x-5 gap-y-3 text-xs"><Link to="/terms" className="underline underline-offset-4">Terms</Link><Link to="/privacy" className="underline underline-offset-4">Privacy</Link><Link to="/cookies" className="underline underline-offset-4">Cookies</Link></nav></div></footer>
+      <footer className="px-5 py-7 sm:px-8 lg:px-12"><div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 sm:flex-row sm:items-center"><p className="font-mono text-[10px] tracking-wide text-black/55">© 2026 GreenSwap • Data: DEFRA • No cookies</p><nav aria-label="Launch footer" className="flex flex-wrap gap-x-5 gap-y-3 text-xs"><Link to="/terms" className="underline underline-offset-4">Terms</Link><Link to="/privacy" className="underline underline-offset-4">Privacy</Link><Link to="/cookies" className="underline underline-offset-4">Cookies</Link><Link to="/faq" className="underline underline-offset-4">FAQ</Link></nav></div></footer>
     </main>
   );
 }
