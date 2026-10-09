@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getLocalProfile } from "../../shared/lib/localStore";
+import type { FormEvent } from "react";
 
 export function OnboardingPage() {
   const navigate = useNavigate();
@@ -21,9 +22,11 @@ export function OnboardingPage() {
       };
       localStorage.setItem("sustainable_profile", JSON.stringify(updated));
       localStorage.setItem("profile", JSON.stringify(updated));
+      const plausible = (window as Window & { plausible?: (event: string) => void }).plausible;
+      if (import.meta.env.VITE_PLAUSIBLE_DOMAIN && navigator.doNotTrack !== "1") plausible?.("onboarding_complete");
       navigate("/dashboard");
-    } catch (e: any) {
-      alert(e.message);
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : "Unable to save preferences. Please try again.");
     } finally {
       setLoading(false);
     }
