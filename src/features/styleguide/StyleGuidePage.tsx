@@ -32,6 +32,14 @@ export function StyleGuidePage() {
     document.documentElement.classList.toggle('dark', !isDark);
   };
 
+  const showButtonDemo = (variant: string) => {
+    toast({
+      title: `${variant} button works`,
+      description: 'This is an interactive styleguide preview.',
+      type: 'success',
+    });
+  };
+
   const tabs = [
     { id: 'components', label: 'Primitives & States' },
     { id: 'tokens', label: 'Color & Spacing Matrix' },
@@ -94,15 +102,28 @@ export function StyleGuidePage() {
                 <span className="taxonomy-label">PRIMITIVE // BUTTON VARIANTS & STATES</span>
               </div>
               <div className="flex flex-wrap items-center gap-3">
-                <Button variant="primary">Primary (Ink)</Button>
-                <Button variant="secondary">Secondary (Bone)</Button>
-                <Button variant="accent">Accent (Burnt)</Button>
-                <Button variant="outline">Outline</Button>
-                <Button variant="ghost">Ghost</Button>
-                <Button variant="destructive">Destructive</Button>
-                <Button variant="primary" isLoading>Loading</Button>
-                <Button variant="primary" disabled>Disabled</Button>
-                <Button variant="secondary" rightIcon={<ArrowRight className="h-3.5 w-3.5" />}>
+                <Button variant="primary" onClick={() => showButtonDemo('Primary')}>Primary (Ink)</Button>
+                <Button variant="secondary" onClick={() => showButtonDemo('Secondary')}>Secondary (Bone)</Button>
+                <Button variant="accent" onClick={() => showButtonDemo('Accent')}>Accent (Burnt)</Button>
+                <Button variant="outline" onClick={() => showButtonDemo('Outline')}>Outline</Button>
+                <Button variant="ghost" onClick={() => showButtonDemo('Ghost')}>Ghost</Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => toast({
+                    title: 'Destructive button preview',
+                    description: 'This demo does not delete or change any data.',
+                    type: 'warning',
+                  })}
+                >
+                  Destructive
+                </Button>
+                <Button variant="primary" isLoading aria-label="Loading button example">Loading</Button>
+                <Button variant="primary" disabled aria-label="Disabled button example">Disabled</Button>
+                <Button
+                  variant="secondary"
+                  rightIcon={<ArrowRight className="h-3.5 w-3.5" />}
+                  onClick={() => showButtonDemo('With icon')}
+                >
                   With Icon
                 </Button>
               </div>
@@ -180,7 +201,9 @@ export function StyleGuidePage() {
                   </div>
                   <CardFooter>
                     <span className="taxonomy-label">DMRC 2023 / DEFRA 2024</span>
-                    <Button variant="accent" size="sm">Adopt Alternative</Button>
+                    <Button variant="accent" size="sm" onClick={() => setIsModalOpen(true)}>
+                      Adopt Alternative
+                    </Button>
                   </CardFooter>
                 </Card>
 
