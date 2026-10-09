@@ -1,53 +1,77 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Badge } from '../../shared/ui';
-import { ArrowRight } from 'lucide-react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import * as THREE from 'three';
 import { OrbitControls, Stars } from '@react-three/drei';
 import { motion } from 'framer-motion';
-import './LandingPage.css';
 
-function Earth(){
-  const mesh = useRef<any>(null);
-  const tex = useLoader(THREE.TextureLoader, 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
-  useFrame(()=>{ if(mesh.current) mesh.current.rotation.y += 0.002 });
-  return <mesh ref={mesh}><sphereGeometry args={[2, 64, 64]} /><meshStandardMaterial map={tex} /></mesh>
+function Earth() {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const texture = useLoader(THREE.TextureLoader, 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
+  useFrame(() => {
+    if (meshRef.current) meshRef.current.rotation.y += 0.0015;
+  });
+  return (
+    <mesh ref={meshRef}>
+      <sphereGeometry args={[2, 64, 64]} />
+      <meshStandardMaterial map={texture} />
+    </mesh>
+  );
 }
 
-export function LandingPage(){
+export function LandingPage() {
   const [dist, setDist] = useState(15);
   const freq = 5;
   const km = dist * 2 * freq * 4.33;
-  const save = km * 0.1705 - km * 0.015;
+  const carCO2 = km * 0.1705;
+  const metroCO2 = km * 0.015;
+  const save = carCO2 - metroCO2;
 
   return (
     <div className="min-h-screen bg-[#020a13] text-white overflow-hidden relative">
-      <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-8 items-center">
-        <motion.div initial={{x:-50, opacity:0}} animate={{x:0, opacity:1}}>
-          <Badge className="bg-green-500/20 text-green-300">🌍 GreenSwap 3D</Badge>
-          <h1 className="text-6xl font-black mt-6 leading-[0.9]">LIVE<br/><span className="text-green-400">SUSTAINABLY</span></h1>
-          <p className="text-white/60 mt-4">Petrol vs Metro - {save.toFixed(1)} kg CO2 bachao har month</p>
+      {/* Glow Background */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-green-500/20 rounded-full blur-[120px] pointer-events-none" />
 
-          <div className="flex items-center gap-4 mt-6">
-            <input type="range" min="1" max="50" value={dist} onChange={e=>setDist(Number(e.target.value))} className="w-40 accent-green-500" />
-            <span>{dist} km</span>
+      <div className="max-w-7xl mx-auto px-6 py-10 md:py-20 grid md:grid-cols-2 gap-8 items-center relative z-10">
+        {/* LEFT */}
+        <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.8 }}>
+          <div className="inline-block px-3 py-1 rounded-full bg-green-500/20 border border-green-500/30 text-green-300 text-xs mb-4">🌍 GreenSwap 3D is Live</div>
+          <h1 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tight">
+            LIVE<br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-emerald-500">SUSTAINABLY</span>
+          </h1>
+          <p className="text-white/60 mt-5 text-lg max-w-md">Petrol car vs Metro — live dekho kitna CO2 aur paisa bach raha hai.</p>
+
+          <div className="mt-8 bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur">
+            <label className="text-sm text-white/70">One-way distance: {dist} km</label>
+            <input type="range" min="1" max="50" value={dist} onChange={e => setDist(Number(e.target.value))} className="w-full mt-3 accent-green-500" />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mt-8">
-            <motion.div whileHover={{rotateY:15, rotateX:10}} className="p-5 rounded-2xl bg-white/10 border border-white/20 backdrop-blur">
-              <p className="text-2xl font-bold text-green-400">{save.toFixed(1)} kg</p><p className="text-xs opacity-60">CO2 Saved</p>
+          <div className="grid grid-cols-3 gap-3 mt-6">
+            <motion.div whileHover={{ rotateY: 15, rotateX: 10, scale: 1.05 }} className="p-4 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-xl" style={{ transformStyle: "preserve-3d" }}>
+              <p className="text-[11px] opacity-60">Car CO2</p><p className="text-xl font-bold mt-1">{carCO2.toFixed(1)} kg</p>
             </motion.div>
-            <motion.div whileHover={{rotateY:-15, rotateX:10}} className="p-5 rounded-2xl bg-white/10 border border-white/20 backdrop-blur">
-              <p className="text-2xl font-bold">₹{(km*8).toFixed(0)}</p><p className="text-xs opacity-60">Money Saved</p>
+            <motion.div whileHover={{ rotateY: -15, rotateX: 10, scale: 1.05 }} className="p-4 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-xl" style={{ transformStyle: "preserve-3d" }}>
+              <p className="text-[11px] opacity-60">Metro CO2</p><p className="text-xl font-bold mt-1">{metroCO2.toFixed(1)} kg</p>
+            </motion.div>
+            <motion.div whileHover={{ rotateY: 15, rotateX: -10, scale: 1.05 }} className="p-4 rounded-2xl bg-green-500/20 border border-green-500/30 backdrop-blur-xl" style={{ transformStyle: "preserve-3d" }}>
+              <p className="text-[11px] text-green-300">YOU SAVE</p><p className="text-xl font-bold mt-1 text-green-400">{save.toFixed(1)} kg</p>
             </motion.div>
           </div>
 
-          <Link to="/app" className="inline-block mt-8"><Button className="bg-green-500 rounded-full px-8 py-6">Start Journey <ArrowRight className="ml-2"/></Button></Link>
+          <Link to="/app" className="inline-flex items-center gap-2 mt-8 px-8 py-4 rounded-full bg-green-500 hover:bg-green-600 text-black font-bold transition">Start Your Journey →</Link>
         </motion.div>
 
-        <div className="h-[550px] w-full"><Canvas camera={{position:[0,0,5]}}><ambientLight intensity={0.8}/><directionalLight position={[5,3,5]} intensity={1.5}/><Stars count={3000} depth={50}/><Earth/><OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.8}/></Canvas></div>
+        {/* RIGHT - 3D EARTH */}
+        <div className="h-[500px] md:h-[600px] w-full">
+          <Canvas camera={{ position: [0, 0, 5.5], fov: 45 }}>
+            <ambientLight intensity={0.8} />
+            <directionalLight position={[5, 3, 5]} intensity={1.5} />
+            <Stars count={4000} factor={4} radius={80} fade />
+            <Earth />
+            <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.6} enablePan={false} />
+          </Canvas>
+        </div>
       </div>
     </div>
-  )
+  );
 }
