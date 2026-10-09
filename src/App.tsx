@@ -24,6 +24,7 @@ function App() {
           <Route path="/dashboard" element={<RouteMotion><DashboardPage /></RouteMotion>} />
           <Route path="/profile" element={<RouteMotion><ProfilePage /></RouteMotion>} />
           <Route path="/pro" element={<RouteMotion><ProPage /></RouteMotion>} />
+          <Route path="/terms" element={<RouteMotion><TermsPage /></RouteMotion>} />
           <Route path="/explore" element={<Navigate to="/dashboard#topics" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
