@@ -4,33 +4,33 @@
     {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' https://plausible.io; connect-src 'self' https://*.convex.cloud wss://*.convex.cloud https://plausible.io"
-        }
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' https://plausible.io; connect-src 'self' https://*.convex.cloud wss://*.convex.cloud https://plausible.io" }
       ]
     }
   ],
   "rewrites": [
-    {
-      "source": "/((?!assets/|favicon\\.svg$|manifest\\.json$|icon-192\\.svg$|icon-512\\.svg$|launch-(home|explore|methodology)\\.jpg$|greenswap-logo\\.svg$|ship-polish\\.css$|og-image\\.png$|robots\\.txt$|sitemap\\.xml$|offline\\.html$|sw\\.js$).*)",
-      "destination": "/index.html"
-    }
+    { "source": "/launch", "destination": "/index.html" },
+    { "source": "/about", "destination": "/index.html" },
+    { "source": "/methodology", "destination": "/index.html" },
+    { "source": "/explore", "destination": "/index.html" },
+    { "source": "/styleguide", "destination": "/index.html" },
+    { "source": "/onboarding", "destination": "/index.html" },
+    { "source": "/dashboard", "destination": "/index.html" },
+    { "source": "/profile", "destination": "/index.html" },
+    { "source": "/pro", "destination": "/index.html" },
+    { "source": "/recommendations", "destination": "/index.html" },
+    { "source": "/log", "destination": "/index.html" },
+    { "source": "/progress", "destination": "/index.html" },
+    { "source": "/settings", "destination": "/index.html" },
+    { "source": "/login", "destination": "/index.html" },
+    { "source": "/reset-password", "destination": "/index.html" },
+    { "source": "/verify", "destination": "/index.html" },
+    { "source": "/terms", "destination": "/index.html" },
+    { "source": "/privacy", "destination": "/index.html" },
+    { "source": "/cookies", "destination": "/index.html" }
   ]
 }
