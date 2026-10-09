@@ -48,13 +48,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const demoProfile = demoActive ? getLocalProfile("demo-user") : null;
 
   const user = useMemo<AuthUser | null>(() => {
-    if (demoActive) return demoUser();
-    if (!currentUser) return null;
-    return {
-      id: currentUser.id,
-      email: currentUser.email,
-      created_at: new Date(currentUser.createdAt).toISOString(),
-      email_confirmed_at: currentUser.emailVerificationTime
+  if (demoActive) return demoUser();
+  if (currentUser === undefined) return null;
+  if (currentUser === null) return null;
+  return {
+    id: (currentUser as any)._id || (currentUser as any).id,
+    email: currentUser.email,
+    created_at: new Date((currentUser as any).createdAt || Date.now()).toISOString(),
         ? new Date(currentUser.emailVerificationTime).toISOString()
         : null,
       user_metadata: { full_name: currentUser.name ?? "" },
