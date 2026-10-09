@@ -46,7 +46,7 @@ For local development, set `VITE_CONVEX_URL=http://127.0.0.1:3210` and `VITE_APP
 pnpm dev
 ```
 
-The Convex CLI deploys functions and generates local API types. Production builds require a real HTTPS Convex Cloud URL; local URLs are rejected. Convex Auth remains in the backend, but sign-in and account-creation screens are currently disabled in the app; visitors use the browser-local field demo instead.
+The Convex CLI deploys functions and generates local API types. Production builds require a real HTTPS Convex Cloud URL when `VITE_ENABLE_MOCK_FALLBACK=false`; local URLs are rejected. With the fallback enabled, the app runs as a browser-local field demo and account/backend features are unavailable. Netlify is configured to build with the demo fallback and serve client-side routes; add a real `VITE_CONVEX_URL` and disable the fallback in Netlify environment settings to enable a Convex-backed deployment.
 
 The previous Supabase TOTP feature has been retired; Convex Auth does not provide a drop-in TOTP replacement. Administrative routes still require an authenticated user with the admin role.
 

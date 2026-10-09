@@ -2,10 +2,23 @@ import { describe, expect, it } from 'vitest';
 import { getValidatedEnv, isConvexConfigured } from './env';
 
 describe('environment validation', () => {
-  it('rejects missing or placeholder Convex settings in production', () => {
-    expect(() => getValidatedEnv({}, 'production')).toThrow(/missing VITE_CONVEX_URL/);
+  it('allows production demo fallback without a Convex deployment', () => {
+    const result = getValidatedEnv({ VITE_ENABLE_MOCK_FALLBACK: 'true' }, 'production');
+
+    expect(result.VITE_CONVEX_URL).toBeUndefined();
+    expect(result.VITE_ENABLE_MOCK_FALLBACK).toBe(true);
+  });
+
+  it('requires a Convex deployment when production demo fallback is disabled', () => {
+    expect(() => getValidatedEnv({
+      VITE_ENABLE_MOCK_FALLBACK: 'false',
+    }, 'production')).toThrow(/missing VITE_CONVEX_URL/);
+  });
+
+  it('rejects placeholder Convex settings in production', () => {
     expect(() => getValidatedEnv({
       VITE_CONVEX_URL: 'https://example-project-123.convex.cloud',
+      VITE_ENABLE_MOCK_FALLBACK: 'true',
     }, 'production')).toThrow(/valid HTTPS Convex deployment URL/);
   });
 

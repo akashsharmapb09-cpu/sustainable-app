@@ -2,6 +2,9 @@
 command = "npm run build"
 publish = "dist"
 
+[build.environment]
+VITE_ENABLE_MOCK_FALLBACK = "true"
+
 [[redirects]]
 from = "/*"
 to = "/index.html"

@@ -40,7 +40,11 @@ export function getValidatedEnv(
 ): EnvConfig {
   if (mode === 'production') {
     const url = typeof source.VITE_CONVEX_URL === 'string' ? source.VITE_CONVEX_URL.trim() : '';
-    if (!isConvexCloudConfigured(source)) {
+    const mockFallback = source.VITE_ENABLE_MOCK_FALLBACK === undefined
+      || source.VITE_ENABLE_MOCK_FALLBACK === true
+      || source.VITE_ENABLE_MOCK_FALLBACK === 'true'
+      || source.VITE_ENABLE_MOCK_FALLBACK === '1';
+    if (!isConvexCloudConfigured(source) && (url.length > 0 || !mockFallback)) {
       const reason = url.length === 0
         ? 'missing VITE_CONVEX_URL'
         : 'VITE_CONVEX_URL must be a valid HTTPS Convex deployment URL';
