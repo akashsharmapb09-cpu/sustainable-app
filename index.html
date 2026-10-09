@@ -134,7 +134,7 @@ function update(){const km=+$('#dist').value,days=+$('#freq').value;$('#distv').
 
 /* Route-aware layouts for the catalogue and methodology pages */
 (function(){
- const path=location.pathname.replace(/\\/+$/,'')||'/';
+ let path=location.pathname||'/'; if(path.length>1 && path.endsWith('/')) path=path.slice(0,-1);
  if(path==='/explore'||path==='/methodology'){
   const isExplore=path==='/explore';
   document.body.classList.add(isExplore?'route-catalog':'route-method');
