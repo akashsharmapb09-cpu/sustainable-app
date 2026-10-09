@@ -89,18 +89,18 @@ export function useUpdateProfile() {
   const qc = useQueryClient();
   const { user, refreshProfile } = useAuth();
   return useMutation({
-    mutationFn: async (updates: ProfileUpdates) => {
-      if (!user?.id) throw new Error("Not authenticated");
-      const current = getLocalProfile(user.id)
-        ?? defaultProfile(user.id, user.email ?? "", user.user_metadata.full_name);
+       mutationFn: async (updates: ProfileUpdates) => {
+      const uid = user?.id || localStorage.getItem("greenswap_user_id") || "demo-user";
+      const current = getLocalProfile(uid) 
+        ?? defaultProfile(uid, user?.email ?? "", user?.user_metadata?.full_name)
       const next: Profile = {
         ...current,
         ...updates,
-        id: user.id,
-        email: user.email ?? current.email,
+        id: uid,
+        email: user?.email ?? current.email,
         updated_at: new Date().toISOString(),
       };
-      if (user.id === "demo-user") {
+      if (uid === "demo-user" || !isConvexConfigured()) {
         setLocalProfile(next);
         return next;
       }
