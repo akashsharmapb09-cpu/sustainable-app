@@ -270,10 +270,17 @@ function update(){const km=+$('#dist').value,days=+$('#freq').value;$('#distv').
  const nameInput=document.querySelector('#profile-name'),emailInput=document.querySelector('#profile-email');
  if(nameInput)nameInput.value=profile.name||'';
  if(emailInput)emailInput.value=profile.email||'';
+ const prefLabels={travel:{car:'Mostly car or taxi',two:'Mostly walking or cycling',mixed:'Mixed'},diet:{meat:'Meat often',mixed:'Mixed diet',plant:'Mostly plant-based'},energy:{low:'Low electricity use',medium:'Medium electricity use',high:'High electricity use'},waste:{rarely:'Rarely waste food',sometimes:'Sometimes waste food',often:'Often waste food'},budget:{low:'Low budget',medium:'Medium budget',flexible:'Flexible budget'},priority:{impact:'Environmental impact',money:'Save money',ease:'Easy habits'}};
+ const storedPrefs=read('greenswap-preferences',{});
  const updateSummary=()=>{
-  const map={travel:['travel','profile-travel'],diet:['diet','profile-diet'],budget:['budget','profile-budget'],priority:['priority','profile-priority']};
-  Object.entries(map).forEach(([key,entry])=>{const el=document.getElementById(entry[1]);const control=document.getElementById(key);if(el)el.textContent=control&&control.value?control.options[control.selectedIndex].text:'Not set';});
+  const map={travel:'profile-travel',diet:'profile-diet',budget:'profile-budget',priority:'profile-priority'};
+  Object.entries(map).forEach(([key,id])=>{const el=document.getElementById(id);const value=storedPrefs[key];if(el)el.textContent=value?(prefLabels[key]?.[value]||value):'Not set';});
  };
+ const prefsForm=document.querySelector('#prefs');
+ if(prefsForm){
+  Object.keys(prefLabels).forEach(key=>{const control=document.getElementById(key);if(control&&storedPrefs[key])control.value=storedPrefs[key]});
+  prefsForm.addEventListener('submit',()=>{const values={};Object.keys(prefLabels).forEach(key=>{const control=document.getElementById(key);if(control)values[key]=control.value});write('greenswap-preferences',values);Object.assign(storedPrefs,values);updateSummary();});
+ }
  updateSummary();
  const profileForm=document.querySelector('#profile-form');
  if(profileForm)profileForm.addEventListener('submit',e=>{e.preventDefault();const data={name:nameInput.value.trim(),email:emailInput.value.trim()};const ok=write('greenswap-profile',data);const status=document.querySelector('#profile-status');if(status)status.textContent=ok?'Profile saved on this device.':'Could not save; check your browser storage settings.';});
