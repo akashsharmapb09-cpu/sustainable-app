@@ -15,9 +15,7 @@ createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
         <ConvexAuthProvider client={convex}>
           <AuthProvider>
-            <ToastProvider>
               <App />
-            </ToastProvider>
           </AuthProvider>
         </ConvexAuthProvider>
       </QueryClientProvider>
