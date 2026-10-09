@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router-dom';
+import { ReactNode } from "react";
 
-export function ProtectedRoute() {
-  return <Outlet />;
+export default function ProtectedRoute({ children }: { children: ReactNode }) {
+  return <>{children}</>;
 }
