@@ -9,15 +9,10 @@ export function OnboardingPage() {
   const [effort, setEffort] = useState("medium");
   const [loading, setLoading] = useState(false);
 
-  const submit = async () => {
+   const submit = async () => {
     setLoading(true);
     try {
-      const profile = getLocalProfile();
-      if (!profile) {
-        alert("Not logged in - please signup again");
-        navigate("/signup");
-        return;
-      }
+      const profile = getLocalProfile() || { id: "demo-user", email: "demo@greenswap.app" };
       const updated = {
         ...profile,
         primary_commute: commute,
