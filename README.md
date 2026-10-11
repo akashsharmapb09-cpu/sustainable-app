@@ -1,71 +1,46 @@
-# 🌱 GreenSwap - Sustainable Living App
+# GreenSwap
 
-**Live Demo:** https://sustainable-app-qccf.vercel.app
+**Production site:** https://sustainable-app-qccf.vercel.app  
+**Framework:** Next.js App Router · React · TypeScript · Tailwind CSS · Framer Motion · Vercel
 
-> Most carbon calculators give you guilt. We give you arithmetic.
+GreenSwap is an evidence-aware field guide for practical sustainable swaps. The interface is designed to help people explore alternatives, save ideas and understand that environmental estimates depend on sources, geography and assumptions.
 
-### About
-GreenSwap helps users track and reduce their carbon footprint with real data.
+## Local development
 
-### Tech Stack
-- React + Vite + TypeScript
-- Convex + Convex Auth
-- Vercel (Deployment)
-
-### Features
-- Carbon footprint calculation
-- Explainable, ranked sustainable swaps with source references and estimated impact/cost ranges
-- User dashboard
-- Persistent activity logging, reduction goals, self-reported challenges, and progress tracking
-- No-sign-in demo access with browser-local profiles, activity logging, goals, and progress
-
-### Local development
-
-Requirements: Node.js 22 and pnpm 10. Visitors can use the field demo without signing in; demo profiles and activity data are stored in the current browser.
-
-For local HTTPS on Windows, create a development certificate once from PowerShell:
-
-```powershell
-New-Item -ItemType Directory -Force .cert | Out-Null
-$cert = New-SelfSignedCertificate -Type SSLServerAuthentication -DnsName localhost -CertStoreLocation Cert:\CurrentUser\My -FriendlyName "GreenSwap localhost HTTPS" -NotAfter (Get-Date).AddYears(2) -KeyExportPolicy Exportable
-Export-PfxCertificate -Cert $cert -FilePath .cert\localhost.pfx -Password (New-Object System.Security.SecureString) | Out-Null
-Export-Certificate -Cert $cert -FilePath .cert\localhost.cer -Force | Out-Null
-```
-
-Then run `pnpm dev:https` and open `https://localhost:5175`. The browser may show a certificate warning until you import `.cert\localhost.cer` into the current-user Trusted Root Certification Authorities store and accept Windows' trust prompt. The certificate files are local-only and ignored by Git. Keep the Convex backend running separately with `pnpm exec convex dev`.
+Requirements: Node.js 22+ and pnpm 10.
 
 ```sh
 pnpm install
-Copy-Item .env.example .env.local
-pnpm exec convex dev
-```
-
-For local development, set `VITE_CONVEX_URL=http://127.0.0.1:3210` and `VITE_APP_URL=https://localhost:5175` in `.env.local`; keep `pnpm exec convex dev` running while using the app. Alternatively, point `VITE_CONVEX_URL` at a real Convex Cloud deployment. Sign-in and account creation screens are disabled; protected app routes open the local field demo automatically.
-
-```sh
 pnpm dev
 ```
 
-The Convex CLI deploys functions and generates local API types. Production builds require a real HTTPS Convex Cloud URL when `VITE_ENABLE_MOCK_FALLBACK=false`; local URLs are rejected. With the fallback enabled, the app runs as a browser-local field demo and account/backend features are unavailable. Netlify is configured to build with the demo fallback and serve client-side routes; add a real `VITE_CONVEX_URL` and disable the fallback in Netlify environment settings to enable a Convex-backed deployment.
+Open http://localhost:3000.
 
-### AI assistant
-
-The floating GreenSwap assistant sends conversations to a Convex server action, which calls the OpenAI Responses API. Deploy the Convex backend, configure `VITE_CONVEX_URL` in the frontend hosting environment, and add `OPENAI_API_KEY` to the Convex deployment environment variables. Optionally set `OPENAI_MODEL` there (defaults to `gpt-4.1-mini`). Keep OpenAI credentials server-side; never add them to a `VITE_` variable. Conversations are held in page memory and are sent to OpenAI with response storage disabled.
-
-The previous Supabase TOTP feature has been retired; Convex Auth does not provide a drop-in TOTP replacement. Administrative routes still require an authenticated user with the admin role.
-
-### Validation
+## Quality checks
 
 ```sh
+pnpm run qa:links
 pnpm run lint
 pnpm test
 pnpm run build
+pnpm exec playwright install chromium
+pnpm run qa:browser
 ```
 
-The GitHub Actions CI workflow runs lint, unit tests, and build checks for pushes and pull requests.
+The GitHub Actions QA workflow runs the route/asset audit, lint, unit tests, production build and Chromium viewport checks on pushes and pull requests to `main`.
 
-The active backend schema and functions are under [`convex/`](./convex/). The [`supabase/`](./supabase/) directory is retained as the legacy schema and migration reference; it is no longer used by the app. Existing Supabase data is not transferred automatically: export it before switching deployments and import it into Convex using an explicit migration process.
+## Route map
 
-To grant an administrator, create a `userRoles` document in the Convex dashboard with that account's `userId` (`users` document ID) and `role: "admin"`. Roles are not writable through the public client API.
+- `/` — marketing homepage
+- `/explore` and `/catalogue` — public swap discovery
+- `/how-it-works`, `/about`, `/impact`, `/methodology`, `/faq`
+- `/blog`, `/community`, `/sitemap-page`
+- `/privacy`, `/terms`, `/cookies` — shared legal template with metadata and a table of contents
+- `/dashboard/explore`, `/dashboard/catalogue`, `/dashboard/activity`, `/dashboard/account`, `/dashboard/settings`
+- `/login` — mock demo-session entry
 
-Made for LPU Major Project 2026 · [GitHub](https://github.com/akashsharmapb09-cpu/sustainable-app)
+## Demo limitations
+
+Dashboard access is protected by a mock `greenswap-session` cookie, not production identity/authentication. Swap history and saved swaps use browser storage only. The sample Green Points, impact figures and starter activity are illustrative; they are not verified personal emissions results. Newsletter signups are stored only in this browser and do not send email. Referral, checkout and community backend features are previews, not active services.
+
+The public methodology page describes source families and caveats; review the item-level assumptions before using any factor in decisions or reports. GreenSwap is not a substitute for formal greenhouse-gas accounting.

@@ -1,0 +1,7 @@
+import type { Metadata } from "next";
+import { PageHeader } from "@/components/dashboard/PageHeader";
+import { ActivityTimeline } from "@/components/dashboard/ActivityTimeline";
+import { Card } from "@/components/ui/Card";
+import { ArrowDownRight, BookmarkCheck, CalendarCheck } from "lucide-react";
+export const metadata:Metadata={title:"My Activity",description:"Review a sample timeline of your GreenSwap activity."};
+export default function ActivityPage(){return <><PageHeader title="My activity" description="A timeline of recent explorations and saved ideas in the demo workspace."/><div className="mb-5 grid gap-3 sm:grid-cols-3">{[{label:"Ideas explored",value:"12",icon:ArrowDownRight},{label:"Swaps saved",value:"4",icon:BookmarkCheck},{label:"Days active",value:"3",icon:CalendarCheck}].map(item=>{const Icon=item.icon;return <Card key={item.label} className="flex items-center gap-4 p-5"><span className="grid h-10 w-10 place-items-center rounded-xl bg-forest-50 text-forest-700"><Icon size={18}/></span><div><p className="text-xs text-gray-500">{item.label}</p><p className="mt-1 text-2xl font-semibold tracking-tight">{item.value}</p></div></Card>})}</div><ActivityTimeline/><p className="mt-4 text-xs leading-5 text-gray-400">Activity counts and dates are example data, not a verified history of real-world activity.</p></>}

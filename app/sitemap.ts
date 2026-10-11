@@ -1,0 +1,3 @@
+import type { MetadataRoute } from "next";
+const base="https://sustainable-app-qccf.vercel.app";
+export default function sitemap():MetadataRoute.Sitemap{const paths=["","/explore","/catalogue","/how-it-works","/about","/impact","/faq","/blog","/community","/methodology","/privacy","/terms","/cookies"];return paths.map(path=>({url:base+path,lastModified:new Date("2026-10-11"),changeFrequency:"monthly",priority:path===""?1:.6}))}

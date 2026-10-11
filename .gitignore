@@ -25,3 +25,9 @@ dist-ssr
 
 .vercel
 .cert/
+
+# Next.js build output
+.next/
+out/
+playwright-report/
+test-results/

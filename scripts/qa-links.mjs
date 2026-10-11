@@ -1,99 +1,26 @@
-import { readdir, readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import path from 'node:path';
-import process from 'node:process';
+import { readdir, readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import path from "node:path";
+import process from "node:process";
 
-const root = process.cwd();
-const srcRoot = path.join(root, 'src');
-const appPath = path.join(srcRoot, 'App.tsx');
-
-async function walk(dir) {
-  const entries = await readdir(dir, { withFileTypes: true });
-  const result = [];
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) result.push(...await walk(fullPath));
-    else if (/\.(?:tsx|ts|html)$/.test(entry.name)) result.push(fullPath);
-  }
-  return result;
+const root=process.cwd();
+const appRoot=path.join(root,"app");
+const sourceRoots=["app","components","lib"].map(part=>path.join(root,part));
+const extensions=/\.(?:tsx|ts|jsx|js|mdx)$/;
+async function walk(directory){const result=[];let entries=[];try{entries=await readdir(directory,{withFileTypes:true})}catch{return result}for(const entry of entries){const full=path.join(directory,entry.name);if(entry.isDirectory())result.push(...await walk(full));else if(extensions.test(entry.name))result.push(full)}return result}
+const files=(await Promise.all(sourceRoots.map(walk))).flat();
+const routePages=files.filter(file=>path.relative(appRoot,file).split(path.sep).at(-1)==="page.tsx");
+const routes=routePages.map(file=>{const rel=path.relative(appRoot,path.dirname(file)).split(path.sep).filter(Boolean).filter(part=>!(part.startsWith("(")&&part.endsWith(")")));return "/"+rel.map(part=>part.startsWith("[")&&part.endsWith("]")?":dynamic":part).join("/")});
+function routeExists(pathname){const clean=pathname==="/"?"/":pathname.replace(/\/$/,"");return routes.some(route=>{if(route===clean)return true;const regex="^"+route.split("/").map(segment=>segment===":dynamic"?"[^/]+":segment.replace(/[.*+?^\${}()|[\]\\]/g,"\\$&")).join("/")+"$";return new RegExp(regex).test(clean)})}
+const problems=[];
+let literalLinks=0;
+for(const file of files){const source=await readFile(file,"utf8");const rel=path.relative(root,file);const ids=new Set([...source.matchAll(/\bid=["']([^"']+)["']/g)].map(match=>match[1]));
+ for(const match of source.matchAll(/(?:href|src)\s*=\s*["'](\/[^"'\s]*)["']/g)){const dest=match[1];if(dest.startsWith("//"))continue;const pathname=(dest.split(/[?#]/)[0]||"/").replace(/\/$/,"")||"/";literalLinks++;
+  if(/\.[a-z0-9]{2,8}$/i.test(pathname)){const asset=pathname.replace(/^\//,"");if(!existsSync(path.join(root,"public",asset))&&!existsSync(path.join(root,asset)))problems.push(`Missing static asset ${pathname} in ${rel}`);continue}
+  if(!routeExists(pathname))problems.push(`Unregistered internal route ${pathname} in ${rel}`);
+ }
+ if(path.basename(file)!=="layout.tsx"){for(const match of source.matchAll(/href=["']#([^"']+)["']/g)){if(!ids.has(match[1]))problems.push(`Missing local anchor #${match[1]} in ${rel}`)}}
 }
-
-const files = [...await walk(srcRoot), path.join(root, 'index.html')];
-const contents = new Map();
-for (const file of files) contents.set(file, await readFile(file, 'utf8'));
-
-const appSource = contents.get(appPath) ?? await readFile(appPath, 'utf8');
-const routePaths = new Set(
-  [...appSource.matchAll(/<Route\s+path=["']([^"']+)["']/g)].map(match => match[1]),
-);
-const componentImports = new Map(
-  [...appSource.matchAll(/const\s+(\w+)\s*=\s*lazy\(\(\)\s*=>\s*import\(["']\.\/([^"']+)["']\)/g)]
-    .map(match => [match[1], path.join(srcRoot, match[2] + (match[2].endsWith('.tsx') ? '' : '.tsx'))]),
-);
-const routeComponents = new Map();
-for (const match of appSource.matchAll(/<Route\s+path=["']([^"']+)["']\s+element=\{<RouteMotion><(\w+)/g)) {
-  const componentFile = componentImports.get(match[2]);
-  if (componentFile) routeComponents.set(match[1], componentFile);
-}
-
-const problems = [];
-const normalized = value => value === '/' ? '/' : value.replace(/\/$/, '');
-const explicitRoutes = [...routePaths].filter(route => route !== '*');
-
-function routeExists(candidate) {
-  const value = normalized(candidate);
-  if (routePaths.has(value)) return true;
-  return explicitRoutes.some(route => {
-    const pattern = '^' + route.split('/').map(segment =>
-      segment.startsWith(':') ? '[^/]+' : segment.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    ).join('/') + '$';
-    return new RegExp(pattern).test(value);
-  });
-}
-
-for (const [file, source] of contents) {
-  const relative = path.relative(root, file);
-  const ids = new Set([...source.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]));
-
-  for (const match of source.matchAll(/(?:to|href)\s*=\s*["'](\/[^"']*)["']/g)) {
-    const destination = match[1];
-    const pathname = normalized(destination.split(/[?#]/)[0] || '/');
-    const fragment = destination.includes('#') ? destination.split('#').slice(1).join('#').split('?')[0] : '';
-
-    if (/\.[a-z0-9]{2,8}$/i.test(pathname)) {
-      const relativeAsset = pathname.replace(/^\//, '');
-      const assetExists = existsSync(path.join(root, 'public', relativeAsset))
-        || existsSync(path.join(root, relativeAsset));
-      if (!assetExists) problems.push(`Missing static asset ${pathname} in ${relative}`);
-      continue;
-    }
-
-    if (!routeExists(pathname)) {
-      problems.push(`Unregistered internal route ${pathname} in ${relative}`);
-      continue;
-    }
-
-    if (fragment) {
-      const routeFile = routeComponents.get(pathname);
-      if (routeFile && contents.has(routeFile)) {
-        const target = contents.get(routeFile);
-        const targetIds = new Set([...target.matchAll(/\bid=["']([^"']+)["']/g)].map(item => item[1]));
-        if (!targetIds.has(fragment)) problems.push(`Missing anchor #${fragment} in route ${pathname} linked from ${relative}`);
-      } else if (fragment && !routeFile) {
-        // Routes rendered by shared/legal layouts may not need deep-link anchors.
-      }
-    }
-  }
-
-  for (const match of source.matchAll(/href=["']#([^"']+)["']/g)) {
-    if (!ids.has(match[1])) problems.push(`Missing in-page anchor #${match[1]} in ${relative}`);
-  }
-}
-
-if (problems.length) {
-  console.error('Internal route and asset audit failed:');
-  for (const problem of problems) console.error(`- ${problem}`);
-  process.exit(1);
-}
-
-console.log(`Route/asset audit passed: ${routePaths.size} registered routes, ${files.length} source files inspected.`);
+for(const asset of ["og-image.png","favicon.svg"])if(!existsSync(path.join(root,"public",asset)))problems.push(`Missing public/${asset}`);
+if(problems.length){console.error(`Route/asset audit failed with ${problems.length} issue(s):`);for(const problem of problems)console.error("- "+problem);process.exit(1)}
+console.log(`Route/asset audit passed: ${routes.length} page routes, ${literalLinks} literal internal links/assets, ${files.length} files inspected.`);

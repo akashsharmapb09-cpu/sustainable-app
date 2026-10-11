@@ -1,0 +1,6 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { CatalogueTable } from "@/components/dashboard/CatalogueTable";
+import { ArrowRight } from "lucide-react";
+export const metadata:Metadata={title:"Catalogue",description:"Browse the GreenSwap library of practical sustainable alternatives."};
+export default function CataloguePage(){return <main id="main-content" className="mx-auto max-w-[1440px] px-5 py-10 sm:px-8 sm:py-14 lg:px-12"><div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="font-mono text-xs uppercase tracking-[.16em] text-forest-700">THE CATALOGUE / 2026</p><h1 className="mt-3 text-4xl font-semibold tracking-[-.06em] sm:text-5xl">Small changes. Clear choices.</h1><p className="mt-4 max-w-2xl text-sm leading-6 text-gray-500">Browse by category, effort and indicative engagement points. The library is a practical guide, not a verified personal carbon audit.</p></div><Link href="/methodology" className="inline-flex h-10 items-center gap-2 text-sm font-semibold text-forest-700 hover:text-forest-900">Read methodology <ArrowRight size={14}/></Link></div><CatalogueTable/></main>}
