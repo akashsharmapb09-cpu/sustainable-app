@@ -7,7 +7,7 @@ import { getDemoProgress } from "@/lib/demo-session";
 export const metadata: Metadata = { title: "Explore swaps" };
 type SearchParams = Promise<{ q?: string | string[]; category?: string | string[] }>;
 
-const categories = ["All", "Home", "Kitchen", "Travel", "Style"];
+const categories = ["All", "Home", "Kitchen", "Travel", "Style"] as const;
 function first(value?: string | string[]) { return Array.isArray(value) ? value[0] ?? "" : value ?? ""; }
 
 export default async function ExplorePage({ searchParams }: { searchParams: SearchParams }) {

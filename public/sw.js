@@ -1,42 +1,15 @@
-const CACHE = 'greenswap-shell-v2';
-const SHELL = ['/', '/offline.html', '/manifest.json', '/icon-192.svg', '/icon-512.svg'];
-
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then(cache => cache.addAll(SHELL))
-      .then(() => self.skipWaiting())
-  );
+// GreenSwap migrated from a Vite shell to the Next.js App Router.
+// Replace the legacy cache with a no-op worker, then unregister it so old
+// cached index.html responses cannot mask the current server-rendered app.
+self.addEventListener("install", (event) => {
+  event.waitUntil(self.skipWaiting());
 });
 
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
-      .then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch', event => {
-  const request = event.request;
-  if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
-
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request).catch(async () =>
-        (await caches.match(request)) || (await caches.match('/')) || caches.match('/offline.html')
-      )
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(request).then(cached => cached || fetch(request).then(response => {
-      if (response.ok) {
-        const copy = response.clone();
-        void caches.open(CACHE).then(cache => cache.put(request, copy));
-      }
-      return response;
-    }))
-  );
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((key) => caches.delete(key)));
+    await self.clients.claim();
+    await self.registration.unregister();
+  })());
 });
