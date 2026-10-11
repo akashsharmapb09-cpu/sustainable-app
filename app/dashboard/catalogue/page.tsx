@@ -14,7 +14,7 @@ export default async function CataloguePage({ searchParams }: { searchParams: Se
   const params = await searchParams;
   const query = first(params.q);
   const requestedCategory = first(params.category);
-  const category = categories.includes(requestedCategory) ? requestedCategory : "All";
+  const category = categories.find((candidate) => candidate === requestedCategory) ?? "All";
   const progress = await getDemoProgress();
 
   return (
