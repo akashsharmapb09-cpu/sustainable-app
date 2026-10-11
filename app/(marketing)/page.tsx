@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowDownRight, ArrowUpRight, Check, Leaf, MoveUpRight, Recycle, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Leaf, MoveUpRight, Recycle, ShieldCheck, Sparkles } from 'lucide-react';
 import { SWAPS } from '@/lib/catalogue';
 
 export const metadata = {
