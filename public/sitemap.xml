@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://sustainable-app-qccf.vercel.app/</loc></url>
-  <url><loc>https://sustainable-app-qccf.vercel.app/launch</loc></url>
-  <url><loc>https://sustainable-app-qccf.vercel.app/explore</loc></url>
-  <url><loc>https://sustainable-app-qccf.vercel.app/about</loc></url>
-  <url><loc>https://sustainable-app-qccf.vercel.app/methodology</loc></url>
-  <url><loc>https://sustainable-app-qccf.vercel.app/faq</loc></url>
-  <url><loc>https://sustainable-app-qccf.vercel.app/terms</loc></url>
-  <url><loc>https://sustainable-app-qccf.vercel.app/privacy</loc></url>
-  <url><loc>https://sustainable-app-qccf.vercel.app/cookies</loc></url>
+  <url><loc>https://sustainablelifestyle.com/</loc></url>
+  <url><loc>https://sustainablelifestyle.com/explore</loc></url>
+  <url><loc>https://sustainablelifestyle.com/catalogue</loc></url>
+  <url><loc>https://sustainablelifestyle.com/how-it-works</loc></url>
+  <url><loc>https://sustainablelifestyle.com/about</loc></url>
+  <url><loc>https://sustainablelifestyle.com/rewards</loc></url>
+  <url><loc>https://sustainablelifestyle.com/impact</loc></url>
+  <url><loc>https://sustainablelifestyle.com/faq</loc></url>
+  <url><loc>https://sustainablelifestyle.com/blog</loc></url>
+  <url><loc>https://sustainablelifestyle.com/community</loc></url>
+  <url><loc>https://sustainablelifestyle.com/methodology</loc></url>
+  <url><loc>https://sustainablelifestyle.com/privacy</loc></url>
+  <url><loc>https://sustainablelifestyle.com/terms</loc></url>
+  <url><loc>https://sustainablelifestyle.com/cookies</loc></url>
 </urlset>
