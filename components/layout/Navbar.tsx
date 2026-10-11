@@ -1,14 +1,9 @@
 import Link from "next/link";
-import { cookies } from "next/headers";
 import { Search, Sprout } from "lucide-react";
 import ActiveNavigation from "@/components/layout/ActiveNavigation";
 import AvatarMenu from "@/components/ui/AvatarMenu";
-import { getDemoProgress } from "@/lib/demo-session";
 
-export default async function Navbar() {
-  const cookieStore = await cookies();
-  const progress = cookieStore.has("greenswap_demo") ? await getDemoProgress() : null;
-
+export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 h-[68px] border-b border-gray-100 bg-white/75 backdrop-blur-xl">
       <div className="container-wide flex h-full items-center justify-between gap-4">
@@ -28,7 +23,7 @@ export default async function Navbar() {
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
             <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-orange-400 ring-2 ring-white" />
           </span>
-          <AvatarMenu points={progress?.points ?? 120} />
+          <AvatarMenu points={120} />
         </div>
       </div>
     </header>
