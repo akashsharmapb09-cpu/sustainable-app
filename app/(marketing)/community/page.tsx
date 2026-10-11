@@ -1,0 +1,11 @@
+import Link from 'next/link';
+import { ArrowUpRight, MessageCircle, Sprout, Users } from 'lucide-react';
+
+export const metadata = { title: 'Community', description: 'A welcoming place to share practical sustainable habits.' };
+
+export default function CommunityPage() {
+  return <section className="container-shell py-12 sm:py-16 lg:py-20"><p className="eyebrow">COMMUNITY / MANY SMALL MOVES</p><h1 className="mt-4 max-w-4xl font-serif text-5xl leading-[.98] tracking-editorial sm:text-6xl lg:text-7xl">A better routine grows together.</h1><p className="mt-5 max-w-2xl text-base leading-7 text-muted">GreenSwap is being built around practical, respectful ideas that can be shared without competition or climate guilt.</p>
+    <div className="mt-10 grid gap-4 md:grid-cols-3">{[{icon:Users,title:'Share what works',copy:'Talk about the habits that fit your home, commute, budget and local options.'},{icon:MessageCircle,title:'Ask honest questions',copy:'Compare ideas and ask what an estimate includes before repeating a claim.'},{icon:Sprout,title:'Make space for progress',copy:'A small action repeated by a group can be a useful starting point.'}].map((item)=>{const Icon=item.icon;return <article key={item.title} className="card-edge p-6"><span className="grid h-11 w-11 place-items-center rounded-2xl bg-[#eef4ea] text-moss"><Icon size={20}/></span><h2 className="mt-5 font-serif text-2xl">{item.title}</h2><p className="mt-2 text-sm leading-6 text-muted">{item.copy}</p></article>;})}</div>
+    <div className="mt-9 rounded-3xl border border-line bg-white p-6 sm:p-8"><p className="text-sm font-semibold">The community space is a preview, not a live forum.</p><p className="mt-2 max-w-2xl text-sm leading-6 text-muted">No public posting, private messaging or community accounts are enabled in this release. Explore ideas in the catalogue and use the FAQ and methodology pages to understand the context.</p><div className="mt-5 flex flex-wrap gap-3"><Link href="/explore" className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white">Explore ideas <ArrowUpRight size={14}/></Link><Link href="/faq" className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-3 text-sm font-semibold">Read FAQ</Link></div></div>
+  </section>;
+}
