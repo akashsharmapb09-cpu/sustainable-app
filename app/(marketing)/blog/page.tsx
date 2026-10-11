@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowUpRight, BookOpen } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 
 export const metadata = { title: 'Journal', description: 'Field notes on practical sustainable living.' };
 
