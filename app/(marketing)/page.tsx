@@ -1,0 +1,40 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowDownRight, ArrowUpRight, Check, Leaf, MoveUpRight, Recycle, ShieldCheck, Sparkles } from 'lucide-react';
+import { SWAPS } from '@/lib/catalogue';
+
+export const metadata = {
+  title: 'Make a lighter footprint. Keep the good life.',
+  description: 'Practical swaps backed by DEFRA, CEA, EPA data. Small sustainable changes for food, travel, energy and waste.',
+};
+
+export default async function HomePage({ searchParams }: { searchParams: Promise<{ newsletter?: string }> }) {
+  const params = await searchParams;
+  return <div className="overflow-hidden">
+    {params.newsletter && <div role="status" className="border-b border-[#e0e8d9] bg-[#f1f7ee] px-5 py-3 text-center text-xs text-moss">{params.newsletter === 'unavailable' ? 'Thanks for your interest. Newsletter delivery is not connected, so your address was not stored.' : 'Please enter a valid email address.'}</div>}
+    <section className="container-shell grid min-w-0 gap-10 pb-16 pt-14 sm:pb-20 sm:pt-20 md:grid-cols-[1.05fr,.95fr] md:items-center lg:gap-16 lg:pb-24 lg:pt-24">
+      <div className="min-w-0">
+        <p className="eyebrow flex items-center gap-2"><span className="h-2 w-2 animate-green-pulse rounded-full bg-emerald-500" /> SUSTAINABLE LIVING / MADE PRACTICAL</p>
+        <h1 className="mt-6 max-w-[820px] break-words font-serif text-[clamp(3.2rem,8.1vw,6.9rem)] leading-[.91] tracking-editorial">Make a lighter footprint.<span className="mt-2 block font-normal text-moss">Keep the good life.</span></h1>
+        <p className="mt-7 max-w-xl text-base leading-7 text-muted sm:text-lg sm:leading-8">Practical swaps backed by DEFRA, CEA, EPA data. Start with one small change that fits your day, your budget and your real life.</p>
+        <div className="mt-8 flex flex-wrap gap-3"><Link href="/dashboard/explore" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-moss-dark">Explore swaps <ArrowUpRight size={16} /></Link><Link href="/how-it-works" className="inline-flex min-h-12 items-center gap-2 rounded-full border border-line bg-white px-6 text-sm font-semibold transition hover:border-moss/40">How it works <ArrowDownRight size={16} /></Link></div>
+        <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-line pt-5 text-xs text-muted"><span className="inline-flex items-center gap-2"><ShieldCheck size={15} className="text-moss" />Evidence-aware guidance</span><span className="inline-flex items-center gap-2"><Leaf size={15} className="text-moss" />Small steps, no guilt</span><span className="inline-flex items-center gap-2"><Sparkles size={15} className="text-moss" />Demo rewards</span></div>
+      </div>
+      <div className="relative mx-auto w-full max-w-[590px] min-w-0">
+        <div aria-hidden="true" className="absolute -inset-5 rounded-[2.6rem] bg-gradient-to-br from-[#e5efde] via-[#f7f4e9] to-[#ebded2] blur-2xl" />
+        <div className="relative overflow-hidden rounded-[1.8rem] border border-white/80 bg-white p-2.5 shadow-[0_35px_90px_rgba(24,43,29,.13)] sm:p-3.5">
+          <Image src="/og-image.png" alt="GreenSwap social preview. The 0.7 tonne figure is explicitly illustrative, not a personal result." width={1200} height={630} priority sizes="(max-width: 767px) 100vw, 48vw" className="h-auto w-full rounded-[1.25rem]" />
+          <div className="flex flex-wrap items-center justify-between gap-3 px-3 pb-2 pt-4 sm:px-4"><div><p className="text-sm font-semibold">A useful first step</p><p className="mt-1 text-xs text-muted">Less overwhelm. More everyday action.</p></div><Link href="/methodology" className="inline-flex items-center gap-1.5 text-xs font-semibold text-moss">See the sources <MoveUpRight size={13} /></Link></div>
+        </div>
+        <div className="absolute -bottom-6 -left-3 hidden items-center gap-3 rounded-2xl border border-line bg-white px-4 py-3 shadow-soft sm:flex md:-left-7"><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#eef4ea] text-moss"><Recycle size={17} /></span><span><span className="block text-xs font-bold">One swap at a time</span><span className="mt-1 block text-[10px] text-muted">Build a habit that lasts</span></span></div>
+      </div>
+    </section>
+    <section className="border-y border-line bg-white"><div className="container-shell grid gap-0 py-2 sm:grid-cols-3">{[{n:'01',title:'Fit your real life',copy:'Choices should suit your schedule, budget and access.'},{n:'02',title:'See the reasoning',copy:'Understand the assumptions and uncertainty behind the advice.'},{n:'03',title:'Keep moving',copy:'Track your actions without turning climate care into guilt.'}].map((item,index)=><div key={item.n} className={'px-2 py-7 sm:px-6 sm:py-9 ' + (index ? 'border-t border-line sm:border-l sm:border-t-0' : '')}><p className="eyebrow">{item.n} / OUR APPROACH</p><h2 className="mt-3 font-serif text-2xl tracking-tight">{item.title}</h2><p className="mt-2 max-w-sm text-sm leading-6 text-muted">{item.copy}</p></div>)}</div></section>
+    <section className="container-shell py-16 sm:py-20 lg:py-24">
+      <div className="flex flex-wrap items-end justify-between gap-5"><div><p className="eyebrow">THE FIELD GUIDE / START SMALL</p><h2 className="mt-3 font-serif text-4xl tracking-editorial sm:text-5xl">Good ideas, ready for real life.</h2><p className="mt-3 max-w-xl text-sm leading-6 text-muted">Browse practical ideas, review the context and choose one small action to try this week.</p></div><Link href="/explore" className="inline-flex items-center gap-2 text-sm font-semibold text-moss">Browse all swaps <ArrowUpRight size={15} /></Link></div>
+      <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{SWAPS.slice(0,4).map((swap) => <article key={swap.id} className="card-edge flex min-w-0 flex-col p-5"><div className="flex items-center justify-between gap-2"><span className="rounded-full bg-[#eef4ea] px-2.5 py-1 text-[10px] font-semibold text-moss">{swap.category}</span><span className="font-mono text-[10px] text-muted">+{swap.points} demo pts</span></div><h3 className="mt-5 font-serif text-2xl tracking-tight">{swap.title}</h3><p className="mt-2 flex-1 text-sm leading-6 text-muted">{swap.summary}</p><Link href="/dashboard/explore" className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-ink">Try this swap <MoveUpRight size={13} /></Link></article>)}</div>
+    </section>
+    <section className="container-shell pb-16 sm:pb-20"><div className="grid overflow-hidden rounded-[2rem] bg-moss-dark text-white md:grid-cols-[1fr,auto] md:items-center"><div className="p-7 sm:p-10 lg:p-12"><p className="eyebrow text-emerald-200">YOUR NEXT CHAPTER</p><h2 className="mt-3 max-w-2xl font-serif text-4xl tracking-editorial sm:text-5xl">A lighter routine starts with one good move.</h2><p className="mt-4 max-w-xl text-sm leading-6 text-white/70">Try the demo, record a swap and see the full journey from exploration to activity.</p><Link href="/dashboard/explore" className="mt-6 inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-ink transition hover:bg-[#eff4eb]">Start your first swap <ArrowUpRight size={15} /></Link></div><div className="hidden p-12 md:block"><div className="grid h-36 w-36 place-items-center rounded-full border border-white/20"><div className="grid h-24 w-24 place-items-center rounded-full border border-white/20"><Leaf size={42} strokeWidth={1.2} /></div></div></div></div></section>
+    <section className="border-t border-line bg-white"><div className="container-shell flex flex-col gap-4 py-8 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold">Want the reasoning, not just the recommendation?</p><p className="mt-1 text-sm text-muted">Explore the sources behind GreenSwap’s practical guidance.</p></div><Link href="/methodology" className="inline-flex items-center gap-2 text-sm font-semibold text-moss">Read the methodology <ArrowUpRight size={15} /></Link></div></section>
+  </div>;
+}
