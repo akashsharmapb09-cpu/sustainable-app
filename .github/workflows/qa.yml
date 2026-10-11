@@ -30,7 +30,20 @@ jobs:
       - name: Install pnpm
         run: npm install --global pnpm@10.34.6
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          else
+            pnpm install --no-frozen-lockfile
+          fi
+
+      - name: Export resolved pnpm lockfile for release
+        uses: actions/upload-artifact@v4
+        with:
+          name: pnpm-lockfile
+          path: pnpm-lock.yaml
+          if-no-files-found: error
+          retention-days: 1
       - name: Audit internal routes and assets
         run: pnpm run qa:links
       - name: Lint
