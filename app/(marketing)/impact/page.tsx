@@ -1,0 +1,12 @@
+import Link from 'next/link';
+import { ArrowUpRight, BookOpenCheck, ChartNoAxesColumn, Globe2, Scale } from 'lucide-react';
+
+export const metadata = { title: 'Impact & methodology', description: 'How GreenSwap explains environmental guidance and uncertainty.' };
+
+export default function ImpactPage() {
+  return <section className="container-shell py-12 sm:py-16 lg:py-20">
+    <p className="eyebrow">IMPACT / MEASURE WITH CARE</p><h1 className="mt-4 max-w-4xl font-serif text-5xl leading-[.98] tracking-editorial sm:text-6xl lg:text-7xl">Be honest about the difference a swap can make.</h1><p className="mt-5 max-w-2xl text-base leading-7 text-muted">A number without its context can mislead. GreenSwap separates practical guidance, source estimates and illustrative demo UI so they are not mistaken for a personal audit.</p>
+    <div className="mt-12 grid gap-4 md:grid-cols-2">{[{icon:BookOpenCheck,title:'Source notes belong beside the advice',copy:'Environmental factors should carry units, geography, year and key assumptions wherever the source data makes them available.'},{icon:Scale,title:'Ranges are not guarantees',copy:'Actual results change with distance, products, usage, local electricity, waste systems and what the alternative replaces.'},{icon:Globe2,title:'Local context matters',copy:'A swap that works in one place may not be practical in another. Use the recommendation as a starting point, not an instruction.'},{icon:ChartNoAxesColumn,title:'Demo figures stay labelled',copy:'The “0.7t saved” artwork is an illustrative example only. It is not generated from your logs and it is not a verified personal saving.'}].map((item)=>{const Icon=item.icon;return <article className="card-edge p-6 sm:p-7" key={item.title}><span className="grid h-11 w-11 place-items-center rounded-2xl bg-[#eef4ea] text-moss"><Icon size={20}/></span><h2 className="mt-5 font-serif text-2xl">{item.title}</h2><p className="mt-2 text-sm leading-7 text-muted">{item.copy}</p></article>;})}</div>
+    <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-line bg-white p-6"><div><p className="text-sm font-semibold">Want the source trail?</p><p className="mt-1 text-sm text-muted">The methodology page links to source organizations and explains the limits of estimates.</p></div><Link href="/methodology" className="inline-flex items-center gap-2 text-sm font-semibold text-moss">Read methodology <ArrowUpRight size={15}/></Link></div>
+  </section>;
+}
