@@ -2,7 +2,7 @@ name: QA
 
 on:
   push:
-    branches: [main]
+    branches: [main, "feat/greenswap-nextjs-app-router"]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -16,9 +16,9 @@ concurrency:
 
 jobs:
   quality:
-    name: Typecheck, lint, production build
+    name: Typecheck, route audit, lint, browser QA, production build
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Check out source
         uses: actions/checkout@v6
@@ -30,7 +30,13 @@ jobs:
         run: npm install
       - name: TypeScript checks
         run: npm run typecheck
+      - name: Audit routes, assets, and internal links
+        run: npm run qa:links
       - name: Lint
         run: npm run lint
       - name: Production build
         run: npm run build
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Direct-route, demo-auth, and responsive smoke tests
+        run: npm run qa:browser
