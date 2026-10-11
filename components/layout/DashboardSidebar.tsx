@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Activity, ArrowUpRight, Compass, Crown, LayoutGrid, LogOut, Settings, UserRound, Recycle, Leaf } from "lucide-react";
+import { Activity, ArrowUpRight, Compass, Crown, LayoutGrid, LogOut, Settings, UserRound, Leaf } from "lucide-react";
 import { dashboardLinks } from "@/lib/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { cn } from "@/lib/utils";

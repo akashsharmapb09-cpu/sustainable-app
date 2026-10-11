@@ -11,7 +11,7 @@ async function walk(directory){const result=[];let entries=[];try{entries=await 
 const files=(await Promise.all(sourceRoots.map(walk))).flat();
 const routePages=files.filter(file=>path.relative(appRoot,file).split(path.sep).at(-1)==="page.tsx");
 const routes=routePages.map(file=>{const rel=path.relative(appRoot,path.dirname(file)).split(path.sep).filter(Boolean).filter(part=>!(part.startsWith("(")&&part.endsWith(")")));return "/"+rel.map(part=>part.startsWith("[")&&part.endsWith("]")?":dynamic":part).join("/")});
-function routeExists(pathname){const clean=pathname==="/"?"/":pathname.replace(/\/$/,"");return routes.some(route=>{if(route===clean)return true;const regex="^"+route.split("/").map(segment=>segment===":dynamic"?"[^/]+":segment.replace(/[.*+?^\${}()|[\]\\]/g,"\\$&")).join("/")+"$";return new RegExp(regex).test(clean)})}
+function routeExists(pathname){const clean=pathname==="/"?"/":pathname.replace(/\/$/,"");return routes.some(route=>{if(route===clean)return true;const regex="^"+route.split("/").map(segment=>segment===":dynamic"?"[^/]+":segment.replace(/[.*+?^${}()|[\]\\]/g,"\\segment.replace(/[.*+?^\${}()|[\]\\]/g,"\\$&")")).join("/")+"$";return new RegExp(regex).test(clean)})}
 const problems=[];
 let literalLinks=0;
 for(const file of files){const source=await readFile(file,"utf8");const rel=path.relative(root,file);const ids=new Set([...source.matchAll(/\bid=["']([^"']+)["']/g)].map(match=>match[1]));

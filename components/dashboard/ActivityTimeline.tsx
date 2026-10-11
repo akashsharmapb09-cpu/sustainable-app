@@ -3,7 +3,7 @@
 import { startTransition, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
-import { CheckCircle2, Circle, Leaf, Recycle, Footprints } from "lucide-react";
+import { Circle, Leaf, Recycle } from "lucide-react";
 import { readDemoActivity, type DemoActivity } from "@/lib/demo-store";
 
 const seed: DemoActivity[]=[
