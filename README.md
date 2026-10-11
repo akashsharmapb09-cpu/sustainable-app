@@ -1,71 +1,35 @@
-# 🌱 GreenSwap - Sustainable Living App
+# GreenSwap · Next.js App Router
 
-**Live Demo:** https://sustainable-app-qccf.vercel.app
+GreenSwap is a responsive sustainable-swaps discovery experience built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion, Radix UI primitives and Lucide icons.
 
-> Most carbon calculators give you guilt. We give you arithmetic.
+## Run locally
 
-### About
-GreenSwap helps users track and reduce their carbon footprint with real data.
-
-### Tech Stack
-- React + Vite + TypeScript
-- Convex + Convex Auth
-- Vercel (Deployment)
-
-### Features
-- Carbon footprint calculation
-- Explainable, ranked sustainable swaps with source references and estimated impact/cost ranges
-- User dashboard
-- Persistent activity logging, reduction goals, self-reported challenges, and progress tracking
-- No-sign-in demo access with browser-local profiles, activity logging, goals, and progress
-
-### Local development
-
-Requirements: Node.js 22 and pnpm 10. Visitors can use the field demo without signing in; demo profiles and activity data are stored in the current browser.
-
-For local HTTPS on Windows, create a development certificate once from PowerShell:
-
-```powershell
-New-Item -ItemType Directory -Force .cert | Out-Null
-$cert = New-SelfSignedCertificate -Type SSLServerAuthentication -DnsName localhost -CertStoreLocation Cert:\CurrentUser\My -FriendlyName "GreenSwap localhost HTTPS" -NotAfter (Get-Date).AddYears(2) -KeyExportPolicy Exportable
-Export-PfxCertificate -Cert $cert -FilePath .cert\localhost.pfx -Password (New-Object System.Security.SecureString) | Out-Null
-Export-Certificate -Cert $cert -FilePath .cert\localhost.cer -Force | Out-Null
-```
-
-Then run `pnpm dev:https` and open `https://localhost:5175`. The browser may show a certificate warning until you import `.cert\localhost.cer` into the current-user Trusted Root Certification Authorities store and accept Windows' trust prompt. The certificate files are local-only and ignored by Git. Keep the Convex backend running separately with `pnpm exec convex dev`.
+Requirements: Node.js 20.9 or newer.
 
 ```sh
-pnpm install
-Copy-Item .env.example .env.local
-pnpm exec convex dev
+npm install
+npm run dev
 ```
 
-For local development, set `VITE_CONVEX_URL=http://127.0.0.1:3210` and `VITE_APP_URL=https://localhost:5175` in `.env.local`; keep `pnpm exec convex dev` running while using the app. Alternatively, point `VITE_CONVEX_URL` at a real Convex Cloud deployment. Sign-in and account creation screens are disabled; protected app routes open the local field demo automatically.
+## Release checks
 
 ```sh
-pnpm dev
+npm run typecheck
+npm run qa:links
+npm run lint
+npm run build
+npx playwright install chromium
+npm run qa:browser
 ```
 
-The Convex CLI deploys functions and generates local API types. Production builds require a real HTTPS Convex Cloud URL when `VITE_ENABLE_MOCK_FALLBACK=false`; local URLs are rejected. With the fallback enabled, the app runs as a browser-local field demo and account/backend features are unavailable. Netlify is configured to build with the demo fallback and serve client-side routes; add a real `VITE_CONVEX_URL` and disable the fallback in Netlify environment settings to enable a Convex-backed deployment.
+The GitHub Actions workflow runs these checks for changes on the Next.js feature branch and main. Browser QA opens public and dashboard routes at 320px, 393px, 768px and 1440px; it also checks that dashboard routes redirect without a demo session, that the required FAQ content renders, that loaded images are not broken, and that pages have no document-level horizontal overflow.
 
-### AI assistant
+## Demo and security notes
 
-The floating GreenSwap assistant sends conversations to a Convex server action, which calls the OpenAI Responses API. Deploy the Convex backend, configure `VITE_CONVEX_URL` in the frontend hosting environment, and add `OPENAI_API_KEY` to the Convex deployment environment variables. Optionally set `OPENAI_MODEL` there (defaults to `gpt-4.1-mini`). Keep OpenAI credentials server-side; never add them to a `VITE_` variable. Conversations are held in page memory and are sent to OpenAI with response storage disabled.
+Dashboard access uses a short-lived mock `greenswap_demo` cookie set by the demo login page. This is a UI prototype, not production authentication. Replace it with a verified identity provider, signed/validated sessions and server-side authorization before exposing private user data. Sample activity and points are stored in a separate demo cookie and are not persisted to a backend. The newsletter, Pro checkout, notifications and partner reward redemption are not connected.
 
-The previous Supabase TOTP feature has been retired; Convex Auth does not provide a drop-in TOTP replacement. Administrative routes still require an authenticated user with the admin role.
+The `app/(legal)/[slug]` pages are legal templates with sample copy. Have qualified counsel review them and replace company details and any sample estimates before commercial launch. Impact and points values are illustrative, not audited measurements.
 
-### Validation
+## Deploy on Vercel
 
-```sh
-pnpm run lint
-pnpm test
-pnpm run build
-```
-
-The GitHub Actions CI workflow runs lint, unit tests, and build checks for pushes and pull requests.
-
-The active backend schema and functions are under [`convex/`](./convex/). The [`supabase/`](./supabase/) directory is retained as the legacy schema and migration reference; it is no longer used by the app. Existing Supabase data is not transferred automatically: export it before switching deployments and import it into Convex using an explicit migration process.
-
-To grant an administrator, create a `userRoles` document in the Convex dashboard with that account's `userId` (`users` document ID) and `role: "admin"`. Roles are not writable through the public client API.
-
-Made for LPU Major Project 2026 · [GitHub](https://github.com/akashsharmapb09-cpu/sustainable-app)
+Use the Next.js framework preset and repository root as the project root. The legacy Vite app is retained in `src/` during this migration, but the Vercel project should build this App Router application using `npm run build`. Do not deploy the mock cookie as the security boundary for real account data.

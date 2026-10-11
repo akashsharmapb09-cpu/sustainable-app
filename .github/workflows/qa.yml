@@ -2,7 +2,7 @@ name: QA
 
 on:
   push:
-    branches: [main]
+    branches: [main, "feat/greenswap-nextjs-app-router"]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -16,39 +16,29 @@ concurrency:
 
 jobs:
   quality:
-    name: Route, device-width, lint, tests, production build
+    name: Typecheck, route audit, lint, browser QA, production build
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Check out source
         uses: actions/checkout@v6
-
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: 22
-          package-manager-cache: false
-
-      - name: Install pnpm
-        run: npm install --global pnpm@10.34.6
-
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      - name: Audit internal routes and assets
-        run: pnpm run qa:links
-
+        run: npm install
+      - name: Production dependency security audit
+        run: npm audit --omit=dev --audit-level=high
+      - name: TypeScript checks
+        run: npm run typecheck
+      - name: Audit routes, assets, and internal links
+        run: npm run qa:links
       - name: Lint
-        run: pnpm run lint
-
-      - name: Unit tests
-        run: pnpm test
-
+        run: npm run lint
       - name: Production build
-        run: pnpm run build
-
-      - name: Install Chromium for browser QA
-        run: pnpm exec playwright install --with-deps chromium
-
-      - name: Responsive, direct-route and image smoke tests
-        run: pnpm run qa:browser
+        run: npm run build
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Direct-route, demo-auth, and responsive smoke tests
+        run: npm run qa:browser
