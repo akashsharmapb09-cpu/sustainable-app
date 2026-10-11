@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowUpRight, Leaf, Instagram, Linkedin, Twitter } from 'lucide-react';
+import { ArrowUpRight, Leaf } from 'lucide-react';
 import { subscribeNewsletter } from '@/app/actions';
 
 const columns = [
@@ -25,7 +25,20 @@ export function Footer() {
     </div>
     <div className="border-t border-line"><div className="mx-auto flex max-w-[1440px] flex-col gap-4 px-5 py-5 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
       <p className="font-mono text-[10px] text-muted">© 2026 GreenSwap Inc. · Data: DEFRA / CEA / EPA</p>
-      <div className="flex flex-wrap items-center gap-4 text-muted"><div className="flex items-center gap-3" aria-label="Social links"><Link aria-label="GreenSwap on X" href="https://twitter.com/" target="_blank" rel="noreferrer" className="transition hover:text-ink"><Twitter size={16} /></Link><Link aria-label="GreenSwap on Instagram" href="https://instagram.com/" target="_blank" rel="noreferrer" className="transition hover:text-ink"><Instagram size={16} /></Link><Link aria-label="GreenSwap on LinkedIn" href="https://linkedin.com/" target="_blank" rel="noreferrer" className="transition hover:text-ink"><Linkedin size={16} /></Link></div><span className="hidden h-4 w-px bg-line sm:block" /><span className="inline-flex items-center gap-2 text-[11px] font-medium text-ink"><span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,.12)]" />All systems operational</span></div>
+      <div className="flex flex-wrap items-center gap-4 text-muted"><div className="flex items-center gap-3" aria-label="Social links">
+        <Link aria-label="Open X" href="https://x.com/" target="_blank" rel="noreferrer" className="transition hover:text-ink"><SocialIcon name="x" /></Link>
+        <Link aria-label="Open Instagram" href="https://instagram.com/" target="_blank" rel="noreferrer" className="transition hover:text-ink"><SocialIcon name="instagram" /></Link>
+        <Link aria-label="Open LinkedIn" href="https://linkedin.com/" target="_blank" rel="noreferrer" className="transition hover:text-ink"><SocialIcon name="linkedin" /></Link>
+      </div><span className="hidden h-4 w-px bg-line sm:block" /><span className="inline-flex items-center gap-2 text-[11px] font-medium text-ink"><span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,.12)]" />All systems operational</span></div>
     </div></div>
   </footer>;
+}
+
+function SocialIcon({ name }: { name: 'x' | 'instagram' | 'linkedin' }) {
+  const paths = {
+    x: <path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.8L6.1 22H3l7.3-8.4L2.8 2h6.5l4.4 6.2zM17.8 20h1.7L8.2 3.9H6.4z" fill="currentColor" />,
+    instagram: <><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.8" /><circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.8" /><circle cx="17.7" cy="6.5" r="1.1" fill="currentColor" /></>,
+    linkedin: <><path d="M5 9.5v9.8M5 5.7v.1M10 19.3v-9.8h3v1.4c.7-1.1 1.8-1.7 3.2-1.7 2.5 0 3.8 1.6 3.8 4.3v5.8h-3v-5.2c0-1.4-.5-2.2-1.8-2.2-1.3 0-2.2 1-2.2 2.5v4.9z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /><circle cx="5" cy="5.8" r="1.3" fill="currentColor" /></>,
+  };
+  return <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none">{paths[name]}</svg>;
 }
