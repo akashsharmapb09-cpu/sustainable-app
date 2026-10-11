@@ -33,7 +33,7 @@ export function DashboardSidebar() {
           <h2 className="mb-2 px-3 text-[10px] font-semibold tracking-[.18em] text-gray-400">{section.section}</h2>
           <ul className="space-y-1">{section.items.map(item=>{
             const Icon = icons[item.icon];
-            const active = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href + "/"));
+            const active = pathname === item.href || pathname.startsWith(item.href + "/");
             return <li key={item.href}><Link href={item.href} className={cn("flex min-h-10 items-center gap-3 rounded-full px-3 text-[13px] font-medium transition duration-150",active?"bg-black text-white shadow-sm":"text-gray-500 hover:bg-gray-100 hover:text-black")}><Icon size={16}/><span className="flex-1">{item.label}</span>{"badge" in item && item.badge ? <span className={cn("rounded-full px-2 py-0.5 text-[10px]",active?"bg-white/15 text-white":"bg-forest-50 text-forest-700")}>{item.badge}</span>:null}</Link></li>
           })}</ul>
         </div>)}
