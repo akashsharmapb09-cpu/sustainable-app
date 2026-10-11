@@ -48,7 +48,9 @@ export async function saveDashboardSettings(formData: FormData) {
     privacyMode: formData.get('privacyMode') === 'on',
   };
   store.set('greenswap_settings', JSON.stringify(safeSettings), cookieOptions);
-  redirect('/dashboard/settings?tab=general&saved=1');
+  const requestedTab = String(formData.get('tab') ?? 'general');
+  const tab = ['general', 'notifications', 'privacy'].includes(requestedTab) ? requestedTab : 'general';
+  redirect('/dashboard/settings?tab=' + tab + '&saved=1');
 }
 
 export async function subscribeNewsletter(formData: FormData) {
