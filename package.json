@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint app components lib middleware.ts next.config.ts",
+    "lint": "eslint app components lib middleware.ts next.config.ts",
     "typecheck": "tsc --noEmit",
     "qa:links": "node scripts/qa-links.mjs",
     "qa:browser": "node scripts/qa-browser.mjs"
@@ -32,7 +32,8 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.9.2",
-    "playwright": "^1.55.0"
+    "playwright": "^1.55.0",
+    "@eslint/eslintrc": "^3.3.1"
   },
   "engines": {
     "node": ">=20.9.0"
