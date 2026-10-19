@@ -1,40 +1,40 @@
 /* GreenSwap Botanical Editorial Design System Tokens */
 :root {
   /* Light Mode ("Field Guide / Pressed Botanical Archive") */
-  --color-bg: #F8F6F0;           /* Warm bone/off-white paper */
+  --color-bg: #F5F0E8;           /* Warm bone/off-white paper */
   --color-surface: #FCFAF6;      /* Archival plate card surface */
-  --color-surface-muted: #F0EAE1;/* Muted parchment tint */
-  --color-surface-subtle: #E7E0D3;
-  --color-ink: #1B211E;          /* Deep carbon ink (never #000000) */
+  --color-surface-muted: #EFE8DC;/* Muted parchment tint */
+  --color-surface-subtle: #E4DCD0;
+  --color-ink: #1B211E;          /* Deep carbon ink */
   --color-ink-muted: #535C55;    /* Field notebook pencil lead */
   --color-ink-faint: #848E86;    /* Margin annotation faint ink */
   --color-border: #DFD7CA;       /* Fine 1px bookbinding rule */
   --color-border-strong: #C5BCAD;/* Heavy catalogue division line */
   
-  --color-moss: #33593A;         /* Dried moss / lichen green */
+  --color-moss: #123826;         /* Deep botanical forest green */
   --color-clay: #A35A38;         /* Terracotta / clay sediment */
   --color-burnt: #C84B26;        /* Burnt orange specimen seal */
-  --color-bone: #F8F6F0;
+  --color-bone: #F5F0E8;
 
-  --ring-focus: rgba(200, 75, 38, 0.4);
+  --ring-focus: rgba(18, 56, 38, 0.4);
 }
 
 .dark {
   /* Dark Mode ("Night Field Station / Darkroom Plate") */
-  --color-bg: #131614;           /* Deep peat obsidian (never #000000) */
-  --color-surface: #1B201D;      /* Dark slate tray */
-  --color-surface-muted: #242A26;/* Deep shale tint */
-  --color-surface-subtle: #2D3530;
-  --color-ink: #EDEAE1;          /* Bone chalk ink (never #FFFFFF) */
+  --color-bg: #0C130F;           /* Deep obsidian forest */
+  --color-surface: #131D17;      /* Dark slate tray */
+  --color-surface-muted: #1B2821;/* Deep shale tint */
+  --color-surface-subtle: #24352C;
+  --color-ink: #EDEAE1;          /* Bone chalk ink */
   --color-ink-muted: #9BA59C;    /* Moonlight slate gray */
   --color-ink-faint: #636D65;    /* Faint graphite coordinate */
-  --color-border: #2B332D;       /* Archival dark rule */
-  --color-border-strong: #3F4B42;
+  --color-border: #1E2B23;       /* Archival dark rule */
+  --color-border-strong: #2B3D32;
   
-  --color-moss: #4C7D55;         /* Phosphor lichen moss */
+  --color-moss: #3EAC6A;         /* Phosphor lichen moss */
   --color-clay: #BD6F4C;         /* Fired terracotta */
   --color-burnt: #D65C35;        /* Ember seal accent */
-  --color-bone: #242A26;
+  --color-bone: #1B2821;
 
   --ring-focus: rgba(214, 92, 53, 0.5);
 }

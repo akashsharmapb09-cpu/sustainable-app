@@ -1,335 +1,548 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Card, Badge } from '../../shared/ui';
-import { formatCurrency, formatRange } from '../../shared/lib/utils';
-import { publicNavLinkClass } from './PublicMasthead';
-import {
-  ArrowRight,
-  TrendingDown,
-  ShieldCheck,
-  Zap,
-  BookOpen,
-} from 'lucide-react';
+import { Search, ArrowRight, Send } from 'lucide-react';
 import './LandingPage.css';
 
 export function LandingPage() {
-  const [sampleDistance, setSampleDistance] = useState(15);
-  const [sampleFrequency, setSampleFrequency] = useState(5);
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
 
-  // Live interactive calculation for petrol car vs metro transit
-  // Petrol car: 0.1705 kg/km, Metro: 0.0150 kg/km
-  const monthlyKm = sampleDistance * 2 * sampleFrequency * 4.33;
-  const carCO2eMonthly = monthlyKm * 0.1705;
-  const metroCO2eMonthly = monthlyKm * 0.015;
-  const co2eSavedMonthly = carCO2eMonthly - metroCO2eMonthly;
-  const rupeesSavedMonthly = monthlyKm * 7.5 - monthlyKm * 2.5; // ~₹5/km net savings
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setEmail('');
+    }
+  };
 
   return (
-    <div className="landing-page min-h-screen bg-background text-foreground">
-      <header className="landing-header sticky top-0 z-50">
-        <div className="landing-header__inner mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="landing-edition taxonomy-label">EDITION 2026 <span aria-hidden="true">/</span> VOL. 01</span>
-            <Link to="/" className="landing-brand font-serif text-2xl font-bold tracking-tight text-foreground hover:opacity-90">
-              GreenSwap<span className="text-burnt">.</span>
-            </Link>
-          </div>
-
-          <nav aria-label="Main navigation" className="landing-nav hidden md:flex items-center gap-6 text-xs font-mono">
-            <Link to="/explore" className={publicNavLinkClass}>
-              Explore Catalog
-            </Link>
-            <Link to="/methodology" className={publicNavLinkClass}>
-              Methodology & Citations
-            </Link>
-            <Link to="/about" className={publicNavLinkClass}>
-              About
-            </Link>
-            <Link to="/styleguide" className={publicNavLinkClass}>
-              Styleguide
-            </Link>
+    <div className="lp-root">
+      {/* ── Header / Navigation ── */}
+      <header className="lp-nav">
+        <div className="lp-nav__inner">
+          <Link to="/" className="lp-logo">
+            GreenSwap<span className="lp-logo__dot">.</span>
+          </Link>
+          <nav className="lp-nav__links">
+            <Link to="/" className="is-active">Home</Link>
+            <Link to="/explore">Explore</Link>
+            <Link to="/catalogue">Catalogue</Link>
+            <Link to="/methodology">How It Works</Link>
+            <Link to="/progress">Impact</Link>
           </nav>
-
-          <div className="flex items-center gap-3">
-            <Link to="/explore" className="landing-compact-explore">Explore</Link>
-            <Link to="/onboarding">
-              <Button
-                variant="primary"
-                size="md"
-                className="landing-header__cta rounded-full px-5 shadow-none transition hover:-translate-y-0.5"
-                rightIcon={<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />}
-              >
-                Get started
-              </Button>
-            </Link>
+          <div className="lp-nav__actions">
+            <button className="lp-btn-ghost" aria-label="Search">
+              <Search className="h-4 w-4" />
+            </button>
+            <Link to="/dashboard" className="lp-login-link">Log in</Link>
+            <Link to="/onboarding" className="lp-btn-primary">Get Started</Link>
           </div>
         </div>
       </header>
 
-      <main>
-      <section className="landing-hero mx-auto max-w-7xl px-6 py-12 md:px-12 md:py-16 border-b border-border">
-        <div className="landing-hero__inner grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
-          {/* Main Statement (Cols 1-7) */}
-          <div className="landing-hero__copy md:col-span-7 space-y-6">
-            <div className="landing-proof inline-flex items-center gap-2 border border-border bg-surface px-2.5 py-1 rounded-sm">
-              <span className="landing-proof__dot h-2 w-2 rounded-full bg-moss" />
-              <span className="taxonomy-label">Evidence-led · India-calibrated · Built for real life</span>
-            </div>
-
-            <h1 className="landing-hero__title font-serif text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.08] text-foreground">
-              Make a lighter footprint. <em>Keep the good life.</em>
-            </h1>
-
-            <p className="landing-hero__description font-sans text-base text-ink-muted leading-relaxed max-w-xl">
-              Find practical changes that fit your routine—and see the carbon and cost impact
-              with transparent, source-backed numbers.
-            </p>
-
-            <div className="landing-hero__actions flex flex-wrap items-center gap-4 pt-2">
-              <Link to="/onboarding">
-                <Button variant="primary" size="lg" rightIcon={<ArrowRight className="h-4 w-4" />}>
-                  Build my baseline
-                </Button>
-              </Link>
-              <Link to="/explore">
-                <Button variant="outline" size="lg">
-                  Explore the swaps
-                </Button>
-              </Link>
-            </div>
-
-            <div className="landing-trust">
-              <div className="landing-trust__avatars" aria-hidden="true">
-                <span>G</span><span>+</span><span>CO₂</span>
-              </div>
-              <p><strong>Small steps, clear evidence.</strong><br />No guilt. No black boxes. Just useful next moves.</p>
-            </div>
+      {/* ── Hero Section (Matching Image Top-Left) ── */}
+      <section className="lp-hero">
+        <div className="lp-hero__left">
+          {/* Green Pill Tag */}
+          <div className="lp-hero__badge-pill">
+            <span className="pill-dot">🌱</span>
+            <span>A GREENER TOMORROW · SAME GOOD LIFE</span>
           </div>
 
-          {/* Interactive Calibration Specimen Plate (Cols 8-12) */}
-          <div className="landing-hero__visual md:col-span-5">
-            <div className="landing-scene" aria-hidden="true">
-              <div className="landing-scene__glow" />
-              <div className="landing-scene__grid" />
-              <div className="landing-orbit landing-orbit--outer"><span /></div>
-              <div className="landing-orbit landing-orbit--inner"><span /></div>
-              <div className="landing-globe">
-                <div className="landing-globe__land landing-globe__land--one" />
-                <div className="landing-globe__land landing-globe__land--two" />
-                <div className="landing-globe__land landing-globe__land--three" />
-                <div className="landing-globe__shine" />
-              </div>
-              <div className="landing-scene__spark landing-scene__spark--one" />
-              <div className="landing-scene__spark landing-scene__spark--two" />
-              <div className="landing-scene__stamp">FIELD NOTE<br /><strong>01 / 04</strong></div>
-              <div className="landing-scene__caption">ONE PLANET<br />MANY BETTER CHOICES</div>
+          <h1 className="lp-hero__title">
+            Make a lighter<br />footprint.<br />
+            <span className="lp-hero__title-italic">Keep the good life.</span>
+          </h1>
+
+          <p className="lp-hero__desc">
+            Practical swaps backed by DEFRA, CEA, EPA data.
+          </p>
+
+          <div className="lp-hero__ctas">
+            <Link to="/onboarding" className="lp-btn-primary lp-btn-primary--lg">
+              Get Your Plan <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/explore" className="lp-btn-secondary lp-btn-secondary--lg">
+              Explore Swaps
+            </Link>
+          </div>
+
+          {/* Community Avatars */}
+          <div className="lp-community-row">
+            <div className="lp-avatars-stack">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80" alt="Member" />
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80" alt="Member" />
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80" alt="Member" />
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80" alt="Member" />
             </div>
-            <Card
-              taxonomyCode="INTERACTIVE SPECIMEN // CALIBRATION PREVIEW"
-              badge={<Badge variant="moss">LIVE PREVIEW</Badge>}
-              className="landing-calculator bg-surface-muted/30"
-            >
-              <div className="space-y-5">
-                <div>
-                  <h3 className="font-serif text-lg font-bold text-foreground">
-                    Trade the car for the metro
-                  </h3>
-                  <p className="text-xs text-ink-muted font-sans mt-0.5">
-                    Adjust your commute to preview a practical monthly difference.
-                  </p>
-                </div>
-
-                <div className="space-y-4 font-mono text-xs">
-                  <div>
-                    <label className="flex justify-between text-ink-muted mb-1" htmlFor="sample-distance">
-                      <span>One-Way Distance:</span>
-                      <strong className="text-foreground">{sampleDistance} km</strong>
-                    </label>
-                    <input
-                      id="sample-distance"
-                      type="range"
-                      min={5}
-                      max={50}
-                      step={1}
-                      value={sampleDistance}
-                      onChange={(e) => setSampleDistance(Number(e.target.value))}
-                      className="w-full accent-burnt"
-                      aria-label="One-way commute distance in kilometres"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="flex justify-between text-ink-muted mb-1" htmlFor="sample-frequency">
-                      <span>Weekly Frequency:</span>
-                      <strong className="text-foreground">{sampleFrequency} days / week</strong>
-                    </label>
-                    <input
-                      id="sample-frequency"
-                      type="range"
-                      min={1}
-                      max={7}
-                      step={1}
-                      value={sampleFrequency}
-                      onChange={(e) => setSampleFrequency(Number(e.target.value))}
-                      className="w-full accent-burnt"
-                      aria-label="Commute days per week"
-                    />
-                  </div>
-                </div>
-
-                {/* Live Output Card */}
-                <div className="landing-calculator__result rounded border border-border bg-surface p-4 space-y-3" aria-live="polite">
-                  <div className="flex items-center justify-between border-b border-border pb-2 text-xs">
-                    <span className="taxonomy-label">PROJECTED MONTHLY MITIGATION</span>
-                    <TrendingDown className="h-4 w-4 text-moss" />
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-ink-muted font-mono">Carbon Reduction Range:</p>
-                    <p className="font-mono text-xl font-bold text-foreground">
-                      {formatRange(co2eSavedMonthly * 0.9, co2eSavedMonthly * 1.1, 'kg CO2e/mo')}
-                    </p>
-                  </div>
-
-                  <div className="pt-2 border-t border-border flex items-center justify-between text-xs font-mono">
-                    <span className="text-ink-muted">Net Expenditure Delta:</span>
-                    <strong className="text-moss font-semibold">
-                      {formatCurrency(-rupeesSavedMonthly, 'INR')}/mo
-                    </strong>
-                  </div>
-                </div>
-
-                <p className="text-[11px] text-ink-faint font-mono">
-                  * Based on ARAI petrol emission factor (0.1705 kg/km) vs DMRC metro rail benchmark (0.0150 kg/km).
-                </p>
-              </div>
-            </Card>
+            <span className="lp-community-text">
+              Join a growing community making everyday changes.
+            </span>
           </div>
         </div>
-        <div className="landing-metrics">
-          <div><strong>60+</strong><span>practical lifestyle swaps</span></div>
-          <div><strong>±12%</strong><span>uncertainty made visible</span></div>
-          <div><strong>India-first</strong><span>regional data and costs</span></div>
-        </div>
-      </section>
 
-      {/* Editorial Principles Section */}
-      <section className="landing-section mx-auto max-w-7xl px-6 py-20 md:px-12 border-b border-border">
-        <div className="max-w-2xl mb-12">
-          <p className="taxonomy-label mb-2">FOUNDATIONAL RULES</p>
-          <h2 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
-            How GreenSwap differs from conventional climate apps
-          </h2>
-        </div>
+        {/* Hero Visual: Mountain Valley Lake + Organic Leaves + Floating Cards */}
+        <div className="lp-hero__right">
+          <div className="lp-arch-window">
+            <img
+              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80"
+              alt="Mountain fjord and lush valley lake"
+              className="lp-arch-img"
+            />
 
-        <div className="landing-principles grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="landing-principle border border-border bg-surface p-6 rounded space-y-3">
-            <span className="taxonomy-label block">RULE 01 // UNCERTAINTY BOUNDS</span>
-            <h3 className="font-serif text-xl font-medium">No Fake Point Estimates</h3>
-            <p className="text-xs text-ink-muted font-sans leading-relaxed">
-              Every carbon and rupee calculation is displayed as an honest scientific range `[low – high]`.
-              Carbon life cycles vary with weather, grid loads, and driving style; pretending otherwise is greenwashing.
-            </p>
+            {/* Top Floating Card */}
+            <div className="lp-floating-top">
+              <span className="leaf-icon">🍃</span>
+              <div>
+                <strong>0.7t</strong>
+                <span>CO2e saved per month (avg)</span>
+              </div>
+            </div>
+
+            {/* Bottom Floating Card */}
+            <div className="lp-floating-bottom">
+              <span className="chart-icon">📊</span>
+              <div>
+                <strong>Real data from</strong>
+                <span>DEFRA, CEA, EPA</span>
+              </div>
+            </div>
           </div>
 
-          <div className="landing-principle border border-border bg-surface p-6 rounded space-y-3">
-            <span className="taxonomy-label block">RULE 02 // REGIONAL SENSITIVITY</span>
-            <h3 className="font-serif text-xl font-medium">Grid-Calibrated Math</h3>
-            <p className="text-xs text-ink-muted font-sans leading-relaxed">
-              Charging an EV on the Indian grid (0.716 kg CO2e/kWh) produces vastly different lifecycle impacts
-              than charging in Europe. GreenSwap uses local Central Electricity Authority data.
-            </p>
+          {/* Botanical Leaves Overlays */}
+          <div className="lp-leaf-overlay lp-leaf-tl" aria-hidden="true">
+            <svg viewBox="0 0 100 140" fill="none">
+              <path d="M50 10 C15 35 10 80 50 130 C90 80 85 35 50 10Z" fill="#3f6545" opacity="0.9" />
+              <path d="M50 10 L50 130" stroke="#25422a" strokeWidth="1.5" opacity="0.6" />
+            </svg>
           </div>
-
-          <div className="landing-principle border border-border bg-surface p-6 rounded space-y-3">
-            <span className="taxonomy-label block">RULE 03 // FULL TRANSPARENCY</span>
-            <h3 className="font-serif text-xl font-medium">Open Formula Ranking</h3>
-            <p className="text-xs text-ink-muted font-sans leading-relaxed">
-              No black-box algorithms. Every suggestion shows "Why you're seeing this" with the top 2
-              mathematical scoring factors and links to scientific source citations.
-            </p>
+          <div className="lp-leaf-overlay lp-leaf-br" aria-hidden="true">
+            <svg viewBox="0 0 120 160" fill="none">
+              <path d="M60 10 C20 40 10 95 60 150 C110 95 100 40 60 10Z" fill="#4d7454" opacity="0.85" />
+              <path d="M60 10 L60 150" stroke="#25422a" strokeWidth="1.5" opacity="0.6" />
+            </svg>
           </div>
         </div>
       </section>
 
-      {/* Featured Botanical Catalog Preview */}
-      <section className="landing-section landing-catalogue mx-auto max-w-7xl px-6 py-20 md:px-12 border-b border-border">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+      {/* ── Feature Highlights Row ── */}
+      <div className="lp-features-strip">
+        <div className="lp-strip-item mouse-icon-wrap" aria-hidden="true">
+          <svg width="20" height="28" viewBox="0 0 24 32" fill="none" stroke="currentColor" strokeWidth="1.75">
+            <rect x="3" y="2" width="18" height="28" rx="9" />
+            <line x1="12" y1="7" x2="12" y2="13" />
+          </svg>
+        </div>
+
+        <div className="lp-strip-item">
+          <div className="strip-badge-icon">📊</div>
           <div>
-            <p className="taxonomy-label mb-1">FIELD CATALOGUE EXCERPTS</p>
-            <h2 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
-              Four High-Impact Interventions
-            </h2>
+            <strong>Real data</strong>
+            <span>from trusted sources</span>
           </div>
-          <Link to="/explore">
-            <Button variant="outline" size="sm" rightIcon={<ArrowRight className="h-3 w-3" />}>
-              View All 60+ Entries
-            </Button>
-          </Link>
         </div>
 
-        <div className="landing-swaps grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <Card className="landing-swap-card" taxonomyCode="SPEC.01 // ENERGY" badge={<Badge variant="moss">62% CUT</Badge>}>
-            <Zap className="h-5 w-5 text-moss mb-3" />
-            <h3 className="font-serif text-base font-bold mb-1">5-Star BLDC Ceiling Fans</h3>
-            <p className="text-xs text-ink-muted font-sans mb-3">
-              Drops fan power consumption from 75W to 28W per room, amortizing capital within 12 months.
-            </p>
-            <p className="font-mono text-xs text-moss font-semibold">Saves ₹320/fan monthly</p>
-          </Card>
-
-          <Card className="landing-swap-card" taxonomyCode="SPEC.02 // FOOD" badge={<Badge variant="moss">35% CUT</Badge>}>
-            <BookOpen className="h-5 w-5 text-clay mb-3" />
-            <h3 className="font-serif text-base font-bold mb-1">Meatless Weekday Lunches</h3>
-            <p className="text-xs text-ink-muted font-sans mb-3">
-              Substituting ruminant meats with local dal and millets during workdays avoids enteric emissions.
-            </p>
-            <p className="font-mono text-xs text-moss font-semibold">Saves ~₹1,100/mo</p>
-          </Card>
-
-          <Card className="landing-swap-card" taxonomyCode="SPEC.03 // WASTE" badge={<Badge variant="moss">86% CUT</Badge>}>
-            <ShieldCheck className="h-5 w-5 text-burnt mb-3" />
-            <h3 className="font-serif text-base font-bold mb-1">Aerobic Khamba Composting</h3>
-            <p className="text-xs text-ink-muted font-sans mb-3">
-              Prevents anaerobic rotting in municipal dumps, eliminating potent landfill methane emissions.
-            </p>
-            <p className="font-mono text-xs text-foreground font-semibold">Zero waste to landfill</p>
-          </Card>
-
-          <Card className="landing-swap-card" taxonomyCode="SPEC.04 // ENERGY" badge={<Badge variant="moss">25% CUT</Badge>}>
-            <TrendingDown className="h-5 w-5 text-moss mb-3" />
-            <h3 className="font-serif text-base font-bold mb-1">AC 24°C–26°C Setpoint</h3>
-            <p className="text-xs text-ink-muted font-sans mb-3">
-              Every 1°C increase in thermostat saves 6% compressor load without sacrificing comfort.
-            </p>
-            <p className="font-mono text-xs text-moss font-semibold">Saves ~₹680/mo</p>
-          </Card>
-        </div>
-      </section>
-
-      {/* Footer */}
-      </main>
-      <footer className="border-t border-border bg-surface px-6 py-12 md:px-12 text-xs font-mono">
-        <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="lp-strip-item">
+          <div className="strip-badge-icon">🌿</div>
           <div>
-            <span className="font-serif text-lg font-bold text-foreground">GreenSwap.</span>
-            <p className="text-ink-muted font-sans text-xs mt-1">
-              Field Guide & Sustainable Lifestyle Recommendation System.
-            </p>
+            <strong>Simple swaps</strong>
+            <span>for everyday life</span>
+          </div>
+        </div>
+
+        <div className="lp-strip-item">
+          <div className="strip-badge-icon">🌍</div>
+          <div>
+            <strong>A cleaner, healthier</strong>
+            <span>planet for tomorrow</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Footer Matching Reference Image ── */}
+      <footer className="lp-footer">
+        <div className="lp-footer__top">
+          {/* Brand Info */}
+          <div className="lp-footer__brand-col">
+            <Link to="/" className="lp-logo">GreenSwap<span className="lp-logo__dot">.</span></Link>
+            <p className="lp-footer__tagline">A more thoughtful way to live.</p>
           </div>
 
-          <div className="flex flex-wrap gap-6 text-ink-muted">
-            <Link to="/methodology" className="hover:text-foreground">Methodology</Link>
-            <Link to="/explore" className="hover:text-foreground">Catalog</Link>
-            <Link to="/privacy" className="hover:text-foreground">Privacy (DPDP)</Link>
-            <Link to="/terms" className="hover:text-foreground">Terms</Link>
-            <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
-            <Link to="/about" className="hover:text-foreground">About</Link>
+          {/* Links Columns */}
+          <div className="lp-footer__links-col">
+            <h4>Product</h4>
+            <Link to="/">Home</Link>
+            <Link to="/explore">Explore</Link>
+            <Link to="/catalogue">Catalogue</Link>
+            <Link to="/methodology">How It Works</Link>
           </div>
 
-          <span className="text-ink-faint">WCAG 2.2 AA // 2026 EDITION</span>
+          <div className="lp-footer__links-col">
+            <h4>Company</h4>
+            <Link to="/about">About</Link>
+            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/terms">Terms & Conditions</Link>
+            <Link to="/methodology">FAQ</Link>
+          </div>
+
+          <div className="lp-footer__links-col">
+            <h4>Resources</h4>
+            <Link to="/methodology">Methodology</Link>
+            <Link to="/data-sources">Data Sources</Link>
+            <Link to="/about">Contact</Link>
+          </div>
+
+          {/* Newsletter Box */}
+          <div className="lp-footer__newsletter-col">
+            <h4>Join our newsletter</h4>
+            <p>Get simple tips and updates.</p>
+            <form onSubmit={handleSubscribe} className="lp-newsletter-form">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <button type="submit" aria-label="Subscribe">
+                <Send className="h-3.5 w-3.5" />
+              </button>
+            </form>
+            {subscribed && <span className="newsletter-thankyou">Thank you for joining! 🌱</span>}
+          </div>
+        </div>
+
+        {/* Footer Bottom Bar */}
+        <div className="lp-footer__bottom">
+          <div className="lp-social-links">
+            <a href="#" aria-label="Twitter X">𝕏</a>
+            <a href="#" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /></svg>
+            </a>
+            <a href="#" aria-label="LinkedIn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
+            </a>
+          </div>
+
+          <div className="lp-footer__credits">
+            <div className="credits-text">
+              <span className="credits-label">PROJECT MADE BY</span>
+              <strong className="credits-names">Akash Sharma · Ridhima Sambyal · Suhani</strong>
+              <span className="credits-sub">Small choices. Lighter footprint.</span>
+            </div>
+            <div className="credits-leaf" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#33593A">
+                <path d="M17 8C8 10 5 16 3 21C8 21 14 18 17 8Z" />
+                <path d="M17 8C19 4 21 3 22 2C21 5 19 8 17 8Z" />
+              </svg>
+            </div>
+          </div>
         </div>
       </footer>
+
+      <style>{`
+        /* Hero & Section adjustments matching reference image */
+        .lp-hero__badge-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.35rem 0.85rem;
+          background: rgba(18, 56, 38, 0.08);
+          border: 1px solid rgba(18, 56, 38, 0.2);
+          border-radius: 999px;
+          font-size: 0.68rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          color: #123826;
+          margin-bottom: 0.5rem;
+        }
+        .lp-hero__title-italic {
+          font-style: italic;
+          color: #123826;
+          font-weight: 400;
+        }
+        .lp-community-row {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+          margin-top: 1rem;
+        }
+        .lp-avatars-stack {
+          display: flex;
+          align-items: center;
+        }
+        .lp-avatars-stack img {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          border: 2px solid #F5F0E8;
+          margin-left: -7px;
+          object-fit: cover;
+        }
+        .lp-avatars-stack img:first-child { margin-left: 0; }
+        .lp-community-text {
+          font-size: 0.75rem;
+          color: #535C55;
+          line-height: 1.35;
+        }
+
+        /* Arch Window with mountain lake */
+        .lp-arch-window {
+          position: relative;
+          width: 360px;
+          height: 480px;
+          border-radius: 180px 180px 30px 30px;
+          overflow: hidden;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.16);
+          border: 4px solid #ffffff;
+        }
+        .lp-arch-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .lp-floating-top {
+          position: absolute;
+          top: 30px;
+          right: 15px;
+          background: rgba(255, 255, 255, 0.94);
+          backdrop-filter: blur(8px);
+          border-radius: 12px;
+          padding: 0.7rem 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+          z-index: 5;
+        }
+        .lp-floating-top strong {
+          display: block;
+          font-family: 'Fraunces', Georgia, serif;
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #1B211E;
+          line-height: 1;
+        }
+        .lp-floating-top span {
+          font-size: 0.62rem;
+          color: #535C55;
+        }
+        .lp-floating-bottom {
+          position: absolute;
+          bottom: 40px;
+          right: 20px;
+          background: rgba(255, 255, 255, 0.94);
+          backdrop-filter: blur(8px);
+          border-radius: 12px;
+          padding: 0.65rem 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+          z-index: 5;
+        }
+        .lp-floating-bottom strong {
+          display: block;
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #1B211E;
+        }
+        .lp-floating-bottom span {
+          font-size: 0.62rem;
+          color: #535C55;
+        }
+        .lp-leaf-overlay {
+          position: absolute;
+          pointer-events: none;
+          z-index: 4;
+        }
+        .lp-leaf-tl {
+          top: -20px;
+          left: -20px;
+          width: 100px;
+          transform: rotate(-25deg);
+        }
+        .lp-leaf-br {
+          bottom: -30px;
+          right: -30px;
+          width: 120px;
+          transform: rotate(20deg);
+        }
+
+        /* Features Strip */
+        .lp-features-strip {
+          max-width: 1240px;
+          margin: 0 auto;
+          padding: 2.5rem 2rem 3rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-top: 1px solid #DFD7CA;
+          gap: 1.5rem;
+          flex-wrap: wrap;
+        }
+        .mouse-icon-wrap {
+          color: #848E86;
+        }
+        .lp-strip-item {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+        }
+        .strip-badge-icon {
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          background: rgba(18, 56, 38, 0.08);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.1rem;
+        }
+        .lp-strip-item strong {
+          display: block;
+          font-size: 0.85rem;
+          font-weight: 700;
+          color: #1B211E;
+        }
+        .lp-strip-item span {
+          font-size: 0.72rem;
+          color: #535C55;
+        }
+
+        /* Footer */
+        .lp-footer {
+          background: #EDE6DC;
+          border-top: 1px solid #DFD7CA;
+          padding: 4rem 2rem 2rem;
+        }
+        .lp-footer__top {
+          max-width: 1240px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 1.5fr 1fr 1fr 1fr 1.5fr;
+          gap: 2.5rem;
+          padding-bottom: 3rem;
+          border-bottom: 1px solid #DFD7CA;
+        }
+        .lp-footer__tagline {
+          font-size: 0.85rem;
+          color: #535C55;
+          margin-top: 0.75rem;
+        }
+        .lp-footer__links-col h4, .lp-footer__newsletter-col h4 {
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          color: #1B211E;
+          margin: 0 0 1rem;
+        }
+        .lp-footer__links-col a {
+          display: block;
+          font-size: 0.82rem;
+          color: #535C55;
+          text-decoration: none;
+          margin-bottom: 0.65rem;
+          transition: color 0.15s;
+        }
+        .lp-footer__links-col a:hover {
+          color: #123826;
+        }
+        .lp-footer__newsletter-col p {
+          font-size: 0.8rem;
+          color: #535C55;
+          margin: 0 0 0.85rem;
+        }
+        .lp-newsletter-form {
+          display: flex;
+          align-items: center;
+          background: #ffffff;
+          border: 1px solid #DFD7CA;
+          border-radius: 8px;
+          overflow: hidden;
+        }
+        .lp-newsletter-form input {
+          border: none;
+          outline: none;
+          padding: 0.55rem 0.85rem;
+          font-size: 0.78rem;
+          flex: 1;
+        }
+        .lp-newsletter-form button {
+          background: #123826;
+          color: #fff;
+          border: none;
+          padding: 0.55rem 0.85rem;
+          cursor: pointer;
+        }
+        .newsletter-thankyou {
+          font-size: 0.75rem;
+          color: #123826;
+          margin-top: 0.4rem;
+          display: block;
+        }
+        .lp-footer__bottom {
+          max-width: 1240px;
+          margin: 1.5rem auto 0;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 1.5rem;
+        }
+        .lp-social-links {
+          display: flex;
+          align-items: center;
+          gap: 1.25rem;
+        }
+        .lp-social-links a {
+          color: #535C55;
+          text-decoration: none;
+          transition: color 0.15s;
+        }
+        .lp-social-links a:hover { color: #123826; }
+        .lp-footer__credits {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          text-align: right;
+        }
+        .credits-label {
+          font-size: 0.65rem;
+          letter-spacing: 0.12em;
+          color: #848E86;
+          display: block;
+        }
+        .credits-names {
+          font-size: 0.82rem;
+          color: #1B211E;
+          display: block;
+        }
+        .credits-sub {
+          font-size: 0.72rem;
+          color: #535C55;
+        }
+
+        @media (max-width: 1024px) {
+          .lp-footer__top {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+        @media (max-width: 768px) {
+          .lp-arch-window {
+            width: 280px;
+            height: 380px;
+          }
+          .lp-footer__top {
+            grid-template-columns: 1fr;
+          }
+          .lp-footer__bottom {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+        }
+      `}</style>
     </div>
   );
 }

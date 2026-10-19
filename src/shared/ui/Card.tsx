@@ -10,13 +10,16 @@ export function Card({ className, taxonomyCode, badge, children, ...props }: Car
   return (
     <div
       className={cn(
-        'rounded border border-border bg-surface text-foreground transition-colors duration-150',
+        'rounded border border-border bg-surface text-foreground',
+        'transition-all duration-300 ease-out',
+        'hover:shadow-lg hover:-translate-y-1 hover:border-[rgba(51,89,58,0.3)]',
+        'gs-shine',
         className
       )}
       {...props}
     >
       {(taxonomyCode || badge) && (
-        <div className="flex items-center justify-between border-b border-border px-5 py-2.5 bg-surface-muted/50">
+        <div className="flex items-center justify-between border-b border-border px-5 py-2.5 bg-surface-muted/50 rounded-t">
           {taxonomyCode && (
             <span className="taxonomy-label select-none">{taxonomyCode}</span>
           )}
@@ -27,6 +30,7 @@ export function Card({ className, taxonomyCode, badge, children, ...props }: Car
     </div>
   );
 }
+
 
 export function CardHeader({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (

@@ -9,6 +9,7 @@ import { CardSkeleton } from './shared/ui/Skeleton';
 import { LandingPage } from './features/public/LandingPage';
 
 const MethodologyPage = lazy(() => import('./features/public/MethodologyPage').then((m) => ({ default: m.MethodologyPage })));
+const DataSourcesPage = lazy(() => import('./features/public/DataSourcesPage').then((m) => ({ default: m.DataSourcesPage })));
 const StyleGuidePage = lazy(() => import('./features/styleguide/StyleGuidePage').then((m) => ({ default: m.StyleGuidePage })));
 const AboutPage = lazy(() => import('./features/public/AboutPage').then((m) => ({ default: m.AboutPage })));
 const PrivacyPage = lazy(() => import('./features/public/LegalPages').then((m) => ({ default: m.PrivacyPage })));
@@ -16,6 +17,7 @@ const TermsPage = lazy(() => import('./features/public/LegalPages').then((m) => 
 const CookiesPage = lazy(() => import('./features/public/LegalPages').then((m) => ({ default: m.CookiesPage })));
 const NotFoundPage = lazy(() => import('./features/public/LegalPages').then((m) => ({ default: m.NotFoundPage })));
 const ExplorePage = lazy(() => import('./features/explore/ExplorePage').then((m) => ({ default: m.ExplorePage })));
+const CataloguePage = lazy(() => import('./features/explore/CataloguePage').then((m) => ({ default: m.CataloguePage })));
 const OnboardingPage = lazy(() => import('./features/onboarding/OnboardingPage').then((m) => ({ default: m.OnboardingPage })));
 const DashboardPage = lazy(() => import('./features/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })));
 const LogActivityPage = lazy(() => import('./features/activities/LogActivityPage').then((m) => ({ default: m.LogActivityPage })));
@@ -42,6 +44,9 @@ export default function App() {
         <Routes location={location}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/methodology" element={<MethodologyPage />} />
+          <Route path="/data-sources" element={<DataSourcesPage />} />
+          <Route path="/resources" element={<DataSourcesPage />} />
+          <Route path="/resources/data-sources" element={<DataSourcesPage />} />
           <Route path="/styleguide" element={<StyleGuidePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
@@ -50,6 +55,7 @@ export default function App() {
 
           <Route element={<MaybeShell />}>
             <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/catalogue" element={<CataloguePage />} />
           </Route>
 
           <Route path="/login" element={<Navigate to="/dashboard" replace />} />
@@ -60,6 +66,7 @@ export default function App() {
               <Route path="/onboarding" element={<OnboardingPage />} />
               <Route element={<AppShell />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/routine" element={<LogActivityPage />} />
                 <Route path="/log" element={<LogActivityPage />} />
                 <Route path="/recommendations" element={<RecommendationsPage />} />
                 <Route path="/progress" element={<ProgressPage />} />

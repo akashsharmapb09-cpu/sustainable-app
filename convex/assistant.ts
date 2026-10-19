@@ -54,6 +54,12 @@ export const chat = action({
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        throw new ConvexError("OpenAI rejected the request due to a rate limit or exhausted API quota. Check billing and usage limits for the API project, then try again.");
+      }
+      if (response.status === 401) {
+        throw new ConvexError("OpenAI rejected the configured API key. Replace OPENAI_API_KEY in the Convex deployment environment.");
+      }
       throw new ConvexError(`The AI service could not respond (${response.status}). Please try again shortly.`);
     }
 

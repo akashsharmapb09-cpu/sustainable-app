@@ -1,0 +1,249 @@
+/* ============================================================
+   GreenSwap — Global Effects & Animation System
+   Applied site-wide: scroll reveals, micro-interactions,
+   glassmorphism, gradients, shimmer, parallax-ready classes
+   ============================================================ */
+
+/* ── Scroll-reveal base ──────────────────────────────────── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-reveal="left"]  { transform: translateX(-32px); }
+[data-reveal="right"] { transform: translateX(32px); }
+[data-reveal="scale"] { transform: scale(0.94) translateY(16px); }
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Stagger delays ──────────────────────────────────────── */
+.stagger-1 { transition-delay: 0.05s !important; }
+.stagger-2 { transition-delay: 0.12s !important; }
+.stagger-3 { transition-delay: 0.19s !important; }
+.stagger-4 { transition-delay: 0.26s !important; }
+.stagger-5 { transition-delay: 0.33s !important; }
+.stagger-6 { transition-delay: 0.40s !important; }
+
+/* ── Glass card ──────────────────────────────────────────── */
+.glass-card {
+  background: rgba(252, 250, 246, 0.72);
+  border: 1px solid rgba(223, 215, 202, 0.7);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow:
+    0 4px 24px rgba(0,0,0,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.55);
+  border-radius: 16px;
+  transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+.glass-card:hover {
+  box-shadow:
+    0 16px 48px rgba(0,0,0,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.55);
+  transform: translateY(-4px);
+  border-color: rgba(51, 89, 58, 0.35);
+}
+
+/* ── Shimmer / skeleton ──────────────────────────────────── */
+@keyframes gs-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.gs-shimmer {
+  background: linear-gradient(90deg, #f0ece4 25%, #faf7f2 50%, #f0ece4 75%);
+  background-size: 800px 100%;
+  animation: gs-shimmer 1.6s infinite linear;
+  border-radius: 8px;
+}
+
+/* ── Gradient text ───────────────────────────────────────── */
+.gs-gradient-text {
+  background: linear-gradient(135deg, #1B211E 0%, #33593A 50%, #1B211E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Hover lift card ─────────────────────────────────────── */
+.hover-lift {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.28s ease;
+  will-change: transform;
+}
+.hover-lift:hover {
+  transform: translateY(-6px) scale(1.012);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.10);
+}
+
+/* ── Glow border on hover ────────────────────────────────── */
+.hover-glow {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.hover-glow:hover {
+  box-shadow: 0 0 0 3px rgba(51, 89, 58, 0.18), 0 8px 30px rgba(0,0,0,0.08);
+  border-color: rgba(51, 89, 58, 0.45) !important;
+}
+
+/* ── Magnetic button pulse ───────────────────────────────── */
+@keyframes btn-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(51,89,58,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(51,89,58,0); }
+}
+.btn-pulse { animation: btn-pulse 2.4s ease-in-out infinite; }
+
+/* ── Floating animation ──────────────────────────────────── */
+@keyframes gs-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+.gs-float { animation: gs-float 4s ease-in-out infinite; }
+
+/* ── Slow spin ───────────────────────────────────────────── */
+@keyframes gs-spin-slow { to { transform: rotate(360deg); } }
+.gs-spin-slow { animation: gs-spin-slow 20s linear infinite; }
+
+/* ── Ticker / marquee ────────────────────────────────────── */
+@keyframes gs-ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.gs-ticker-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+  background: #1B2B1F;
+  color: #c8dfca;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.55rem 0;
+}
+.gs-ticker-inner {
+  display: inline-flex;
+  gap: 3rem;
+  animation: gs-ticker 22s linear infinite;
+}
+.gs-ticker-inner span { flex-shrink: 0; }
+.gs-ticker-inner .dot { color: #4C7D55; }
+
+/* ── Tag pill ────────────────────────────────────────────── */
+.gs-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.7rem;
+  background: rgba(51, 89, 58, 0.1);
+  color: #33593A;
+  border: 1px solid rgba(51, 89, 58, 0.22);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Number counter ──────────────────────────────────────── */
+.gs-counter { font-variant-numeric: tabular-nums; }
+
+/* ── Page fade in ────────────────────────────────────────── */
+@keyframes gs-page-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+.gs-page-in {
+  animation: gs-page-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Gradient orb background ─────────────────────────────── */
+.gs-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+.gs-orb--green  { background: radial-gradient(circle, rgba(51,89,58,0.15), transparent 70%); }
+.gs-orb--yellow { background: radial-gradient(circle, rgba(193,162,88,0.12), transparent 70%); }
+.gs-orb--cream  { background: radial-gradient(circle, rgba(245,240,232,0.8), transparent 70%); }
+
+/* ── Underline draw effect ───────────────────────────────── */
+.gs-underline-draw {
+  position: relative;
+  display: inline-block;
+}
+.gs-underline-draw::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #33593A;
+  border-radius: 2px;
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gs-underline-draw:hover::after,
+a:hover .gs-underline-draw::after { width: 100%; }
+
+/* ── Noise texture overlay ───────────────────────────────── */
+.gs-noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  border-radius: inherit;
+  z-index: 1;
+}
+
+/* ── Progress bar animated ───────────────────────────────── */
+@keyframes gs-bar-grow {
+  from { width: 0 !important; }
+  to   { /* width set inline */ }
+}
+.gs-bar-animated {
+  animation: gs-bar-grow 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Card shine sweep ────────────────────────────────────── */
+.gs-shine {
+  position: relative;
+  overflow: hidden;
+}
+.gs-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255,255,255,0.3) 50%,
+    transparent 60%
+  );
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+.gs-shine:hover::before { left: 140%; }
+
+/* ── Reduced motion ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal],
+  .gs-float,
+  .gs-spin-slow,
+  .gs-ticker-inner,
+  .btn-pulse {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

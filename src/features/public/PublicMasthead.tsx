@@ -1,29 +1,101 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../../shared/ui';
 
 export const publicNavLinkClass =
-  "relative font-medium text-ink-muted transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-200 after:content-[''] hover:text-foreground hover:after:scale-x-100 focus-visible:after:scale-x-100";
+  "relative font-medium text-ink-muted transition-colors duration-200 " +
+  "after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full " +
+  "after:origin-left after:scale-x-0 after:bg-[#33593A] after:transition-transform " +
+  "after:duration-300 after:content-[''] hover:text-foreground hover:after:scale-x-100 " +
+  "focus-visible:after:scale-x-100";
 
 export function PublicMasthead() {
+  const { pathname } = useLocation();
+  const links = [
+    ['/explore', 'Explore'],
+    ['/catalogue', 'Catalogue'],
+    ['/methodology', 'Methodology'],
+    ['/data-sources', 'Data Sources'],
+    ['/about', 'About'],
+  ] as const;
+
   return (
-    <header className="sticky top-0 z-50 border-b border-black/10 bg-[#fbf8f1]/90 px-6 py-4 backdrop-blur md:px-12">
-      <div className="mx-auto flex max-w-7xl items-center justify-between">
-        <Link to="/" className="font-serif text-2xl font-bold tracking-tight text-foreground">
-          GreenSwap<span className="text-burnt">.</span>
+    <header style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+      background: 'rgba(245,240,232,0.9)',
+      borderBottom: '1px solid #DFD7CA',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      transition: 'background 0.3s',
+    }}>
+      <div style={{
+        maxWidth: 1240,
+        margin: '0 auto',
+        padding: '0 2rem',
+        height: 68,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '2rem',
+      }}>
+        <Link to="/" style={{
+          fontFamily: "'Fraunces',Georgia,serif",
+          fontSize: '1.4rem',
+          fontWeight: 700,
+          color: '#1B211E',
+          textDecoration: 'none',
+          transition: 'opacity 0.2s',
+        }}
+          onMouseEnter={e => (e.currentTarget.style.opacity = '0.75')}
+          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+        >
+          GreenSwap<span style={{ color: '#1B211E' }}>.</span>
         </Link>
-        <nav className="hidden md:flex items-center gap-6 text-xs font-mono">
-          <Link to="/explore" className={publicNavLinkClass}>Explore Catalog</Link>
-          <Link to="/methodology" className={publicNavLinkClass}>Methodology &amp; Citations</Link>
-          <Link to="/about" className={publicNavLinkClass}>About</Link>
-          <Link to="/styleguide" className={publicNavLinkClass}>Styleguide</Link>
+
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
+          {links.map(([href, label]) => (
+            <Link
+              key={label}
+              to={href}
+              className={publicNavLinkClass}
+              style={{
+                fontSize: '0.82rem',
+                textDecoration: 'none',
+                color: pathname === href ? '#1B211E' : '#535C55',
+                fontWeight: pathname === href ? 600 : 500,
+              }}
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
+
         <Link to="/onboarding">
           <Button
             variant="primary"
             size="sm"
-            className="rounded-full border-black bg-black px-5 py-2 text-white shadow-none ring-1 ring-white/30 ring-offset-2 ring-offset-black transition hover:scale-105 hover:bg-black/90 dark:bg-black dark:text-white dark:hover:bg-black/90"
+            style={{
+              borderRadius: 999,
+              background: '#1B2B1F',
+              color: '#F5F0E8',
+              border: 'none',
+              padding: '0.5rem 1.2rem',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              transition: 'background 0.2s, transform 0.2s, box-shadow 0.2s',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 24px rgba(27,43,31,0.28)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = '';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = '';
+            }}
           >
-            Begin Calibration
+            Get Started
           </Button>
         </Link>
       </div>
@@ -33,17 +105,67 @@ export function PublicMasthead() {
 
 export function PublicFooter() {
   return (
-    <footer className="border-t border-border bg-surface px-6 py-12 md:px-12 text-xs font-mono">
-      <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <span className="font-serif text-lg font-bold text-foreground">GreenSwap.</span>
-        <div className="flex flex-wrap gap-6 text-ink-muted">
-          <Link to="/methodology" className="hover:text-foreground">Methodology</Link>
-          <Link to="/explore" className="hover:text-foreground">Catalog</Link>
-          <Link to="/privacy" className="hover:text-foreground">Privacy (DPDP)</Link>
-          <Link to="/terms" className="hover:text-foreground">Terms</Link>
-          <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
-          <Link to="/about" className="hover:text-foreground">About</Link>
-        </div>
+    <footer style={{
+      background: '#F0EAE1',
+      borderTop: '1px solid #DFD7CA',
+      padding: '2.5rem 2rem 1.5rem',
+    }}>
+      <div style={{
+        maxWidth: 1240,
+        margin: '0 auto',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '2rem',
+        flexWrap: 'wrap',
+        paddingBottom: '1.5rem',
+        borderBottom: '1px solid #DFD7CA',
+      }}>
+        <Link to="/" style={{
+          fontFamily: "'Fraunces',Georgia,serif",
+          fontSize: '1.4rem',
+          fontWeight: 700,
+          color: '#1B211E',
+          textDecoration: 'none',
+        }}>
+          GreenSwap.
+        </Link>
+        <nav style={{ display: 'flex', flexWrap: 'wrap', gap: '1.25rem' }}>
+          {[['/', 'Home'],['/explore','Explore'],['/catalogue','Catalogue'],['/methodology','Methodology'],['/data-sources','Data Sources'],['/about','About'],['/privacy','Privacy'],['/terms','Terms']].map(([href, label]) => (
+            <Link
+              key={label}
+              to={href}
+              style={{
+                fontSize: '0.78rem',
+                color: '#535C55',
+                textDecoration: 'none',
+                transition: 'color 0.2s',
+                position: 'relative',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#1B211E')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#535C55')}
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+      <div style={{
+        maxWidth: 1240,
+        margin: '1rem auto 0',
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '0.5rem',
+        fontSize: '0.68rem',
+        color: '#848E86',
+      }}>
+        <span>GreenSwap 2026 — Built to inspire, not to preach.</span>
+        <span>
+          Project made by <strong style={{ color: '#535C55' }}>Akash Sharma</strong> ·{' '}
+          <strong style={{ color: '#535C55' }}>Ridhima Sambyal</strong> ·{' '}
+          <strong style={{ color: '#535C55' }}>Suhani</strong>
+        </span>
       </div>
     </footer>
   );
