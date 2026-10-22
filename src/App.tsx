@@ -12,6 +12,7 @@ const MethodologyPage = lazy(() => import('./features/public/MethodologyPage').t
 const DataSourcesPage = lazy(() => import('./features/public/DataSourcesPage').then((m) => ({ default: m.DataSourcesPage })));
 const StyleGuidePage = lazy(() => import('./features/styleguide/StyleGuidePage').then((m) => ({ default: m.StyleGuidePage })));
 const AboutPage = lazy(() => import('./features/public/AboutPage').then((m) => ({ default: m.AboutPage })));
+const ContactPage = lazy(() => import('./features/public/ContactPage').then((m) => ({ default: m.ContactPage })));
 const PrivacyPage = lazy(() => import('./features/public/LegalPages').then((m) => ({ default: m.PrivacyPage })));
 const TermsPage = lazy(() => import('./features/public/LegalPages').then((m) => ({ default: m.TermsPage })));
 const CookiesPage = lazy(() => import('./features/public/LegalPages').then((m) => ({ default: m.CookiesPage })));
@@ -49,6 +50,7 @@ export default function App() {
           <Route path="/resources/data-sources" element={<DataSourcesPage />} />
           <Route path="/styleguide" element={<StyleGuidePage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/cookies" element={<CookiesPage />} />

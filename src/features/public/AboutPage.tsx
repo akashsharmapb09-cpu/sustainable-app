@@ -90,8 +90,6 @@ export function AboutPage() {
             ))}
           </div>
         </section>
-
-        {/* Team */}
         <section style={{background:'#F0EAE1',padding:'6rem 2rem',textAlign:'center',
           borderTop:'1px solid #DFD7CA',borderBottom:'1px solid #DFD7CA'}}>
           <p className="lp-eyebrow lp-eyebrow--center" data-reveal>THE TEAM</p>
@@ -116,6 +114,27 @@ export function AboutPage() {
                 </div>
               </div>
             ))}
+          </div>
+          <div data-reveal style={{ marginTop: '2.5rem' }}>
+            <Link
+              to="/contact"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.85rem 2rem',
+                background: '#1B2B1F',
+                color: '#F5F0E8',
+                borderRadius: '999px',
+                fontWeight: 600,
+                textDecoration: 'none',
+                fontSize: '0.9rem',
+                transition: 'background 0.2s, transform 0.2s',
+              }}
+              className="gs-shine btn-pulse"
+            >
+              Get in Touch with the Team →
+            </Link>
           </div>
         </section>
       </main>

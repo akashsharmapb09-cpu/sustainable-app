@@ -29,6 +29,7 @@ export function LandingPage() {
             <Link to="/catalogue">Catalogue</Link>
             <Link to="/methodology">How It Works</Link>
             <Link to="/progress">Impact</Link>
+            <Link to="/contact">Contact</Link>
           </nav>
           <div className="lp-nav__actions">
             <button className="lp-btn-ghost" aria-label="Search">
@@ -189,7 +190,7 @@ export function LandingPage() {
             <h4>Resources</h4>
             <Link to="/methodology">Methodology</Link>
             <Link to="/data-sources">Data Sources</Link>
-            <Link to="/about">Contact</Link>
+            <Link to="/contact">Contact</Link>
           </div>
 
           {/* Newsletter Box */}
