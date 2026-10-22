@@ -9,6 +9,38 @@ const envSchema = z.object({
 
 export type EnvConfig = z.infer<typeof envSchema>;
 
+function getSafeEnv(): Record<string, unknown> {
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env as Record<string, unknown>;
+  }
+  try {
+    // @ts-ignore
+    if (typeof import.meta !== 'undefined' && import.meta.env) {
+      // @ts-ignore
+      return import.meta.env;
+    }
+  } catch {
+    // Ignore error
+  }
+  return {};
+}
+
+function getSafeMode(): string {
+  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV) {
+    return process.env.NODE_ENV;
+  }
+  try {
+    // @ts-ignore
+    if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.MODE) {
+      // @ts-ignore
+      return import.meta.env.MODE;
+    }
+  } catch {
+    // Ignore error
+  }
+  return 'development';
+}
+
 function isConvexCloudConfigured(source: Record<string, unknown>): boolean {
   const url = typeof source.VITE_CONVEX_URL === 'string' ? source.VITE_CONVEX_URL.trim() : '';
   const match = /^https:\/\/([a-z0-9]+(?:-[a-z0-9]+){2,})\.convex\.cloud$/i.exec(url);
@@ -17,7 +49,7 @@ function isConvexCloudConfigured(source: Record<string, unknown>): boolean {
   return !/(?:^|-)(?:example|placeholder|your-deployment|greenswap-demo)(?:-|$)/i.test(deployment);
 }
 
-export function isConvexConfigured(source: Record<string, unknown> = import.meta.env): boolean {
+export function isConvexConfigured(source: Record<string, unknown> = getSafeEnv()): boolean {
   if (isConvexCloudConfigured(source)) return true;
 
   const url = typeof source.VITE_CONVEX_URL === 'string' ? source.VITE_CONVEX_URL.trim() : '';
@@ -35,8 +67,8 @@ export function isConvexConfigured(source: Record<string, unknown> = import.meta
 }
 
 export function getValidatedEnv(
-  source: Record<string, unknown> = import.meta.env,
-  mode = import.meta.env.MODE
+  source: Record<string, unknown> = getSafeEnv(),
+  mode = getSafeMode()
 ): EnvConfig {
   if (mode === 'production') {
     const url = typeof source.VITE_CONVEX_URL === 'string' ? source.VITE_CONVEX_URL.trim() : '';
@@ -54,7 +86,6 @@ export function getValidatedEnv(
 
   const result = envSchema.safeParse(source);
   if (!result.success) {
-    // In production fail immediately; in dev/test fall back to defaults
     if (mode === 'production') {
       console.error('Production environment validation failed:', result.error.format());
       throw new Error(`Invalid environment configuration: ${JSON.stringify(result.error.flatten().fieldErrors)}`);
