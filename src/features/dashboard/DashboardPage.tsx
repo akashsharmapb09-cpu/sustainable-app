@@ -1,8 +1,57 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+const RITUAL_KEY = 'ritualCompletion';
+const LAST_DATE_KEY = 'lastLoginDate';
+const TOTAL_STEPS = 7;
+
+// Local calendar day, e.g. "2026-10-24" (never a fixed date)
+const dayKey = (d: Date) => d.toLocaleDateString('en-CA');
+
+// e.g. "Sat, 24 Oct 2026"
+const formatHeaderDate = (d: Date) => {
+  const weekday = d.toLocaleDateString('en-GB', { weekday: 'short' });
+  const rest = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  return `${weekday}, ${rest}`;
+};
 import { Link } from 'react-router-dom';
 
 export function DashboardPage() {
-  const [completedDays, setCompletedDays] = useState<number[]>([1, 2, 3]);
+  const [now, setNow] = useState<Date | null>(null);
+  const [completedDays, setCompletedDays] = useState<number[]>([]);
+  const today = now ? dayKey(now) : null;
+
+  // Keep the date live; re-check every minute so it rolls over at midnight
+  useEffect(() => {
+    setNow(new Date());
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    const onFocus = () => setNow(new Date());
+    window.addEventListener('focus', onFocus);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener('focus', onFocus);
+    };
+  }, []);
+
+  // Daily reset: new day -> clear ritual completion and store today's date
+  useEffect(() => {
+    if (!today) return;
+    const last = localStorage.getItem(LAST_DATE_KEY);
+    if (last !== today) {
+      localStorage.removeItem(RITUAL_KEY);
+      localStorage.setItem(LAST_DATE_KEY, today);
+      setCompletedDays([]);
+    } else {
+      try {
+        setCompletedDays(JSON.parse(localStorage.getItem(RITUAL_KEY) ?? '[]'));
+      } catch {
+        setCompletedDays([]);
+      }
+    }
+  }, [today]);
+
+  const doneCount = completedDays.length;
+  const remainingCount = TOTAL_STEPS - doneCount;
+  const gaugeOffset = 251.2 * (1 - doneCount / TOTAL_STEPS);
   const [bookmarked, setBookmarked] = useState<Record<string, boolean>>({
     transport: true,
     food: true,
@@ -10,9 +59,12 @@ export function DashboardPage() {
   });
 
   const toggleDay = (d: number) => {
-    setCompletedDays((prev) =>
-      prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]
-    );
+    setCompletedDays((prev) => {
+      const next = prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d];
+      localStorage.setItem(RITUAL_KEY, JSON.stringify(next));
+      if (today) localStorage.setItem(LAST_DATE_KEY, today);
+      return next;
+    });
   };
 
   const toggleBookmark = (id: string) => {
@@ -31,7 +83,7 @@ export function DashboardPage() {
           <p className="dash-greeting-sub">Small changes today. A lighter tomorrow.</p>
         </div>
         <div className="dash-greeting-right">
-          <span className="dash-date-text">Mon, 19 Oct 2026</span>
+          <span className="dash-date-text">{now ? formatHeaderDate(now) : ''}</span>
           <span className="dash-cheer-text">Keep going, you&apos;re doing great! 🌱</span>
         </div>
       </header>
@@ -101,11 +153,11 @@ export function DashboardPage() {
                   r="40"
                   strokeWidth="8"
                   strokeDasharray="251.2"
-                  strokeDashoffset="143"
+                  strokeDashoffset={gaugeOffset}
                 />
               </svg>
               <div className="gauge-center-text">
-                <strong>3/7</strong>
+                <strong>{doneCount}/{TOTAL_STEPS}</strong>
                 <span>steps</span>
               </div>
             </div>
@@ -115,17 +167,17 @@ export function DashboardPage() {
               <div className="legend-row">
                 <span className="dot dot-green" />
                 <span className="legend-name">Completed</span>
-                <strong className="legend-score">3</strong>
+                <strong className="legend-score">{doneCount}</strong>
               </div>
               <div className="legend-row">
                 <span className="dot dot-amber" />
                 <span className="legend-name">In progress</span>
-                <strong className="legend-score">1</strong>
+                <strong className="legend-score">0</strong>
               </div>
               <div className="legend-row">
                 <span className="dot dot-gray" />
                 <span className="legend-name">Remaining</span>
-                <strong className="legend-score">3</strong>
+                <strong className="legend-score">{remainingCount}</strong>
               </div>
             </div>
           </div>
