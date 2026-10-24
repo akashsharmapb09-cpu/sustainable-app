@@ -141,7 +141,7 @@ export function ExplorePage() {
     newParams.delete('topic');
     setSearchParams(newParams);
   };
-const handleCardClick = (id: string) => {
+const handleCardClick = (id: string) => {window.location.href = `/explore?topic=${id}`;
   const newParams = new URLSearchParams(searchParams);
   newParams.set('topic', id);
   setSearchParams(newParams);
