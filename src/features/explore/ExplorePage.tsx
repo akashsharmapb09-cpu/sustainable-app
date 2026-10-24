@@ -141,7 +141,11 @@ export function ExplorePage() {
     newParams.delete('topic');
     setSearchParams(newParams);
   };
-
+const handleCardClick = (id: string) => {
+  const newParams = new URLSearchParams(searchParams);
+  newParams.set('topic', id);
+  setSearchParams(newParams);
+};
   const filteredItems = useMemo(() => {
     return EXPLORE_ITEMS.filter((item) => {
       const matchCat =
@@ -149,7 +153,10 @@ export function ExplorePage() {
         item.category === activeCategory ||
         (activeCategory === 'home' && item.topics.includes('home'));
 
-      const matchTopic = !topicParam || item.topics.includes(topicParam);
+      const matchTopic =
+  !topicParam ||
+  item.topics.includes(topicParam) ||
+  item.id === topicParam;
 
       return matchCat && matchTopic;
     });
@@ -220,7 +227,7 @@ export function ExplorePage() {
       {/* ── 6 Cards Grid (Matching Reference Image) ── */}
       <div className="discover-cards-grid">
         {filteredItems.map((item) => (
-          <div key={item.id} className="discover-card">
+          <div key={item.id} className="discover-card" onClick={() => handleCardClick(item.id)}>
             <div className="discover-card-img">
               <img src={item.image} alt={item.title} loading="lazy" />
             </div>
