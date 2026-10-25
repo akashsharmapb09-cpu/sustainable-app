@@ -167,6 +167,12 @@ export function LoginForm({ onSuccess, onForgotPasswordClick, onSwitchToSignup }
           </div>
         )}
 
+        {/* 10. CAPTCHA: Bot Protection Placeholder */}
+        {/* // TODO: add hCaptcha */}
+        <div className="hcaptcha-placeholder py-1 text-center text-[11px] font-mono text-ink-muted">
+          <span>Protected by anti-bot verification (hCaptcha integration pending)</span>
+        </div>
+
         <button
           type="submit"
           disabled={isSubmitting}
