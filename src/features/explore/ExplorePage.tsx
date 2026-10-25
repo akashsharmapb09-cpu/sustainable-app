@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 
 interface ExploreCardItem {
   id: string;
@@ -111,6 +111,7 @@ const CATEGORIES = [
 ];
 
 export function ExplorePage() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const topicParam = searchParams.get('topic');
   const catParam = searchParams.get('cat');
@@ -141,11 +142,9 @@ export function ExplorePage() {
     newParams.delete('topic');
     setSearchParams(newParams);
   };
-const handleCardClick = (id: string) => {window.location.href = `/explore?topic=${id}`;
-  const newParams = new URLSearchParams(searchParams);
-  newParams.set('topic', id);
-  setSearchParams(newParams);
-};
+  const handleCardClick = (id: string) => {
+    navigate(`/explore/${id}`);
+  };
   const filteredItems = useMemo(() => {
     return EXPLORE_ITEMS.filter((item) => {
       const matchCat =
@@ -227,7 +226,7 @@ const handleCardClick = (id: string) => {window.location.href = `/explore?topic=
       {/* ── 6 Cards Grid (Matching Reference Image) ── */}
       <div className="discover-cards-grid">
         {filteredItems.map((item) => (
-          <div key={item.id} className="discover-card" onClick={() => handleCardClick(item.id)}>
+          <div key={item.id} className="discover-card cursor-pointer" onClick={() => handleCardClick(item.id)}>
             <div className="discover-card-img">
               <img src={item.image} alt={item.title} loading="lazy" />
             </div>
@@ -412,6 +411,7 @@ const handleCardClick = (id: string) => {window.location.href = `/explore?topic=
           display: flex;
           flex-direction: column;
           box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+          cursor: pointer;
           transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
         .discover-card:hover {

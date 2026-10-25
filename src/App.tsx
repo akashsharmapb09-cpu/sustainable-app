@@ -18,6 +18,7 @@ const TermsPage = lazy(() => import('./features/public/LegalPages').then((m) => 
 const CookiesPage = lazy(() => import('./features/public/LegalPages').then((m) => ({ default: m.CookiesPage })));
 const NotFoundPage = lazy(() => import('./features/public/LegalPages').then((m) => ({ default: m.NotFoundPage })));
 const ExplorePage = lazy(() => import('./features/explore/ExplorePage').then((m) => ({ default: m.ExplorePage })));
+const ExploreDetailPage = lazy(() => import('./features/explore/ExploreDetailPage').then((m) => ({ default: m.ExploreDetailPage })));
 const CataloguePage = lazy(() => import('./features/explore/CataloguePage').then((m) => ({ default: m.CataloguePage })));
 const OnboardingPage = lazy(() => import('./features/onboarding/OnboardingPage').then((m) => ({ default: m.OnboardingPage })));
 const DashboardPage = lazy(() => import('./features/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })));
@@ -57,6 +58,7 @@ export default function App() {
 
           <Route element={<MaybeShell />}>
             <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/explore/:id" element={<ExploreDetailPage />} />
             <Route path="/catalogue" element={<CataloguePage />} />
           </Route>
 
