@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Search, SlidersHorizontal, Check, Bookmark, ArrowRight, Bike, Utensils, Zap, ShoppingBag, Recycle, LayoutGrid, Home, ShieldCheck, Sparkles, type LucideIcon } from 'lucide-react';
+import { Search, SlidersHorizontal, Check, Bookmark, ArrowRight, Bike, Utensils, Zap, ShoppingBag, Recycle, LayoutGrid, ShieldCheck, Sparkles, type LucideIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { addRoutineSwapFromCatalog, getRoutineSwaps, removeRoutineSwap, subscribeToRoutineSwaps } from '../../features/activities/routineSwapStore';
 
