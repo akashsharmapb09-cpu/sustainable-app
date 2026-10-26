@@ -1,5 +1,11 @@
-# GreenSwap
-> Sustainable living app
+# GreenSwap - Sustainable Living Platform
+> GreenSwap helps users track and swap eco-friendly products to live sustainably and reduce waste.
 
-## Allow
-- /
+## Core Pages
+- [Home](https://sustainable-app-qccf.vercel.app/) - Main sustainable living dashboard
+- [Explore](https://sustainable-app-qccf.vercel.app/explore) - Discover eco-friendly products and swaps
+- [About](https://sustainable-app-qccf.vercel.app/about) - Learn about our sustainability mission
+
+## Documentation
+- [How it Works](https://sustainable-app-qccf.vercel.app/about) - Detailed guide to sustainable swapping
+
