@@ -305,10 +305,6 @@ export function AppShell() {
           color: #B9D7B3;
         }
 
-.nav-icon {
-          color: #162a20;
-        }
-
         .nav-icon {
           width: 17px;
           height: 17px;
