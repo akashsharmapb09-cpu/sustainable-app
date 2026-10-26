@@ -236,38 +236,6 @@ export function LogActivityPage() {
 
   return (
     <div className="routine-app">
-      <aside className="routine-sidebar" aria-label="GreenSwap routine navigation">
-        <a className="routine-brand" href="/routine" aria-label="GreenSwap home">
-          <span className="routine-brand-mark"><Leaf size={25} strokeWidth={1.8} /></span>
-          <span className="routine-brand-name">Green<span>Swap</span></span>
-        </a>
-        <div className="routine-side-label">YOUR SPACE</div>
-        <nav className="routine-side-nav" aria-label="Routine tabs">
-          <button type="button" className={`routine-side-link ${activeTab === 'plan' ? 'is-active' : ''}`} onClick={() => setActiveTab('plan')}>
-            <Sparkles size={19} /><span>7-day plan</span><ChevronRight className="routine-side-chevron" size={16} />
-          </button>
-          <button type="button" className={`routine-side-link ${activeTab === 'swaps' ? 'is-active' : ''}`} onClick={() => setActiveTab('swaps')}>
-            <Leaf size={19} /><span>Your swaps</span><ChevronRight className="routine-side-chevron" size={16} />
-          </button>
-          <button type="button" className={`routine-side-link ${activeTab === 'analytics' ? 'is-active' : ''}`} onClick={() => setActiveTab('analytics')}>
-            <TrendingUp size={19} /><span>Analytics</span><ChevronRight className="routine-side-chevron" size={16} />
-          </button>
-          <a className="routine-side-link" href="#methodology"><ShieldCheck size={19} /><span>Methodology</span></a>
-        </nav>
-
-        <div className="routine-sidebar-bottom">
-          <div className="sidebar-leaf-art" aria-hidden="true">
-            <svg viewBox="0 0 140 120" fill="none">
-              <path d="M15 105C21 54 56 18 126 9C118 71 74 105 15 105Z" stroke="currentColor" strokeWidth="1.4"/>
-              <path d="M17 104L108 28M51 75L47 43M75 56L103 59M36 88L30 68" stroke="currentColor" strokeWidth="1.2"/>
-            </svg>
-          </div>
-          <p className="sidebar-kicker">Small swaps.<br/>A lighter footprint.</p>
-          <p className="sidebar-copy">Every good habit is a little win for the planet.</p>
-          <span className="sidebar-status"><span /> YOUR IMPACT MATTERS</span>
-        </div>
-      </aside>
-
       <main className="routine-main">
         {activeTab !== 'analytics' && (
           <>
@@ -278,7 +246,7 @@ export function LogActivityPage() {
                   <h1 className="routine-title">Your routine</h1>
                   <p className="routine-sub">Tiny choices. Real momentum. A healthier planet starts here.</p>
                 </div>
-                <div className="routine-day-chip"><span className="routine-day-dot" /> YOUR GREEN JOURNEY <span>↗</span></div>
+                <Link to="/impact" className="routine-day-chip" aria-label="Go to your green impact journey"><span className="routine-day-dot" /> YOUR GREEN JOURNEY <span>↗</span></Link>
               </div>
             </header>
 
@@ -513,14 +481,13 @@ export function LogActivityPage() {
           --routine-cream: #FFFEF9;
           min-height: 100vh;
           display: grid;
-          grid-template-columns: 258px minmax(0, 1fr);
+          grid-template-columns: minmax(0, 1fr);
           background: var(--routine-cream);
           color: #1d2b22;
           font-family: 'DM Sans', Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
           overflow: clip;
           isolation: isolate;
         }
-        .routine-sidebar {
           position: sticky;
           top: 0;
           display: flex;
@@ -531,31 +498,15 @@ export function LogActivityPage() {
           color: #f6f8ef;
           overflow: hidden;
         }
-        .routine-brand { display: flex; align-items: center; gap: 12px; margin: 0 4px 56px; text-decoration: none; color: inherit; }
-        .routine-brand-mark { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 15px; color: #1A3D2E; background: #D6EBCB; box-shadow: 0 7px 20px #071d1430; }
-        .routine-brand-name { font-size: 27px; font-weight: 900; letter-spacing: -1.5px; }
-        .routine-brand-name span { font-family: Georgia, serif; font-weight: 500; font-style: italic; }
-        .routine-side-label { padding: 0 12px; margin-bottom: 14px; color: #acc7b4; font-size: 14px; font-weight: 800; letter-spacing: .16em; }
-        .routine-side-nav { display: flex; flex-direction: column; gap: 9px; }
-        .routine-side-link { display: flex; width: 100%; align-items: center; gap: 13px; border: 1px solid transparent; padding: 14px 13px; border-radius: 15px; color: #dce9dd; background: transparent; text-align: left; text-decoration: none; cursor: pointer; font: inherit; font-size: 15px; font-weight: 650; transition: background .2s ease, color .2s ease, transform .2s ease, border-color .2s ease; }
-        .routine-side-link:hover { transform: translateX(2px); background: #ffffff12; color: #fff; }
-        .routine-side-link.is-active { background: #f4f8ef; color: #1A3D2E; box-shadow: 0 10px 24px #081f1635; }
-        .routine-side-chevron { margin-left: auto; opacity: .75; }
-        .routine-sidebar-bottom { position: relative; margin-top: auto; min-height: 250px; padding: 22px 15px 0; border-top: 1px solid #ffffff22; }
-        .sidebar-leaf-art { position: absolute; top: -12px; right: -20px; width: 134px; height: 120px; color: #9ac9a6; opacity: .42; transform: rotate(-6deg); }
-        .sidebar-leaf-art svg { width: 100%; height: 100%; }
-        .sidebar-kicker { position: relative; margin: 80px 0 8px; font-family: Georgia, serif; font-size: 25px; line-height: 1.12; font-weight: 700; letter-spacing: -.5px; }
-        .sidebar-copy { max-width: 175px; margin: 0; color: #c3d9c7; font-size: 14px; line-height: 1.55; }
-        .sidebar-status { display: flex; gap: 8px; align-items: center; margin-top: 25px; color: #b0d9b8; font-size: 14px; font-weight: 800; letter-spacing: .05em; }
-        .sidebar-status span { width: 8px; height: 8px; border-radius: 50%; background: #9ae6a9; box-shadow: 0 0 0 4px #9ae6a91e; }
-        .routine-main { min-width: 0; width: 100%; max-width: 1650px; margin: 0 auto; padding: 38px clamp(22px, 3.6vw, 58px) 48px; }
+        .routine-main { min-width: 0; width: 100%; max-width: none; margin: 0; padding: 38px clamp(22px, 3.6vw, 58px) 48px; }
         .routine-page-header { position: relative; padding: 3px 0 29px; border-bottom: 1px solid #e8e8dc; }
         .routine-eyebrow,.mini-overline,.panel-overline,.widget-overline,.progress-kicker,.quote-label,.methodology-topline { display: flex; align-items: center; gap: 9px; color: #6e8371; font-size: 14px; font-weight: 850; letter-spacing: .15em; }
         .eyebrow-line { display: inline-block; width: 26px; height: 2px; background: #3b8957; }
         .routine-heading-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-top: 13px; }
         .routine-title { margin: 0; color: #14291d; font-size: clamp(48px, 4.8vw, 64px); font-weight: 950; line-height: 1; letter-spacing: -.065em; }
         .routine-sub { max-width: 690px; margin: 16px 0 0; color: #66766a; font-size: 18px; line-height: 1.6; }
-        .routine-day-chip { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; margin-bottom: 8px; padding: 11px 15px; border: 1px solid #e3e9db; border-radius: 999px; background: #fff; color: #4f6854; font-size: 14px; font-weight: 800; letter-spacing: .04em; }
+        .routine-day-chip { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; margin-bottom: 8px; padding: 11px 15px; border: 1px solid #e3e9db; border-radius: 999px; background: #fff; color: #4f6854; font-size: 14px; font-weight: 800; letter-spacing: .04em; text-decoration: none; cursor: pointer; transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease; }
+        .routine-day-chip:hover { transform: translateY(-2px); border-color: #b8d5b6; background: #f7fbf4; box-shadow: 0 8px 20px #1a3d2e10; }
         .routine-day-chip > span:last-child { color: #358151; font-size: 17px; }
         .routine-day-dot { width: 8px; height: 8px; border-radius: 50%; background: #45a566; box-shadow: 0 0 0 5px #45a56618; }
         .routine-tabs { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 28px 0 32px; }
@@ -775,8 +726,7 @@ export function LogActivityPage() {
         @keyframes pop-check { 0% { transform: scale(.72); } 75% { transform: scale(1.12); } 100% { transform: scale(1); } }
         @keyframes confetti-pop { 0% { opacity: 0; transform: translate(0,0) rotate(0); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx),var(--dy)) rotate(110deg); } }
         @media (max-width: 1260px) {
-          .routine-app { grid-template-columns: 224px minmax(0,1fr); }
-          .routine-sidebar { padding-inline: 15px; }
+          .routine-app { grid-template-columns: minmax(0,1fr); }
           .routine-main { padding-inline: 28px; }
           .plan-layout,.swaps-layout { grid-template-columns: minmax(0,1fr); }
           .plan-widgets,.swaps-widgets { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
@@ -788,15 +738,9 @@ export function LogActivityPage() {
         }
         @media (max-width: 850px) {
           .routine-app { display: block; }
-          .routine-sidebar { position: relative; min-height: auto; padding: 17px 20px; }
-          .routine-brand { margin: 0 0 17px; }
-          .routine-sidebar-bottom,.routine-side-label { display: none; }
-          .routine-side-nav { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 7px; }
-          .routine-side-link { justify-content: center; gap: 7px; padding: 10px 7px; font-size: 14px; }
-          .routine-side-chevron { display: none; }
           .routine-main { padding: 27px 22px 36px; }
           .routine-heading-row { align-items: flex-start; }
-          .routine-day-chip { display: none; }
+          .routine-day-chip { display: inline-flex; align-self: flex-start; margin-top: 4px; }
           .challenge-progress-card { grid-template-columns: 116px minmax(0,1fr); gap: 18px; padding: 23px; }
           .progress-ring-wrap,.progress-ring { width: 112px; height: 112px; }
           .progress-ring-label strong { font-size: 27px; }
@@ -809,7 +753,6 @@ export function LogActivityPage() {
         }
         @media (max-width: 580px) {
           .routine-main { padding: 25px 14px 28px; }
-          .routine-brand-name { font-size: 24px; }
           .routine-title { font-size: 46px; }
           .routine-sub { font-size: 16px; }
           .routine-tabs { margin: 21px 0 25px; gap: 7px; }
