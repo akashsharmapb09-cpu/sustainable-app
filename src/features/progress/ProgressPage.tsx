@@ -179,9 +179,9 @@ export function ProgressPage() {
                     return (
                       <li key={goal.id} className="border-t border-border pt-4">
                         <div className="flex flex-wrap items-baseline justify-between gap-2">
-                          <h3 className="font-serif font-semibold">
+                          <h2 className="font-serif font-semibold text-base">
                             {goal.target_co2e_reduction_pct}% {goal.category === 'all' ? 'overall' : goal.category} reduction
-                          </h3>
+                          </h2>
                           <span className="font-mono text-xs text-ink-muted">Target {new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(`${goal.target_date}T00:00:00`))}</span>
                         </div>
                         {progress === null ? (
@@ -325,7 +325,7 @@ export function ProgressPage() {
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-serif font-semibold">{challenge.title}</h3>
+                        <h2 className="font-serif font-semibold text-base">{challenge.title}</h2>
                         {status && <Badge variant={status === 'completed' ? 'moss' : status === 'active' ? 'clay' : 'outline'}>{status.replace('_', ' ')}</Badge>}
                       </div>
                       <p className="mt-1 text-sm text-ink-muted">{challenge.description}</p>

@@ -101,10 +101,15 @@ export function AssistantWidget() {
 
   useEffect(() => {
     if (messages.length === 0 && !isThinking) return;
-    messageListRef.current?.scrollTo({
-      top: messageListRef.current.scrollHeight,
-      behavior: "smooth",
+    const frameId = requestAnimationFrame(() => {
+      if (messageListRef.current) {
+        messageListRef.current.scrollTo({
+          top: messageListRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      }
     });
+    return () => cancelAnimationFrame(frameId);
   }, [messages, isThinking]);
 
   useEffect(() => {

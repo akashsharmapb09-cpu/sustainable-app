@@ -284,9 +284,9 @@ export function DataSourcesPage() {
                   </Badge>
                 </div>
 
-                <h3 className="font-serif text-lg font-bold text-[#162a20] leading-snug">
+                <h2 className="font-serif text-lg font-bold text-[#162a20] leading-snug">
                   {source.title}
-                </h3>
+                </h2>
 
                 <p className="text-xs font-mono text-[#52705e]">
                   {source.organization}
@@ -340,9 +340,9 @@ export function DataSourcesPage() {
               <Layers className="h-4 w-4" />
               LOOKING FOR ALGORITHM & UNCERTAINTY FORMULAS?
             </div>
-            <h3 className="font-serif text-xl font-bold text-[#162a20]">
+            <h2 className="font-serif text-xl font-bold text-[#162a20]">
               Discover Our Mathematical Scoring & Calibration Engine
-            </h3>
+            </h2>
             <p className="text-xs font-sans text-[#4a5f51] leading-relaxed">
               Learn how GreenSwap weights carbon reductions against upfront capital expense, feasibility,
               and rebound effects (Jevons Paradox) using Multi-Criteria Decision Analysis.

@@ -30,7 +30,7 @@
   font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.14em;
-  color: #7A8A7D;
+  color: #2B4A33;
   text-transform: uppercase;
   margin: 0 0 0.75rem;
 }
@@ -232,22 +232,22 @@
 
 /* Trust */
 .lp-trust { margin-top: 0.5rem; padding-top: 1.5rem; border-top: 1px solid #DFD7CA; }
-.lp-trust__label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #848E86; margin: 0 0 0.75rem; }
+.lp-trust__label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #3E4841; margin: 0 0 0.75rem; }
 .lp-trust__badges { display: flex; gap: 1.5rem; }
 .lp-trust__badge {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #535C55;
+  color: #3E4841;
   cursor: default;
   padding: 0.4rem 0.6rem;
   border-radius: 8px;
   transition: background 0.2s;
 }
 .lp-trust__badge:hover { background: rgba(51,89,58,0.07); }
-.lp-trust__badge svg { color: #848E86; flex-shrink: 0; }
+.lp-trust__badge svg { color: #3E4841; flex-shrink: 0; }
 .lp-trust__badge strong { display: block; font-size: 0.78rem; font-weight: 700; color: #1B211E; }
-.lp-trust__badge span { display: block; font-size: 0.62rem; color: #848E86; text-transform: uppercase; letter-spacing: 0.06em; }
+.lp-trust__badge span { display: block; font-size: 0.62rem; color: #3E4841; text-transform: uppercase; letter-spacing: 0.06em; }
 
 /* Hero right */
 .lp-hero__right {
@@ -304,7 +304,7 @@
   color: #1B211E;
   line-height: 1;
 }
-.lp-impact-card__label { font-size: 0.68rem; color: #848E86; line-height: 1.4; margin: 0 0 0.9rem; }
+.lp-impact-card__label { font-size: 0.68rem; color: #3E4841; line-height: 1.4; margin: 0 0 0.9rem; }
 .lp-impact-bars { display: flex; flex-direction: column; gap: 0.45rem; }
 .lp-impact-bar { display: flex; align-items: center; gap: 0.5rem; font-size: 0.62rem; color: #535C55; }
 .lp-impact-bar span { width: 52px; flex-shrink: 0; }
@@ -334,7 +334,7 @@
   font-weight: 700;
   color: #c8dfca;
 }
-.lp-stats-item span { font-size: 0.75rem; color: rgba(200,223,202,0.6); }
+.lp-stats-item span { font-size: 0.75rem; color: #E2EFE4; }
 
 /* ─── SIMPLER WAY ───────────────────────────────────────── */
 .lp-simpler {

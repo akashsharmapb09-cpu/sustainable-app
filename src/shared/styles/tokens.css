@@ -6,8 +6,8 @@
   --color-surface-muted: #EFE8DC;/* Muted parchment tint */
   --color-surface-subtle: #E4DCD0;
   --color-ink: #1B211E;          /* Deep carbon ink */
-  --color-ink-muted: #535C55;    /* Field notebook pencil lead */
-  --color-ink-faint: #848E86;    /* Margin annotation faint ink */
+  --color-ink-muted: #3E4841;    /* WCAG AA (8.2:1 contrast on parchment) */
+  --color-ink-faint: #4A554D;    /* WCAG AA (6.6:1 contrast on parchment) */
   --color-border: #DFD7CA;       /* Fine 1px bookbinding rule */
   --color-border-strong: #C5BCAD;/* Heavy catalogue division line */
   
@@ -26,8 +26,8 @@
   --color-surface-muted: #1B2821;/* Deep shale tint */
   --color-surface-subtle: #24352C;
   --color-ink: #EDEAE1;          /* Bone chalk ink */
-  --color-ink-muted: #9BA59C;    /* Moonlight slate gray */
-  --color-ink-faint: #636D65;    /* Faint graphite coordinate */
+  --color-ink-muted: #C5CFC6;    /* WCAG AA (11.6:1 contrast on dark surface) */
+  --color-ink-faint: #A0ABA1;    /* WCAG AA (7.8:1 contrast on dark surface) */
   --color-border: #1E2B23;       /* Archival dark rule */
   --color-border-strong: #2B3D32;
   

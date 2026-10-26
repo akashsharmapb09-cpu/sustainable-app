@@ -71,10 +71,10 @@ export function LandingPage() {
           {/* Community Avatars */}
           <div className="lp-community-row">
             <div className="lp-avatars-stack">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80" alt="Member" />
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80" alt="Member" />
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80" alt="Member" />
-              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80" alt="Member" />
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" alt="Community member avatar" width={28} height={28} loading="lazy" decoding="async" />
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="Community member avatar" width={28} height={28} loading="lazy" decoding="async" />
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=80" alt="Community member avatar" width={28} height={28} loading="lazy" decoding="async" />
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80" alt="Community member avatar" width={28} height={28} loading="lazy" decoding="async" />
             </div>
             <span className="lp-community-text">
               Join a growing community making everyday changes.
@@ -86,9 +86,13 @@ export function LandingPage() {
         <div className="lp-hero__right">
           <div className="lp-arch-window">
             <img
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80"
-              alt="Mountain fjord and lush valley lake"
+              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&auto=format&fit=crop&q=80"
+              alt="Mountain fjord and lush valley lake representing a cleaner planet"
               className="lp-arch-img"
+              width={360}
+              height={480}
+              decoding="async"
+              fetchPriority="high"
             />
 
             {/* Top Floating Card */}
@@ -171,7 +175,7 @@ export function LandingPage() {
 
           {/* Links Columns */}
           <div className="lp-footer__links-col">
-            <h4>Product</h4>
+            <h2 className="lp-footer__col-title">Product</h2>
             <Link to="/">Home</Link>
             <Link to="/explore">Explore</Link>
             <Link to="/catalogue">Catalogue</Link>
@@ -179,7 +183,7 @@ export function LandingPage() {
           </div>
 
           <div className="lp-footer__links-col">
-            <h4>Company</h4>
+            <h2 className="lp-footer__col-title">Company</h2>
             <Link to="/about">About</Link>
             <Link to="/privacy">Privacy Policy</Link>
             <Link to="/terms">Terms & Conditions</Link>
@@ -187,7 +191,7 @@ export function LandingPage() {
           </div>
 
           <div className="lp-footer__links-col">
-            <h4>Resources</h4>
+            <h2 className="lp-footer__col-title">Resources</h2>
             <Link to="/methodology">Methodology</Link>
             <Link to="/data-sources">Data Sources</Link>
             <Link to="/contact">Contact</Link>
@@ -195,7 +199,7 @@ export function LandingPage() {
 
           {/* Newsletter Box */}
           <div className="lp-footer__newsletter-col">
-            <h4>Join our newsletter</h4>
+            <h2 className="lp-footer__col-title">Join our newsletter</h2>
             <p>Get simple tips and updates.</p>
             <form onSubmit={handleSubscribe} className="lp-newsletter-form">
               <input
@@ -283,7 +287,7 @@ export function LandingPage() {
         .lp-avatars-stack img:first-child { margin-left: 0; }
         .lp-community-text {
           font-size: 0.75rem;
-          color: #535C55;
+          color: #3E4841;
           line-height: 1.35;
         }
 
@@ -408,7 +412,7 @@ export function LandingPage() {
         }
         .lp-strip-item span {
           font-size: 0.72rem;
-          color: #535C55;
+          color: #3E4841;
         }
 
         /* Footer */
@@ -428,10 +432,10 @@ export function LandingPage() {
         }
         .lp-footer__tagline {
           font-size: 0.85rem;
-          color: #535C55;
+          color: #3E4841;
           margin-top: 0.75rem;
         }
-        .lp-footer__links-col h4, .lp-footer__newsletter-col h4 {
+        .lp-footer__col-title {
           font-size: 0.75rem;
           font-weight: 700;
           text-transform: uppercase;
@@ -442,7 +446,7 @@ export function LandingPage() {
         .lp-footer__links-col a {
           display: block;
           font-size: 0.82rem;
-          color: #535C55;
+          color: #3E4841;
           text-decoration: none;
           margin-bottom: 0.65rem;
           transition: color 0.15s;
@@ -452,7 +456,7 @@ export function LandingPage() {
         }
         .lp-footer__newsletter-col p {
           font-size: 0.8rem;
-          color: #535C55;
+          color: #3E4841;
           margin: 0 0 0.85rem;
         }
         .lp-newsletter-form {
@@ -498,7 +502,7 @@ export function LandingPage() {
           gap: 1.25rem;
         }
         .lp-social-links a {
-          color: #535C55;
+          color: #3E4841;
           text-decoration: none;
           transition: color 0.15s;
         }
@@ -512,7 +516,7 @@ export function LandingPage() {
         .credits-label {
           font-size: 0.65rem;
           letter-spacing: 0.12em;
-          color: #848E86;
+          color: #3E4841;
           display: block;
         }
         .credits-names {
@@ -522,7 +526,7 @@ export function LandingPage() {
         }
         .credits-sub {
           font-size: 0.72rem;
-          color: #535C55;
+          color: #3E4841;
         }
 
         @media (max-width: 1024px) {

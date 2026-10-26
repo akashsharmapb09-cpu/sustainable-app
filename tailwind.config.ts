@@ -2,7 +2,7 @@ import type { Config } from 'tailwindcss';
 
 const config: Config = {
   darkMode: ['class'],
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './app/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -73,8 +73,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: ['Fraunces', 'Newsreader', 'Georgia', 'serif'],
-        sans: ['DM Sans', 'Geist', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Fraunces', 'Georgia', 'serif'],
+        sans: ['var(--font-sans)', 'DM Sans', '-apple-system', 'sans-serif'],
         mono: ['JetBrains Mono', 'SF Mono', 'Menlo', 'monospace'],
       },
       spacing: {

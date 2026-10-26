@@ -82,7 +82,7 @@ export default function ExploreDetailPage({ params }: Props) {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+      <div id="explore-detail-content" className="max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-12">
         {/* Breadcrumb path */}
         <nav className="flex items-center gap-2 text-xs text-[#6B7D72] mb-6">
           <Link href="/explore" className="hover:underline">Explore</Link>
@@ -298,7 +298,7 @@ export default function ExploreDetailPage({ params }: Props) {
             ))}
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 }

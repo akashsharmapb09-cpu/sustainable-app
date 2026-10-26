@@ -290,7 +290,7 @@ export function CataloguePage() {
                 <img src={item.image} alt={item.title} loading="lazy" />
               </div>
               <div className="cat-card-content">
-                <h3 className="cat-card-title">{item.title}</h3>
+                <h2 className="cat-card-title">{item.title}</h2>
                 <div className="cat-card-meta">
                   <span className="cat-card-badge">{item.categoryLabel}</span>
                   <span className="cat-card-dot">·</span>

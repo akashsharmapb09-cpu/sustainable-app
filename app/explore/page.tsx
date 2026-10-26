@@ -92,7 +92,7 @@ export default function ExplorePage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+      <div id="explore-view" className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
         {/* Topic Spotlight Banner (if active) */}
         {currentTopic && (
           <div
@@ -103,9 +103,9 @@ export default function ExplorePage() {
               <span className="inline-block text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full bg-white/20 mb-2">
                 Selected Topic
               </span>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white mb-1">
+              <p className="text-2xl sm:text-3xl font-serif font-bold text-white mb-1">
                 {currentTopic.title}
-              </h2>
+              </p>
               <p className="text-white/80 text-sm max-w-xl">
                 {currentTopic.desc}
               </p>
@@ -247,7 +247,7 @@ export default function ExplorePage() {
             </button>
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

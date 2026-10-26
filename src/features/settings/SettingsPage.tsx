@@ -190,7 +190,7 @@ export function SettingsPage() {
       {activeTab === 'preferences' && (
         <div className="settings-card">
           <div className="settings-section-title">
-            <h3>Household &amp; Model Calibration</h3>
+            <h2 className="text-lg font-serif font-semibold">Household &amp; Model Calibration</h2>
             <p>Configure how GreenSwap calculates your footprint deltas and displays recommendations.</p>
           </div>
 
@@ -294,7 +294,7 @@ export function SettingsPage() {
       {activeTab === 'notifications' && (
         <div className="settings-card">
           <div className="settings-section-title">
-            <h3>Notification &amp; Reminder Controls</h3>
+            <h2 className="text-lg font-serif font-semibold">Notification &amp; Reminder Controls</h2>
             <p>Customize updates and daily routine nudges. Zero spam, ever.</p>
           </div>
 
@@ -381,7 +381,7 @@ export function SettingsPage() {
       {activeTab === 'privacy' && (
         <div className="settings-card">
           <div className="settings-section-title">
-            <h3>Data Governance &amp; Privacy</h3>
+            <h2 className="text-lg font-serif font-semibold">Data Governance &amp; Privacy</h2>
             <p>GreenSwap is built with privacy by design. We never sell your household data or serve advertising.</p>
           </div>
 

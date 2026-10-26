@@ -171,7 +171,7 @@ export function ExplorePage() {
         >
           <div className="topic-banner-text">
             <span className="topic-banner-pill">SELECTED TOPIC</span>
-            <h2 className="topic-banner-title">{currentTopic.title}</h2>
+            <p className="topic-banner-title">{currentTopic.title}</p>
             <p className="topic-banner-desc">{currentTopic.desc}</p>
           </div>
           <button type="button" className="topic-clear-btn" onClick={clearTopic}>
@@ -231,7 +231,7 @@ export function ExplorePage() {
               <img src={item.image} alt={item.title} loading="lazy" />
             </div>
             <div className="discover-card-body">
-              <h3 className="discover-card-name">{item.title}</h3>
+              <h2 className="discover-card-name">{item.title}</h2>
               <p className="discover-card-co2">{item.co2Saving}</p>
             </div>
           </div>
