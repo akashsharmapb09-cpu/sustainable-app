@@ -5,7 +5,7 @@ const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    img-src 'self' blob: data: https://images.unsplash.com https://*.supabase.co;
+    img-src 'self' blob: data: https://images.unsplash.com https://*.supabase.co https://sageandcooper.au https://upload.wikimedia.org;
     font-src 'self' https://fonts.gstatic.com;
     connect-src 'self' https://*.supabase.co https://*.convex.cloud wss://*.convex.cloud;
     frame-src 'self' https://challenges.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com;
@@ -31,6 +31,14 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'sageandcooper.au',
+      },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
       },
     ],
   },
