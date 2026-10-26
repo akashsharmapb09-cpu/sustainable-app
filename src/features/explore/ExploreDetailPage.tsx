@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
-import { getExploreItemById, EXPLORE_ITEMS } from './exploreData';
+import { getExploreItemById, EXPLORE_ITEMS, type ExploreItem } from './exploreData';
+import { EXPANDED_SWAPS } from './CataloguePage';
 import {
   ArrowLeft,
   ArrowRight,
@@ -12,7 +13,44 @@ import {
 
 export function ExploreDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const item = getExploreItemById(id || '');
+  const exploreItem = getExploreItemById(id || '');
+  const catalogueItem = EXPANDED_SWAPS.find((candidate) => candidate.id === (id || '').toLowerCase());
+  const item: ExploreItem | undefined = exploreItem ?? (catalogueItem ? {
+    id: catalogueItem.id,
+    title: catalogueItem.title,
+    subtitle: `A practical, everyday way to make ${catalogueItem.categoryLabel.toLowerCase()} choices a little more sustainable.`,
+    category: catalogueItem.category,
+    categoryLabel: catalogueItem.categoryLabel,
+    co2Saving: catalogueItem.co2Saving,
+    costSaving: catalogueItem.costSaving,
+    image: catalogueItem.image.replace(/w=300/, 'w=800'),
+    topics: [catalogueItem.category, 'all'],
+    difficulty: catalogueItem.category === 'energy' && catalogueItem.id === 'solar-rooftop' ? 'High Impact' : 'Easy',
+    timeToImplement: catalogueItem.category === 'transport' ? 'Start with one trip' : 'Start today',
+    verifiedBy: 'GreenSwap catalogue estimates; see the methodology for estimate limits',
+    description: `This swap focuses on ${catalogueItem.title.toLowerCase()}. Start with a version that fits your home, commute, budget and existing habits, then build consistency over time.`,
+    whyItMatters: catalogueItem.category === 'transport'
+      ? 'Choosing lower-emission ways to travel can reduce fuel use and the emissions associated with everyday journeys.'
+      : catalogueItem.category === 'food'
+        ? 'Food choices and avoiding waste can lower the resources and emissions connected to what households buy and consume.'
+        : catalogueItem.category === 'energy'
+          ? 'Using less energy or choosing efficient technology can reduce household electricity demand and running costs.'
+          : catalogueItem.category === 'shopping'
+            ? 'Reusing, repairing and buying thoughtfully helps extend product lifetimes and reduce demand for new materials.'
+            : catalogueItem.category === 'waste'
+              ? 'Keeping useful organic material out of mixed waste can support a more circular household waste routine.'
+              : 'Using water thoughtfully helps reduce household water demand and the energy associated with treatment and heating.',
+    actionSteps: [
+      `Decide where “${catalogueItem.title.toLowerCase()}” can fit naturally into your week.`,
+      'Compare the practical cost, time and convenience before making the change.',
+      'Try the change consistently for seven days and adjust it to suit your routine.',
+    ],
+    keyStats: [
+      { label: 'Estimated monthly carbon impact', value: catalogueItem.co2Saving.replace(/^Save up to /, '') },
+      { label: 'Cost impact', value: catalogueItem.costSaving },
+      { label: 'Category', value: catalogueItem.categoryLabel },
+    ],
+  } : undefined);
 
   if (!item) {
     return (
