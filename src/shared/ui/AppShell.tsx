@@ -187,47 +187,63 @@ export function AppShell() {
       </div>
 
       <style>{`
-        .shell-root {
+                .shell-root {
           display: flex;
+          gap: 20px;
           min-height: 100vh;
-          background-color: var(--color-bg);
+          padding: 16px;
+          background-color: #F5F0E8;
           color: var(--color-ink);
-          font-family: 'DM Sans', sans-serif;
+          font-family: 'Inter', sans-serif;
         }
 
-        /* ── Sidebar (Dark Forest Spruce matching image) ── */
+        /* Floating dark sidebar */
         .shell-sidebar {
-          width: 220px;
-          background-color: #162a20;
-          color: #d2ded7;
+          width: 280px;
+          flex: 0 0 280px;
+          background: linear-gradient(155deg, #202720 0%, #151A16 68%, #111612 100%);
+          color: #D6DFD5;
           display: flex;
           flex-direction: column;
           position: fixed;
-          inset-y: 0;
-          left: 0;
+          top: 10px;
+          bottom: 10px;
+          left: 10px;
           z-index: 40;
+          border: 1px solid rgba(255,255,255,0.075);
+          border-radius: 24px;
+          overflow: hidden;
+          box-shadow: 0 18px 55px rgba(27,33,27,0.16);
           transition: transform 0.25s ease;
+          transform: translateX(calc(-100% - 24px));
         }
         @media (min-width: 768px) {
           .shell-sidebar {
             position: sticky;
-            top: 0;
-            height: 100vh;
+            top: 16px;
+            height: calc(100vh - 32px);
             transform: none !important;
           }
         }
         @media (max-width: 767px) {
+          .shell-root {
+            padding: 10px;
+            gap: 0;
+          }
           .shell-sidebar {
-            transform: translateX(-100%);
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+            width: min(280px, calc(100vw - 36px));
+            flex: initial;
           }
           .shell-sidebar.is-open {
             transform: translateX(0);
           }
+          .shell-main {
+            min-height: calc(100vh - 20px);
+          }
         }
 
-        .sidebar-brand-box {
-          padding: 1.5rem 1.4rem 0.5rem;
+.sidebar-brand-box {
+          padding: 1.8rem 1.45rem 0.75rem;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -247,14 +263,14 @@ export function AppShell() {
           cursor: pointer;
         }
         .sidebar-search-trigger {
-          padding: 0.5rem 1.4rem 0.8rem;
+          padding: 0.55rem 1.45rem 0.85rem;
         }
 
         .sidebar-nav {
           padding: 0.5rem 0.85rem;
           display: flex;
           flex-direction: column;
-          gap: 0.25rem;
+          gap: 0.35rem;
           flex: 1;
           overflow-y: auto;
         }
@@ -263,8 +279,9 @@ export function AppShell() {
           display: flex;
           align-items: center;
           gap: 0.8rem;
-          padding: 0.6rem 0.95rem;
-          border-radius: 999px;
+          padding: 0.75rem 0.95rem;
+          border-radius: 14px;
+          border: 1px solid transparent;
           text-decoration: none;
           color: #b5c7bd;
           font-size: 0.82rem;
@@ -273,17 +290,22 @@ export function AppShell() {
         }
         .sidebar-nav-item:hover {
           color: #ffffff;
-          background: rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.055);
         }
 
-        /* Active Pill: White pill with dark text matching image */
+        /* Active nav state */
         .sidebar-nav-item.is-active {
-          background: #ffffff;
-          color: #162a20 !important;
-          font-weight: 700;
-          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+          background: rgba(146, 181, 143, 0.14);
+          color: #F5F4EC !important;
+          border: 1px solid rgba(181, 213, 174, 0.15);
+          font-weight: 650;
+          box-shadow: inset 0 1px rgba(255,255,255,0.035);
         }
         .sidebar-nav-item.is-active .nav-icon {
+          color: #B9D7B3;
+        }
+
+.nav-icon {
           color: #162a20;
         }
 
@@ -302,7 +324,7 @@ export function AppShell() {
         }
 
         .sidebar-footer {
-          padding: 0.8rem 0.85rem 1.5rem;
+          padding: 0.85rem 0.85rem 1.15rem;
           border-top: 1px solid rgba(255, 255, 255, 0.08);
           display: flex;
           flex-direction: column;
@@ -310,32 +332,35 @@ export function AppShell() {
         }
 
         /* ── Main Layout ── */
-        .shell-main {
+                .shell-main {
           flex: 1;
           display: flex;
           flex-direction: column;
           min-width: 0;
-          background-color: var(--color-bg);
+          min-height: calc(100vh - 32px);
+          background-color: #F5F0E8;
+          border-radius: 24px;
         }
 
-        /* ── Top Bar ── */
+        /* Quiet app chrome lets the editorial page lead */
         .shell-topbar {
-          height: 64px;
-          padding: 0 2.5rem;
+          height: 56px;
+          flex-shrink: 0;
+          padding: 0 2.25rem;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          border-bottom: 1px solid var(--color-border);
-          background-color: var(--color-bg);
+          border-bottom: 1px solid rgba(197,188,173,0.5);
+          background: transparent;
           position: sticky;
           top: 0;
           z-index: 20;
         }
         @media (max-width: 768px) {
-          .shell-topbar { padding: 0 1.25rem; }
+          .shell-topbar { padding: 0 0.85rem; }
         }
 
-        .topbar-left {
+.topbar-left {
           display: flex;
           align-items: center;
           gap: 1rem;
@@ -444,12 +469,13 @@ export function AppShell() {
           transform: scale(1.05);
         }
 
-        .shell-body {
+                .shell-body {
           flex: 1;
-          overflow-y: auto;
+          min-width: 0;
+          overflow: visible;
         }
 
-        .shell-overlay {
+.shell-overlay {
           position: fixed;
           inset: 0;
           background: rgba(0, 0, 0, 0.5);
