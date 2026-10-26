@@ -17,6 +17,7 @@ import {
 import { useToast } from '../../shared/ui';
 import { Input, Select } from '../../shared/ui/Input';
 import type { ActivityCategory } from '../../shared/types/database';
+import { parseCO2ToKg } from '../../shared/lib/co2';
 import { goalProgress } from './goalTracking';
 
 export function ProgressPage() {
@@ -299,7 +300,7 @@ export function ProgressPage() {
                     {new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(log.logged_at))}
                   </p>
                 </div>
-                <p className="font-mono text-xs">{log.calculated_co2e_monthly.toFixed(1)} kg CO2e/mo</p>
+                <p className="font-mono text-xs">{parseCO2ToKg(`${log.calculated_co2e_monthly ?? 0} kg`).toFixed(1)} kg CO2e/mo</p>
               </li>
             ))}
           </ul>
@@ -330,7 +331,7 @@ export function ProgressPage() {
                       </div>
                       <p className="mt-1 text-sm text-ink-muted">{challenge.description}</p>
                       <p className="mt-2 font-mono text-xs text-ink-muted">
-                        {challenge.duration_days} days · {challenge.category} · up to {challenge.co2e_impact_potential_kg.toFixed(1)} kg CO2e potential
+                        {challenge.duration_days} days · {challenge.category} · up to {parseCO2ToKg(`${challenge.co2e_impact_potential_kg ?? 0} kg`).toFixed(1)} kg CO2e potential
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
