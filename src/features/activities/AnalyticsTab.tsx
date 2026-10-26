@@ -15,6 +15,7 @@ import {
   Leaf,
   Search,
   ShieldCheck,
+  TrendingUp,
   ShoppingBag,
   Sparkles,
   Wallet,
