@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Analytics } from './Analytics';
-import { getRoutineSwaps, removeRoutineSwap, subscribeToRoutineSwaps, type RoutineSwap } from './routineSwapStore';
+import { AnalyticsTab } from './AnalyticsTab';
+import { getRoutineSwaps, normalizeRoutineCategory, removeRoutineSwap, subscribeToRoutineSwaps, type RoutineSwap } from './routineSwapStore';
 
 interface RoutineAction {
   id: string;
@@ -22,6 +22,89 @@ const INITIAL_ACTIONS: RoutineAction[] = [
   { id: '7', label: 'Take shorter showers', category: 'Home', saving: '-2.0 kg CO₂e', completed: false },
 ];
 
+
+function routineDateKey(value: string | undefined): string | null {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return year + '-' + month + '-' + day;
+}
+
+function routineStreak(swaps: RoutineSwap[]): number {
+  const activityDates = new Set(
+    swaps
+      .map((swap) => routineDateKey(swap.lastActiveAt ?? swap.createdAt))
+      .filter((date): date is string => Boolean(date))
+  );
+  const anchor = new Date();
+  anchor.setHours(0, 0, 0, 0);
+  const todayKey = routineDateKey(anchor.toISOString());
+  if (!todayKey || !activityDates.has(todayKey)) {
+    anchor.setDate(anchor.getDate() - 1);
+    const yesterdayKey = routineDateKey(anchor.toISOString());
+    if (!yesterdayKey || !activityDates.has(yesterdayKey)) return 0;
+  }
+  let streak = 0;
+  while (activityDates.has(routineDateKey(anchor.toISOString()) ?? '')) {
+    streak += 1;
+    anchor.setDate(anchor.getDate() - 1);
+  }
+  return streak;
+}
+
+function buildRoutineAnalytics(swaps: RoutineSwap[]) {
+  if (swaps.length === 0) return undefined;
+
+  const categoryNames = ['Transport', 'Food', 'Energy', 'Shopping & Waste'] as const;
+  const categoryTotals: Record<(typeof categoryNames)[number], number> = {
+    Transport: 0,
+    Food: 0,
+    Energy: 0,
+    'Shopping & Waste': 0,
+  };
+
+  let monthlyCo2eKg = 0;
+  let waterLitres = 0;
+  let netSavings = 0;
+  const weekly = [0, 0, 0, 0];
+  const now = new Date();
+
+  for (const swap of swaps) {
+    const co2 = Number.isFinite(swap.co2Saved) ? Math.max(0, swap.co2Saved) : 0;
+    monthlyCo2eKg += co2;
+    waterLitres += Number.isFinite(swap.waterSaved) ? Math.max(0, swap.waterSaved) : 0;
+    netSavings += Number.isFinite(swap.costDiff) ? swap.costDiff : 0;
+    categoryTotals[normalizeRoutineCategory(swap.category)] += co2;
+
+    const created = new Date(swap.createdAt);
+    if (!Number.isNaN(created.getTime()) && created.getFullYear() === now.getFullYear() && created.getMonth() === now.getMonth()) {
+      const weekIndex = Math.min(3, Math.floor((created.getDate() - 1) / 7));
+      weekly[weekIndex] += co2;
+    }
+  }
+
+  const categoryTotal = Object.values(categoryTotals).reduce((sum, value) => sum + value, 0);
+  const fallbackShares = [45, 30, 20, 5];
+  const categories = categoryNames.map((name, index) => ({
+    name: name === 'Shopping & Waste' ? 'Shopping' : name,
+    percent: categoryTotal > 0
+      ? Math.round((categoryTotals[name] / categoryTotal) * 100)
+      : fallbackShares[index],
+  }));
+
+  return {
+    monthlyCo2eKg,
+    waterLitres,
+    netSavings,
+    streak: routineStreak(swaps),
+    weekly,
+    categories,
+  };
+}
+
 export function LogActivityPage() {
   const [actions, setActions] = useState<RoutineAction[]>(INITIAL_ACTIONS);
   const [activeTab, setActiveTab] = useState<'plan' | 'swaps' | 'analytics'>('plan');
@@ -40,9 +123,12 @@ export function LogActivityPage() {
   };
 
   const completedCount = actions.filter((a) => a.completed).length;
+  const premiumAnalyticsData = useMemo(() => buildRoutineAnalytics(routineSwaps), [routineSwaps]);
 
   return (
-    <div className="routine-root">
+    <div className={activeTab === 'analytics' ? 'routine-root routine-root-premium-analytics' : 'routine-root'}>
+      {activeTab !== 'analytics' && (
+        <>
       {/* ── Page Header ── */}
       <div className="routine-header">
         <h1 className="routine-title">Your routine</h1>
@@ -73,6 +159,9 @@ export function LogActivityPage() {
           Analytics
         </button>
       </div>
+
+        </>
+      )}
 
       {/* ── Tab 1: 7-Day Plan View ── */}
       {activeTab === 'plan' && (
@@ -202,9 +291,10 @@ export function LogActivityPage() {
       )}
 
       {/* ── Tab 3: Analytics View ── */}
-      {activeTab === 'analytics' && <Analytics />}
+      {activeTab === 'analytics' && <AnalyticsTab embedded onBack={() => setActiveTab('plan')} {...(premiumAnalyticsData ?? {})} />}
 
       <style>{`
+        .routine-root-premium-analytics { max-width: none; margin: 0; padding: 0; }
         .routine-root {
           max-width: 1080px;
           margin: 0 auto;
