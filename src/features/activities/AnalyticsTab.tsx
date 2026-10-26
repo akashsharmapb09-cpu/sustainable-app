@@ -7,7 +7,6 @@ import {
   ArrowLeft,
   ArrowUpRight,
   Bell,
-  CalendarDays,
   ChevronRight,
   CircleHelp,
   Droplets,
@@ -197,9 +196,9 @@ export function AnalyticsTab({
 
   const metrics: Metric[] = [
     { label: "Carbon avoided", value: numberLabel(co2), unit: "kg CO₂e", icon: Leaf, trend: co2 > 0 ? 12 : 0, description: "Carbon emissions reduced in " + (options.find((option) => option.value === selectedMonth)?.label ?? selectedMonth), hint: "Your biggest climate lever" },
-    { label: "Water saved", value: numberLabel(water), unit: "litres", icon: Droplets, trend: water > 0 ? 12 : 0, description: water > 0 ? "Water conserved through your swaps" : "No water-saving actions logged yet", hint: "Every litre matters" },
-    { label: "Net savings", value: "₹" + numberLabel(savings), icon: Wallet, trend: savings > 0 ? 12 : 0, description: "Net savings generated this month", hint: "Good habits can save money" },
-    { label: "Habit streak", value: numberLabel(days), unit: days === 1 ? "day" : "days", icon: Flame, trend: days > 0 ? 12 : 0, description: days > 0 ? "One small action can start a lasting habit" : "Start a small habit today", hint: "Consistency beats perfection" },
+    { label: "Water saved", value: numberLabel(water), unit: "litres", icon: Droplets, trend: water > 0 ? 12 : 0, description: water > 0 ? "Water conserved through your swaps" : "No water-saving actions logged for this month", hint: "Every litre matters" },
+    { label: "Net savings", value: "₹" + numberLabel(savings), icon: Wallet, trend: savings > 0 ? 12 : 0, description: "Net savings generated in " + (options.find((option) => option.value === selectedMonth)?.label ?? selectedMonth), hint: "Good habits can save money" },
+    { label: "Habit streak", value: numberLabel(days), unit: days === 1 ? "day" : "days", icon: Flame, trend: days > 0 ? 12 : 0, description: days > 0 ? "One small action can start a lasting habit" : "Start a small habit this month", hint: "Consistency beats perfection" },
   ];
   const visibleMetrics = metrics.filter((item) => matches(searchQuery, item.label + " " + item.description + " " + item.hint));
   const visibleCategories = categoryValues.filter((item) => matches(searchQuery, item.name + " impact category contribution reduction"));
@@ -299,7 +298,7 @@ export function AnalyticsTab({
                 <select id="analytics-month" value={selectedMonth} onChange={(event) => setSelectedMonth(event.target.value)} aria-label="Filter analytics by month" className="relative z-10 h-10 min-w-[185px] cursor-pointer appearance-auto rounded-[9px] border border-black/[0.14] bg-[#fffefa] px-3 text-[18px] font-semibold text-[#30372e] shadow-sm outline-none focus:border-[#438c54] focus:ring-2 focus:ring-[#438c54]/20">
                   {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                 </select>
-                <button type="button" onClick={exportReport className="flex h-9 items-center gap-2 rounded-[9px] border border-[#111611] bg-[#111611] px-3 text-[14px] font-semibold text-[#fffefa] transition hover:-translate-y-px hover:bg-[#2b362c]"><ArrowDownToLine className="h-[14px] w-[14px]" />Export report</button>
+                <button type="button" onClick={exportReport} className="flex h-9 items-center gap-2 rounded-[9px] border border-[#111611] bg-[#111611] px-3 text-[14px] font-semibold text-[#fffefa] transition hover:-translate-y-px hover:bg-[#2b362c]"><ArrowDownToLine className="h-[14px] w-[14px]" />Export report</button>
               </div>
             </div>
 
