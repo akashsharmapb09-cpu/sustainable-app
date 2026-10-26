@@ -1,6 +1,8 @@
-import { useState } from 'react';
-import { Check, Flame, TrendingDown, Droplets, Wallet, Calendar } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Analytics } from './Analytics';
+import { getRoutineSwaps, removeRoutineSwap, subscribeToRoutineSwaps, type RoutineSwap } from './routineSwapStore';
 
 interface RoutineAction {
   id: string;
@@ -23,6 +25,13 @@ const INITIAL_ACTIONS: RoutineAction[] = [
 export function LogActivityPage() {
   const [actions, setActions] = useState<RoutineAction[]>(INITIAL_ACTIONS);
   const [activeTab, setActiveTab] = useState<'plan' | 'swaps' | 'analytics'>('plan');
+  const [routineSwaps, setRoutineSwaps] = useState<RoutineSwap[]>([]);
+
+  useEffect(() => {
+    const refreshSwaps = () => setRoutineSwaps(getRoutineSwaps());
+    refreshSwaps();
+    return subscribeToRoutineSwaps(refreshSwaps);
+  }, []);
 
   const toggleAction = (id: string) => {
     setActions((prev) =>
@@ -118,20 +127,7 @@ export function LogActivityPage() {
               </blockquote>
               <div className="quote-leaf" aria-hidden="true">
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                  <path
-                    d="M10 30 C15 15 25 10 35 8 C30 20 22 28 10 30Z"
-                    fill="#123826"
-                    opacity="0.8"
-                  />
-                  <path d="M12 28 L30 12" stroke="#4dd282" strokeWidth="1.5" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── Tab 2: Your Swaps View ── */}
+                {/* ── Tab 2: Your Swaps View ── */}
       {activeTab === 'swaps' && (
         <div className="routine-card routine-swaps-view">
           <div className="swaps-header-row">
@@ -144,177 +140,57 @@ export function LogActivityPage() {
             </Link>
           </div>
 
-          <div className="swaps-list-grid">
-            {[
-              {
-                title: 'Metro commute for office workdays',
-                cat: 'Transport',
-                co2: '-75 kg CO₂e / mo',
-                money: 'Save ~₹3,200/mo',
-                status: 'Adopted 3 weeks ago',
-                dot: 'bg-emerald-600',
-              },
-              {
-                title: 'Eat plant-based weekday lunches',
-                cat: 'Food',
-                co2: '-30 kg CO₂e / mo',
-                money: 'Save ~₹1,100/mo',
-                status: 'Adopted 2 weeks ago',
-                dot: 'bg-emerald-600',
-              },
-              {
-                title: 'AC 24°C thermostat setpoint',
-                cat: 'Energy',
-                co2: '-40 kg CO₂e / mo',
-                money: 'Save ~₹680/mo',
-                status: 'Adopted 1 month ago',
-                dot: 'bg-emerald-600',
-              },
-              {
-                title: 'Cloth totes for market purchases',
-                cat: 'Shopping',
-                co2: '-5 kg CO₂e / mo',
-                money: 'Zero plastic waste',
-                status: 'Adopted 2 months ago',
-                dot: 'bg-emerald-600',
-              },
-            ].map((swap) => (
-              <div key={swap.title} className="adopted-swap-item">
-                <div className="adopted-item-left">
-                  <span className="adopted-status-tag">{swap.status}</span>
-                  <h3 className="adopted-item-title">{swap.title}</h3>
-                  <div className="adopted-item-meta">
-                    <span className="adopted-cat">{swap.cat}</span>
-                    <span className="dot-divider">·</span>
-                    <span className="adopted-money">{swap.money}</span>
+          {routineSwaps.length === 0 ? (
+            <div className="routine-swaps-empty">
+              <p>Start adding swaps to see impact</p>
+              <Link to="/catalogue" className="adopt-more-btn">Browse swaps →</Link>
+            </div>
+          ) : (
+            <div className="swaps-list-grid">
+              {routineSwaps.map((swap) => {
+                const created = new Date(swap.createdAt);
+                const statusLabel = Number.isNaN(created.getTime()) || created.getFullYear() === 1970
+                  ? 'Added to your routine'
+                  : 'Added ' + created.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+                const moneyLabel = swap.costDiff > 0
+                  ? 'Save ' + new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(swap.costDiff) + '/mo'
+                  : swap.costDiff < 0
+                    ? 'Extra cost ' + new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Math.abs(swap.costDiff)) + '/mo'
+                    : 'No cost estimate';
+                return (
+                  <div key={swap.id} className="adopted-swap-item">
+                    <div className="adopted-item-left">
+                      <span className="adopted-status-tag">{statusLabel}</span>
+                      <h3 className="adopted-item-title">{swap.title}</h3>
+                      <div className="adopted-item-meta">
+                        <span className="adopted-cat">{swap.category}</span>
+                        <span className="dot-divider">·</span>
+                        <span className="adopted-money">{moneyLabel}</span>
+                      </div>
+                    </div>
+                    <div className="adopted-item-right">
+                      <span className="adopted-co2-pill">−{new Intl.NumberFormat('en-IN', { maximumFractionDigits: 1 }).format(swap.co2Saved)} kg CO₂e / mo</span>
+                      <button
+                        type="button"
+                        className="remove-swap-btn"
+                        onClick={() => removeRoutineSwap(swap.id)}
+                        aria-label={'Remove ' + swap.title}
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div className="adopted-item-right">
-                  <span className="adopted-co2-pill">{swap.co2}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
-      {/* ── Tab 3: Analytics View (Rich Charts & Metrics) ── */}
-      {activeTab === 'analytics' && (
-        <div className="routine-analytics-view">
-          {/* Top 4 KPI Metrics */}
-          <div className="analytics-kpi-grid">
-            <div className="routine-card kpi-card">
-              <div className="kpi-icon-wrap bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                <TrendingDown className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="kpi-label">MONTHLY CO₂E SAVED</span>
-                <strong className="kpi-value">150.0 <span>kg</span></strong>
-                <span className="kpi-sub">↑ 12% vs last month</span>
-              </div>
-            </div>
+      {/* ── Tab 3: Analytics View ── */}
+      {activeTab === 'analytics' && <Analytics />}
 
-            <div className="routine-card kpi-card">
-              <div className="kpi-icon-wrap bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
-                <Wallet className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="kpi-label">NET EXPENDITURE SAVINGS</span>
-                <strong className="kpi-value">₹4,980 <span>/ mo</span></strong>
-                <span className="kpi-sub">Fuel &amp; electricity deltas</span>
-              </div>
-            </div>
-
-            <div className="routine-card kpi-card">
-              <div className="kpi-icon-wrap bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
-                <Droplets className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="kpi-label">WATER CONSERVED</span>
-                <strong className="kpi-value">720 <span>Litres</span></strong>
-                <span className="kpi-sub">Showers &amp; tap aerators</span>
-              </div>
-            </div>
-
-            <div className="routine-card kpi-card">
-              <div className="kpi-icon-wrap bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300">
-                <Flame className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="kpi-label">HABIT STREAK</span>
-                <strong className="kpi-value">14 <span>Days</span></strong>
-                <span className="kpi-sub">Current active streak 🔥</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Lower Analytics: Weekly Reduction Chart & Category Breakdown */}
-          <div className="analytics-charts-split">
-            {/* Weekly Trend Bar Chart */}
-            <div className="routine-card chart-card">
-              <div className="chart-header">
-                <div>
-                  <h3 className="chart-title">Weekly Carbon Reduction Trend</h3>
-                  <p className="chart-sub">Kilograms of CO₂e avoided each week</p>
-                </div>
-                <span className="chart-period-badge">Last 4 Weeks</span>
-              </div>
-
-              <div className="weekly-bars-display">
-                {[
-                  { week: 'Week 1', kg: 28, height: '55%' },
-                  { week: 'Week 2', kg: 34, height: '68%' },
-                  { week: 'Week 3', kg: 41, height: '82%' },
-                  { week: 'Week 4', kg: 47, height: '94%' },
-                ].map((item) => (
-                  <div key={item.week} className="weekly-bar-col">
-                    <span className="bar-kg-label">{item.kg} kg</span>
-                    <div className="bar-track">
-                      <div className="bar-fill" style={{ height: item.height }} />
-                    </div>
-                    <span className="bar-week-label">{item.week}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Category Breakdown Donut / List */}
-            <div className="routine-card breakdown-card">
-              <h3 className="chart-title">Impact by Category</h3>
-              <p className="chart-sub">Where your footprint savings come from</p>
-
-              <div className="category-bars-list">
-                {[
-                  { name: 'Transport (Metro & Carpooling)', pct: 50, color: '#123826', kg: '75 kg' },
-                  { name: 'Energy (AC 24°C & LEDs)', pct: 27, color: '#2b7a4b', kg: '40 kg' },
-                  { name: 'Food (Plant-based meals)', pct: 20, color: '#a35a38', kg: '30 kg' },
-                  { name: 'Shopping & Waste (Totes & Compost)', pct: 3, color: '#848E86', kg: '5 kg' },
-                ].map((cat) => (
-                  <div key={cat.name} className="cat-breakdown-row">
-                    <div className="cat-breakdown-info">
-                      <span className="cat-name">{cat.name}</span>
-                      <strong className="cat-kg">{cat.kg} ({cat.pct}%)</strong>
-                    </div>
-                    <div className="cat-progress-track">
-                      <div
-                        className="cat-progress-fill"
-                        style={{ width: `${cat.pct}%`, backgroundColor: cat.color }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* 14-day streak days tracker */}
-              <div className="streak-bubble-row">
-                <span className="streak-bubble-title">
-                  <Calendar className="h-3.5 w-3.5 inline mr-1" />
-                  Recent Daily Activity:
-                </span>
-                <div className="streak-dots">
-                  {['M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
-                    <div
-                      key={i}
+          key={i}
                       className={`streak-dot ${i < 12 ? 'is-complete' : 'is-today'}`}
                       title={`Day ${i + 1} (${d})`}
                     >
@@ -782,6 +658,44 @@ export function LogActivityPage() {
         }
         .streak-dot.is-complete { background: #123826; }
         .streak-dot.is-today { background: #4dd282; color: #0c130f; box-shadow: 0 0 0 2px rgba(77, 210, 130, 0.4); }
+
+        .routine-swaps-empty {
+          border: 1px dashed #DFD7CA;
+          border-radius: 12px;
+          padding: 2rem 1rem;
+          text-align: center;
+          color: var(--color-ink-muted);
+        }
+        .routine-swaps-empty p {
+          font-size: 0.85rem;
+          margin: 0 0 1rem;
+        }
+        .adopted-item-right {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 0.55rem;
+          flex-wrap: wrap;
+        }
+        .remove-swap-btn {
+          border: 1px solid var(--color-border);
+          border-radius: 999px;
+          background: transparent;
+          color: var(--color-ink-muted);
+          padding: 0.35rem 0.65rem;
+          font-size: 0.7rem;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+        .remove-swap-btn:hover {
+          color: #9f3029;
+          border-color: #9f3029;
+        }
+        .analytics-empty-state {
+          margin: -0.75rem 0 1.5rem;
+          color: var(--color-ink-muted);
+          font-size: 0.82rem;
+        }
 
         @media (max-width: 900px) {
           .routine-split, .analytics-charts-split { grid-template-columns: 1fr; }
