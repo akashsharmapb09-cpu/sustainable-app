@@ -7,6 +7,7 @@ import { ALL_ALTERNATIVES } from "../../../features/explore/data/alternativesDat
 import { useAuth } from "../../../features/auth/context/authContextDef";
 import { goalFormSchema, type GoalFormInput } from "../../../features/progress/goalTracking";
 import type { ActivityCategory, Database } from "../../types/database";
+import { parseCO2ToKg } from "../co2";
 import {
   addLocalGoal,
   awardLocalChallengeBadge,
@@ -444,7 +445,7 @@ export function useMonthlyFootprint() {
       let total = 0;
       const byCategory: Record<string, number> = {};
       for (const row of rows) {
-        const kg = row.calculated_co2e_monthly ?? 0;
+        const kg = parseCO2ToKg(`${row.calculated_co2e_monthly ?? 0} kg`);
         const category = row.category ?? "Other";
         total += kg;
         byCategory[category] = (byCategory[category] ?? 0) + kg;
