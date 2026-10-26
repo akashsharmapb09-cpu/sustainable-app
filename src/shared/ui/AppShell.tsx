@@ -192,7 +192,7 @@ export function AppShell() {
           gap: 20px;
           min-height: 100vh;
           padding: 16px;
-          background-color: #F5F0E8;
+          background-color: #FFFBF5;
           color: var(--color-ink);
           font-family: 'Inter', sans-serif;
         }
@@ -201,7 +201,7 @@ export function AppShell() {
         .shell-sidebar {
           width: 280px;
           flex: 0 0 280px;
-          background: linear-gradient(155deg, #202720 0%, #151A16 68%, #111612 100%);
+          background: #0F231C;
           color: #D6DFD5;
           display: flex;
           flex-direction: column;
@@ -295,14 +295,14 @@ export function AppShell() {
 
         /* Active nav state */
         .sidebar-nav-item.is-active {
-          background: rgba(146, 181, 143, 0.14);
-          color: #F5F4EC !important;
-          border: 1px solid rgba(181, 213, 174, 0.15);
+          background: #4A7C59;
+          color: #FFFFFF !important;
+          border: 1px solid rgba(255,255,255,0.12);
           font-weight: 650;
-          box-shadow: inset 0 1px rgba(255,255,255,0.035);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
         .sidebar-nav-item.is-active .nav-icon {
-          color: #B9D7B3;
+          color: #FFFFFF;
         }
 
         .nav-icon {
