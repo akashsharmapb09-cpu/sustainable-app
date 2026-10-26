@@ -275,7 +275,7 @@ export function LogActivityPage() {
           <>
             <section className="challenge-progress-card" aria-label="Challenge progress">
               <div className="progress-ring-wrap">
-                <svg className="progress-ring" viewBox="0 0 132 132" role="img" aria-label={\`${completedCount} of ${actions.length} habits completed\`}>
+                <svg className="progress-ring" viewBox="0 0 132 132" role="img" aria-label={`${completedCount} of ${actions.length} habits completed`}>
                   <circle className="progress-ring-track" cx="66" cy="66" r="52" />
                   <circle className="progress-ring-value" cx="66" cy="66" r="52" strokeDasharray="326.73" strokeDashoffset={String(326.73 * (1 - completedCount / Math.max(1, actions.length)))} />
                 </svg>
@@ -310,7 +310,7 @@ export function LogActivityPage() {
                     const Icon = getHabitIcon(action.label);
                     const isEditing = editingActionId === action.id;
                     return (
-                      <article key={action.id} className={\`habit-item ${action.completed ? 'is-completed' : ''}\`} style={{ animationDelay: (index * 30) + 'ms' }}>
+                      <article key={action.id} className={`habit-item ${action.completed ? 'is-completed' : ''}`} style={{ animationDelay: (index * 30) + 'ms' }}>
                         <div className="habit-card-top">
                           <button type="button" className="habit-toggle" onClick={() => toggleAction(action.id)} aria-pressed={action.completed} aria-label={action.completed ? 'Mark ' + action.label + ' incomplete' : 'Complete ' + action.label}>
                             <Check size={16} strokeWidth={2.5} />
@@ -325,7 +325,7 @@ export function LogActivityPage() {
                               <button type="button" aria-label="Cancel edit" onClick={() => setEditingActionId(null)}>×</button>
                             </form>
                           ) : (
-                            <span className={\`habit-name ${action.completed ? 'has-strike' : ''}\`}>{action.label}</span>
+                            <span className={`habit-name ${action.completed ? 'has-strike' : ''}`}>{action.label}</span>
                           )}
                         </div>
                       </article>
@@ -376,7 +376,7 @@ export function LogActivityPage() {
             </div>
             <div className="goals-list">
               {actions.map((action) => (
-                <button type="button" key={action.id} className={\`goal-row ${action.completed ? 'is-completed' : ''}\`} onClick={() => toggleAction(action.id)} aria-pressed={action.completed}>
+                <button type="button" key={action.id} className={`goal-row ${action.completed ? 'is-completed' : ''}`} onClick={() => toggleAction(action.id)} aria-pressed={action.completed}>
                   <span className="goal-check"><Check size={16} /></span>
                   <span className="goal-row-copy"><strong>{action.label}</strong><span>{action.category} · {action.saving} estimated impact</span></span>
                   <span className="goal-status">{action.completed ? 'Completed' : 'In progress'}</span>
