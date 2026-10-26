@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import { getExploreItemById, EXPLORE_ITEMS, type ExploreItem } from './exploreData';
 import { EXPANDED_SWAPS } from './CataloguePage';
 import {
@@ -13,6 +13,8 @@ import {
 
 export function ExploreDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const collectionPath = location.pathname.startsWith('/catalogue/') ? '/catalogue' : '/explore';
   const exploreItem = getExploreItemById(id || '');
   const catalogueItem = EXPANDED_SWAPS.find((candidate) => candidate.id === (id || '').toLowerCase());
   const item: ExploreItem | undefined = exploreItem ?? (catalogueItem ? {
@@ -62,7 +64,7 @@ export function ExploreDetailPage() {
             We couldn&apos;t find an explore item matching &ldquo;{id}&rdquo;.
           </p>
           <Link
-            to="/explore"
+            to={collectionPath}
             className="inline-flex items-center justify-center gap-2 w-full py-3 px-6 rounded-full bg-[#162A20] text-white font-medium text-sm hover:bg-[#2B543A] transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -81,7 +83,7 @@ export function ExploreDetailPage() {
       <header className="border-b border-[#E7E2D6] bg-[#F8F6F0]/90 backdrop-blur sticky top-0 z-30">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link
-            to="/explore"
+            to={collectionPath}
             className="inline-flex items-center gap-2 text-sm font-medium text-[#465A4E] hover:text-[#162A20] transition-colors cursor-pointer group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
@@ -104,7 +106,7 @@ export function ExploreDetailPage() {
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-12">
         {/* Breadcrumb path */}
         <nav className="flex items-center gap-2 text-xs text-[#6B7D72] mb-6">
-          <Link to="/explore" className="hover:underline">Explore</Link>
+          <Link to={collectionPath} className="hover:underline">Explore</Link>
           <span>/</span>
           <span className="capitalize">{item.categoryLabel}</span>
           <span>/</span>
@@ -271,7 +273,7 @@ export function ExploreDetailPage() {
               </p>
             </div>
             <Link
-              to="/explore"
+              to={collectionPath}
               className="text-xs sm:text-sm font-semibold text-[#2B543A] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>View all</span>
@@ -283,7 +285,7 @@ export function ExploreDetailPage() {
             {relatedItems.map((other) => (
               <Link
                 key={other.id}
-                to={`/explore/${other.id}`}
+                to={`${collectionPath}/${other.id}`}
                 className="group block bg-[#FAF8F5] border border-[#E5E0D5] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 cursor-pointer flex flex-col"
               >
                 <div className="relative w-full h-36 overflow-hidden bg-[#EAE5DA]">
