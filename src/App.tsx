@@ -60,6 +60,7 @@ export default function App() {
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/explore/:id" element={<ExploreDetailPage />} />
             <Route path="/catalogue" element={<CataloguePage />} />
+            <Route path="/catalogue/:id" element={<ExploreDetailPage />} />
           </Route>
 
           <Route path="/login" element={<Navigate to="/dashboard" replace />} />
