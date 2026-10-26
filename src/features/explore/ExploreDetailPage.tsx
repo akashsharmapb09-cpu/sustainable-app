@@ -61,14 +61,14 @@ export function ExploreDetailPage() {
           <Leaf className="w-12 h-12 text-[#2B543A] mx-auto mb-4 opacity-70" />
           <h1 className="font-serif text-2xl font-bold text-[#162A20] mb-2">Item Not Found</h1>
           <p className="text-sm text-[#5A6E61] mb-6">
-            We couldn&apos;t find an explore item matching &ldquo;{id}&rdquo;.
+            We couldn&apos;t find an {collectionPath === '/catalogue' ? 'catalogue' : 'explore'} item matching &ldquo;{id}&rdquo;.
           </p>
           <Link
             to={collectionPath}
             className="inline-flex items-center justify-center gap-2 w-full py-3 px-6 rounded-full bg-[#162A20] text-white font-medium text-sm hover:bg-[#2B543A] transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Explore
+            Back to {collectionPath === '/catalogue' ? 'Catalogue' : 'Explore'}
           </Link>
         </div>
       </div>
@@ -87,7 +87,7 @@ export function ExploreDetailPage() {
             className="inline-flex items-center gap-2 text-sm font-medium text-[#465A4E] hover:text-[#162A20] transition-colors cursor-pointer group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-            <span>Back to Explore</span>
+            <span>Back to {collectionPath === '/catalogue' ? 'Catalogue' : 'Explore'}</span>
           </Link>
 
           <Link to="/" className="font-serif text-2xl font-bold tracking-tight text-[#162A20]">
@@ -106,7 +106,7 @@ export function ExploreDetailPage() {
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-12">
         {/* Breadcrumb path */}
         <nav className="flex items-center gap-2 text-xs text-[#6B7D72] mb-6">
-          <Link to={collectionPath} className="hover:underline">Explore</Link>
+          <Link to={collectionPath} className="hover:underline">{collectionPath === '/catalogue' ? 'Catalogue' : 'Explore'}</Link>
           <span>/</span>
           <span className="capitalize">{item.categoryLabel}</span>
           <span>/</span>
