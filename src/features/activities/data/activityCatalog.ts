@@ -1,4 +1,5 @@
 import type { ActivityCategory } from '../../../shared/types/database';
+import { parseCO2ToKg } from '../../../shared/lib/co2';
 import { z } from 'zod';
 
 export interface CatalogActivity {
@@ -161,7 +162,15 @@ export const activityLogFormSchema = z.object({
 export type ActivityLogFormInput = z.input<typeof activityLogFormSchema>;
 
 export function monthlyCo2e(quantity: number, frequencyPerWeek: number, factor: number) {
-  return Number((quantity * frequencyPerWeek * 4.33 * factor).toFixed(2));
+  const safeQuantity = Number.isFinite(quantity) ? Math.max(0, quantity) : 0;
+  const safeFrequency = Number.isFinite(frequencyPerWeek) ? Math.max(0, frequencyPerWeek) : 0;
+  // Catalog emission factors are explicitly kg per unit; don't apply the
+  // legacy unit-less tonnes heuristic to these small per-unit values.
+  const safeFactor = Number.isFinite(factor) ? parseCO2ToKg(\`\${factor} kg\`) : 0;
+  const estimate = safeQuantity * safeFrequency * 4.33 * safeFactor;
+  if (!Number.isFinite(estimate)) return 0;
+
+  return parseCO2ToKg(\`\${Number(estimate.toFixed(2))} kg\`);
 }
 
 export function validateActivityLogForm(input: unknown) {
