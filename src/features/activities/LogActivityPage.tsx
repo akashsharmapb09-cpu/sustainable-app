@@ -3,7 +3,6 @@ import {
   ArrowRight,
   Bike,
   Check,
-  ChevronRight,
   CircleCheck,
   Droplets,
   Flame,
