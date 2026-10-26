@@ -70,7 +70,7 @@ function asNumber(value: unknown, unit: "co2" | "money" | "water"): number {
 
   const amount = Number(match[0]);
   if (!Number.isFinite(amount)) return 0;
-  if (unit === "co2" && /(?:^|\s)t(?:\s|$| CO2| CO₂|CO2e|CO₂e)/i.test(value)) {
+  if (unit === "co2" && /\d(?:\.\d+)?\s*t\b/i.test(value)) {
     return amount * 1000;
   }
   return amount;
