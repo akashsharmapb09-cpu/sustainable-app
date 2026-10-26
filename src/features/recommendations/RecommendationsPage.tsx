@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { Link } from 'react-router-dom';
 import { Badge, Button, Card } from '../../shared/ui';
 import { CardSkeleton } from '../../shared/ui/Skeleton';
@@ -14,6 +15,77 @@ import { getColdStartRecommendations, rankRecommendations } from './engine';
 import type { ActivityContext, UserScoringProfile } from './engine/types';
 import { useToast } from '../../shared/ui';
 
+type RecommendationPhotoKind = 'bottle' | 'train';
+
+function getRecommendationPhoto(alternative: { id: string; title: string; category: string }): RecommendationPhotoKind | null {
+  const title = alternative.title.toLowerCase();
+  if (alternative.id === 'alt-reusable-steel-flask' || /reusable|insulated stainless steel water bottle|water bottle/.test(title)) return 'bottle';
+  if (alternative.id === 'alt-train-intercity' || /vande bharat|intercity.*train|express train/.test(title)) return 'train';
+  return null;
+}
+
+const PHOTO_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4IDgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiNlOGYwZTgiLz48L3N2Zz4=';
+
+function RecommendationPhoto({ kind, priority }: { kind: RecommendationPhotoKind; priority: boolean }) {
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [parallaxY, setParallaxY] = useState(0);
+  const isBottle = kind === 'bottle';
+  const src = isBottle
+    ? 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=1200&q=90'
+    : 'https://images.unsplash.com/photo-1474487548417-4a46a6d2a84c?auto=format&fit=crop&w=1400&q=90';
+
+  useEffect(() => {
+    const updateParallax = () => {
+      const frame = frameRef.current;
+      if (!frame) return;
+      const rect = frame.getBoundingClientRect();
+      const displacement = (window.innerHeight / 2 - (rect.top + rect.height / 2)) * 0.025;
+      setParallaxY(Math.max(-12, Math.min(12, displacement)));
+    };
+    updateParallax();
+    window.addEventListener('scroll', updateParallax, { passive: true });
+    window.addEventListener('resize', updateParallax);
+    return () => {
+      window.removeEventListener('scroll', updateParallax);
+      window.removeEventListener('resize', updateParallax);
+    };
+  }, []);
+
+  return (
+    <div ref={frameRef} className='recommendation-photo group relative isolate min-h-[320px] overflow-hidden bg-[#E8F0E8] md:rounded-r-[32px]'>
+      <div className='absolute inset-0 overflow-hidden'>
+        <div className='absolute -inset-y-4 inset-x-0 will-change-transform' style={{ transform: `translate3d(0, ${parallaxY}px, 0)` }}>
+          <Image
+            src={src}
+            alt={isBottle ? 'Insulated stainless steel water bottle in a minimalist product photograph' : 'Passenger train and railway tracks photographed in natural light'}
+            fill
+            sizes='(max-width: 767px) 100vw, 42vw'
+            quality={90}
+            priority={priority}
+            placeholder='blur'
+            blurDataURL={PHOTO_PLACEHOLDER}
+            className='object-cover transition-transform duration-700 ease-out group-hover:scale-110'
+            style={{ objectPosition: 'center' }}
+          />
+        </div>
+      </div>
+      {isBottle ? (
+        <>
+          <div className='absolute inset-0 bg-[#DCEAD1]/20 mix-blend-multiply' />
+          <div className='absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-black/10 to-transparent' />
+          <div className='absolute -right-10 -top-10 h-44 w-44 rounded-full bg-[#EAF1DE]/35 blur-3xl' aria-hidden='true' />
+          <div className='absolute bottom-5 left-5 rounded-full border border-white/55 bg-white/65 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#294633] shadow-sm backdrop-blur-md'>Refill. Reuse. Repeat.</div>
+        </>
+      ) : (
+        <>
+          <div className='absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-transparent' />
+          <div className='absolute inset-0 bg-[#1A3329]/5' />
+          <div className='absolute bottom-5 left-5 rounded-full border border-white/40 bg-[#1A3329]/55 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white shadow-sm backdrop-blur-md'>Lower-impact journeys</div>
+        </>
+      )}
+    </div>
+  );
+}
 export function RecommendationsPage() {
   const [referenceTime] = useState(() => new Date().toISOString());
   const { data: profile, isLoading: profileLoading } = useProfile();
@@ -82,9 +154,11 @@ export function RecommendationsPage() {
       </div>
       {recs.map((rec) => {
           const sourceUrl = safeHttpsUrl(rec.alternative.source_url);
+          const photo = getRecommendationPhoto(rec.alternative);
           return (
             <Card
               key={rec.alternative.id}
+              className={photo ? 'overflow-hidden rounded-[32px] border border-[#E5E0D5] bg-white shadow-sm hover:shadow-xl' : undefined}
               taxonomyCode={`${rec.alternative.category.toUpperCase()} // RANK ${rec.rank}`}
               badge={(
                 <div className="flex flex-wrap items-center justify-end gap-2">
@@ -95,6 +169,8 @@ export function RecommendationsPage() {
                 </div>
               )}
             >
+              <div className={photo ? '-m-5 grid overflow-hidden md:-m-6 md:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.92fr)]' : ''}>
+                <div className={photo ? 'min-w-0 p-5 md:p-6' : ''}>
               <h2 className="font-serif text-xl font-semibold">{rec.alternative.title}</h2>
               <p className="text-sm text-ink-muted mt-2">{rec.alternative.why_better}</p>
               <p className="mt-2 text-xs text-ink-muted">
@@ -143,6 +219,9 @@ export function RecommendationsPage() {
                   {actions?.some((action) => action.alternative_id === rec.alternative.id && action.status === 'maybe_later') ? 'Saved for later' : 'Maybe later'}
                 </Button>
                 <Button size="sm" variant="ghost" disabled={upsert.isPending} onClick={() => void act(rec.alternative.id, 'not_for_me')}>Not for me</Button>
+              </div>
+                </div>
+                {photo && <RecommendationPhoto kind={photo} priority={rec.rank === 1} />}
               </div>
             </Card>
           );
