@@ -313,11 +313,11 @@ export function CataloguePage() {
                 role="link"
                 tabIndex={0}
                 aria-label={`View details for ${item.title}`}
-                onClick={() => navigate(`/explore/${item.id}`)}
+                onClick={() => navigate(`/catalogue/${item.id}`)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter') {
                     event.preventDefault();
-                    navigate(`/explore/${item.id}`);
+                    navigate(`/catalogue/${item.id}`);
                   }
                 }}
               >
