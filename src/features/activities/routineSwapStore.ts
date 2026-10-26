@@ -1,3 +1,5 @@
+import { parseCO2ToKg } from "../../shared/lib/co2";
+
 export type RoutineCategory =
   | "Transport"
   | "Energy"
@@ -61,7 +63,7 @@ function asString(value: unknown): string | null {
   return typeof value === "string" && value.trim() ? value : null;
 }
 
-function asNumber(value: unknown, unit: "co2" | "money" | "water"): number {
+function asNumber(value: unknown): number {
   if (typeof value === "number") return Number.isFinite(value) ? value : 0;
   if (typeof value !== "string") return 0;
 
@@ -69,11 +71,7 @@ function asNumber(value: unknown, unit: "co2" | "money" | "water"): number {
   if (!match) return 0;
 
   const amount = Number(match[0]);
-  if (!Number.isFinite(amount)) return 0;
-  if (unit === "co2" && /\d(?:\.\d+)?\s*t\b/i.test(value)) {
-    return amount * 1000;
-  }
-  return amount;
+  return Number.isFinite(amount) ? amount : 0;
 }
 
 export function normalizeRoutineCategory(value: unknown): RoutineCategory {
@@ -107,9 +105,11 @@ function normalizeSwap(value: unknown): RoutineSwap | null {
     id,
     title: asString(row.title) ?? asString(row.name) ?? asString(row.label) ?? "Sustainable swap",
     category: normalizeRoutineCategory(row.category),
-    co2Saved: asNumber(row.co2Saved ?? row.co2_saved ?? row.co2, "co2"),
-    costDiff: asNumber(row.costDiff ?? row.cost_diff ?? row.moneySaved ?? row.money_saved, "money"),
-    waterSaved: asNumber(row.waterSaved ?? row.water_saved ?? row.water, "water"),
+    co2Saved: row.co2SavedKg !== undefined || row.co2_saved_kg !== undefined
+      ? parseCO2ToKg(`${row.co2SavedKg ?? row.co2_saved_kg} kg`)
+      : parseCO2ToKg(row.co2Saved ?? row.co2_saved ?? row.co2),
+    costDiff: asNumber(row.costDiff ?? row.cost_diff ?? row.moneySaved ?? row.money_saved),
+    waterSaved: asNumber(row.waterSaved ?? row.water_saved ?? row.water),
     createdAt,
     ...(lastActiveAt ? { lastActiveAt } : {}),
   };
