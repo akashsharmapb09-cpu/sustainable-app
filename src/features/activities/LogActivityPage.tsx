@@ -127,7 +127,20 @@ export function LogActivityPage() {
               </blockquote>
               <div className="quote-leaf" aria-hidden="true">
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                {/* ── Tab 2: Your Swaps View ── */}
+                  <path
+                    d="M10 30 C15 15 25 10 35 8 C30 20 22 28 10 30Z"
+                    fill="#123826"
+                    opacity="0.8"
+                  />
+                  <path d="M12 28 L30 12" stroke="#4dd282" strokeWidth="1.5" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Tab 2: Your Swaps View ── */}
       {activeTab === 'swaps' && (
         <div className="routine-card routine-swaps-view">
           <div className="swaps-header-row">
@@ -157,6 +170,7 @@ export function LogActivityPage() {
                   : swap.costDiff < 0
                     ? 'Extra cost ' + new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Math.abs(swap.costDiff)) + '/mo'
                     : 'No cost estimate';
+
                 return (
                   <div key={swap.id} className="adopted-swap-item">
                     <div className="adopted-item-left">
@@ -189,20 +203,6 @@ export function LogActivityPage() {
 
       {/* ── Tab 3: Analytics View ── */}
       {activeTab === 'analytics' && <Analytics />}
-
-          key={i}
-                      className={`streak-dot ${i < 12 ? 'is-complete' : 'is-today'}`}
-                      title={`Day ${i + 1} (${d})`}
-                    >
-                      {d}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <style>{`
         .routine-root {
