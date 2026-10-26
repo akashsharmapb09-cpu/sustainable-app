@@ -12,6 +12,8 @@ import {
   Pencil,
   Plus,
   ShieldCheck,
+  Share2,
+  Settings,
   Shirt,
   ShowerHead,
   Sparkles,
@@ -37,10 +39,10 @@ interface RoutineAction {
 }
 
 const INITIAL_ACTIONS: RoutineAction[] = [
-  { id: '1', label: 'Use a reusable water bottle', category: 'Shopping', saving: '-1.5 kg CO₂e', completed: true },
-  { id: '2', label: 'Try a plant-based meal', category: 'Food', saving: '-2.8 kg CO₂e', completed: true },
+  { id: '1', label: 'Reusable water bottle used', category: 'Shopping', saving: '-1.5 kg CO₂e', completed: true },
+  { id: '2', label: 'Public transport instead of car', category: 'Transport', saving: '-2.8 kg CO₂e', completed: true },
   { id: '3', label: 'Walk or cycle for short trips', category: 'Transport', saving: '-4.2 kg CO₂e', completed: true },
-  { id: '4', label: 'Avoid food waste', category: 'Food', saving: '-3.0 kg CO₂e', completed: true },
+  { id: '4', label: 'Compost scraps after dinner', category: 'Food', saving: '-3.0 kg CO₂e', completed: true },
   { id: '5', label: 'Use LED bulbs', category: 'Energy', saving: '-1.8 kg CO₂e', completed: false },
   { id: '6', label: 'Choose second-hand', category: 'Shopping', saving: '-2.2 kg CO₂e', completed: false },
   { id: '7', label: 'Take shorter showers', category: 'Home', saving: '-2.0 kg CO₂e', completed: false },
@@ -184,6 +186,7 @@ export function LogActivityPage() {
   const [editingActionId, setEditingActionId] = useState<string | null>(null);
   const [editingLabel, setEditingLabel] = useState('');
   const [tipsExpanded, setTipsExpanded] = useState(false);
+  const [showAllHabits, setShowAllHabits] = useState(false);
 
   useEffect(() => {
     const refreshSwaps = () => setRoutineSwaps(getRoutineSwaps());
@@ -234,105 +237,96 @@ export function LogActivityPage() {
   const impactProgress = Math.min(100, Math.round((totalSwapImpact / impactGoal) * 100));
 
   return (
-    <div className={`routine-app ${activeTab === 'plan' ? 'routine-plan-active' : ''}`}>
+    <div className={`routine-app ${activeTab === 'plan' ? 'routine-plan-active' : activeTab === 'goals' ? 'routine-goals-active' : ''}`}>
       <main className={`routine-main ${activeTab === 'plan' ? 'routine-main-compact' : ''}`}>
         {activeTab !== 'analytics' && (
           <>
             <header className="routine-page-header">
-              <div className="routine-eyebrow"><span className="eyebrow-line" /> YOUR EVERYDAY, BETTER</div>
               <div className="routine-heading-row">
-                <div>
+                <div className="routine-heading-copy">
+                  <div className="routine-eyebrow">YOUR EVERYDAY, BETTER</div>
                   <h1 className="routine-title">Your routine</h1>
-                  <p className="routine-sub">Tiny choices. Real momentum. A healthier planet starts here.</p>
+                  <p className="routine-sub">Build sustainable habits with your 7-day plan and track your impact</p>
                 </div>
-                <Link to="/impact" className="routine-day-chip" aria-label="Go to your green impact journey"><span className="routine-day-dot" /> YOUR GREEN JOURNEY <span>↗</span></Link>
+                <div className="routine-header-actions">
+                  <button type="button" className="routine-header-pill" onClick={() => {
+                    const shareUrl = window.location.href;
+                    if (typeof navigator !== 'undefined' && navigator.share) {
+                      void navigator.share({ title: 'My GreenSwap routine', url: shareUrl }).catch(() => undefined);
+                    } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                      void navigator.clipboard.writeText(shareUrl);
+                    }
+                  }}><Share2 size={15} /> Share</button>
+                  <Link to="/settings" className="routine-header-pill"><Settings size={15} /> Settings</Link>
+                </div>
               </div>
             </header>
 
             <div className="routine-tabs" role="tablist" aria-label="Routine views">
               <button type="button" role="tab" aria-selected={activeTab === 'plan'} className={`routine-tab ${activeTab === 'plan' ? 'is-active' : ''}`} onClick={() => setActiveTab('plan')}>7-day plan</button>
-              <button type="button" role="tab" aria-selected={activeTab === 'swaps'} className={`routine-tab ${activeTab === 'swaps' ? 'is-active' : ''}`} onClick={() => setActiveTab('swaps')}>Your swaps <span className="tab-count">{routineSwaps.length}</span></button>
-              <button type="button" role="tab" aria-selected={false} className="routine-tab" onClick={() => setActiveTab('analytics')}>Analytics</button>
+              <button type="button" role="tab" aria-selected={activeTab === 'goals'} className={`routine-tab ${activeTab === 'goals' ? 'is-active' : ''}`} onClick={() => setActiveTab('goals')}>Your goals</button>
+              <button type="button" role="tab" aria-selected={activeTab === 'analytics'} className={`routine-tab ${activeTab === 'analytics' ? 'is-active' : ''}`} onClick={() => setActiveTab('analytics')}>Analytics</button>
             </div>
           </>
         )}
 
         {activeTab === 'plan' && (
           <>
-            <section className="challenge-intro">
-              <div className="challenge-intro-copy">
-                <span className="mini-overline">YOUR PERSONAL GREEN QUEST</span>
-                <div className="challenge-title-row">
-                  <h2>Your 7-day challenge</h2>
-                  <span className="completed-pill"><Sparkles size={17} /> {completedCount}/{actions.length} completed</span>
-                </div>
-                <p>Stack tiny wins, build a feel-good streak, and watch your impact grow.</p>
-              </div>
-              <div className="challenge-confetti" aria-hidden="true">
-                <span /><span /><span /><span /><span /><span /><span />
-              </div>
-            </section>
-
             <section className="challenge-progress-card" aria-label="Challenge progress">
               <div className="progress-ring-wrap">
-                <svg className="progress-ring" viewBox="0 0 132 132" role="img" aria-label={`${completedCount} of ${actions.length} habits completed`}>
+                <svg className="progress-ring" viewBox="0 0 132 132" role="img" aria-label={\`${completedCount} of ${actions.length} habits completed\`}>
                   <circle className="progress-ring-track" cx="66" cy="66" r="52" />
                   <circle className="progress-ring-value" cx="66" cy="66" r="52" strokeDasharray="326.73" strokeDashoffset={String(326.73 * (1 - completedCount / Math.max(1, actions.length)))} />
                 </svg>
                 <div className="progress-ring-label"><strong>{completedCount}/{actions.length}</strong><span>days done</span></div>
               </div>
               <div className="progress-card-copy">
-                <span className="progress-kicker">LOOK AT YOU GO</span>
                 <h3>{completedCount}/{actions.length} days done</h3>
-                <p>Every completed habit is proof that small choices add up.</p>
                 <div className="progress-bar-track" role="progressbar" aria-label="Challenge completion" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPercent}>
                   <span style={{ width: progressPercent + '%' }} />
                 </div>
-                <div className="progress-meta"><span>{progressPercent}% of your challenge</span><strong>{actions.length - completedCount} to go</strong></div>
+                <p className="progress-caption">Keep it up! {actions.length - completedCount} more {actions.length - completedCount === 1 ? 'day' : 'days'} to finish your plan.</p>
               </div>
               <div className="progress-card-stats">
-                <div className="streak-stat"><span className="streak-fire"><Flame size={21} fill="currentColor" /></span><div><strong>🔥 {completedCount}-day streak</strong><span>Keep it going! You’re on fire.</span></div></div>
-                <div className="impact-stat"><span className="impact-stat-icon"><Leaf size={21} /></span><div><strong>6.2 kg CO₂e</strong><span>saved this week</span></div></div>
+                <div className="impact-stat">
+                  <span className="impact-stat-icon"><Leaf size={22} /></span>
+                  <div><strong>6.2 kg</strong><span>CO₂ saved this week</span></div>
+                </div>
               </div>
-              <div className="progress-doodle" aria-hidden="true">✦<span>✳</span>·</div>
             </section>
 
             <div className="plan-layout">
               <section className="habits-panel" aria-labelledby="habits-heading">
                 <div className="panel-heading-row">
-                  <div><span className="panel-overline">THE LITTLE THINGS</span><h2 id="habits-heading">Your daily wins</h2><p>Tap the circle when you’ve done one. Celebrate every win.</p></div>
-                  <span className="habits-count">{completedCount} / {actions.length} <CircleCheck size={17} /></span>
+                  <h2 id="habits-heading">Daily wins</h2>
+                  <button type="button" className="routine-view-all" onClick={() => setShowAllHabits((show) => !show)} aria-expanded={showAllHabits}>
+                    {showAllHabits ? 'Show less' : 'View all'} <ArrowRight size={15} />
+                  </button>
                 </div>
 
                 <div className="habit-list">
-                  {actions.map((action, index) => {
+                  {actions.slice(0, showAllHabits ? actions.length : 6).map((action, index) => {
                     const Icon = getHabitIcon(action.label);
                     const isEditing = editingActionId === action.id;
                     return (
-                      <article key={action.id} className={`habit-item ${action.completed ? 'is-completed' : ''}`} style={{ animationDelay: (index * 35) + 'ms' }}>
-                        {action.completed ? <span className="habit-confetti" aria-hidden="true"><i/><i/><i/><i/><i/></span> : null}
+                      <article key={action.id} className={\`habit-item ${action.completed ? 'is-completed' : ''}\`} style={{ animationDelay: (index * 30) + 'ms' }}>
                         <div className="habit-card-top">
                           <button type="button" className="habit-toggle" onClick={() => toggleAction(action.id)} aria-pressed={action.completed} aria-label={action.completed ? 'Mark ' + action.label + ' incomplete' : 'Complete ' + action.label}>
-                            {action.completed ? <Check size={15} strokeWidth={3} /> : <span className="habit-number">{String(index + 1).padStart(2, '0')}</span>}
+                            <Check size={16} strokeWidth={2.5} />
                           </button>
-                          <span className={`habit-icon-wrap ${action.completed ? 'completed-icon' : ''}`}><Icon size={16} strokeWidth={1.9} /></span>
                           <button type="button" className="habit-edit" aria-label={'Edit ' + action.label} title="Edit habit" onClick={() => { setEditingActionId(action.id); setEditingLabel(action.label); }}><Pencil size={13}/></button>
                         </div>
                         <div className="habit-copy">
                           {isEditing ? (
                             <form className="habit-edit-form" onSubmit={saveEditedHabit}>
                               <input autoFocus aria-label="Edit habit name" value={editingLabel} onChange={(event) => setEditingLabel(event.target.value)} maxLength={90}/>
-                              <button type="submit" aria-label="Save habit name"><Check size={17}/></button>
+                              <button type="submit" aria-label="Save habit name"><Check size={16}/></button>
                               <button type="button" aria-label="Cancel edit" onClick={() => setEditingActionId(null)}>×</button>
                             </form>
                           ) : (
-                            <>
-                              <span className={`habit-name ${action.completed ? 'has-strike' : ''}`}>{action.label}</span>
-                              <span className="habit-subline">{action.category} <i>•</i> One step toward a lighter footprint</span>
-                            </>
+                            <span className={\`habit-name ${action.completed ? 'has-strike' : ''}\`}>{action.label}</span>
                           )}
                         </div>
-                        <span className="habit-saving"><Leaf size={11} /> {action.saving}</span>
                       </article>
                     );
                   })}
@@ -369,81 +363,33 @@ export function LogActivityPage() {
           </>
         )}
 
-        {activeTab === 'swaps' && (
-          <>
-            <section className="swaps-intro">
-              <div><span className="mini-overline">YOUR BETTER EVERYDAY</span><h2>Your swaps, <em>your impact.</em></h2><p>Every sustainable switch is a vote for the future you want.</p></div>
-              <div className="swaps-intro-stamp"><Leaf size={25}/><span>CONSCIOUS<br/>BY CHOICE</span></div>
-            </section>
-
-            <div className="swaps-layout">
-              <section className="swaps-panel" aria-labelledby="active-swaps-heading">
-                <div className="swaps-heading">
-                  <div><span className="panel-overline">THE SWAPS YOU’VE CHOSEN</span><h2 id="active-swaps-heading">Active Adopted Swaps</h2><p>Your sustainable switches, all in one place.</p></div>
-                  <span className="active-swaps-badge">{routineSwaps.length} active</span>
-                </div>
-
-                {routineSwaps.length === 0 ? (
-                  <div className="swaps-empty">
-                    <span className="empty-leaf"><Leaf size={31}/></span>
-                    <h3>Your next small win starts here.</h3>
-                    <p>Add a swap from the catalogue and it’ll show up here with its monthly impact.</p>
-                    <Link to="/catalogue" className="browse-swaps-button">Explore swaps <ArrowRight size={17}/></Link>
-                  </div>
-                ) : (
-                  <div className="swaps-list-grid">
-                    {routineSwaps.map((swap) => {
-                      const visual = getSwapVisual(swap);
-                      const Icon = visual.Icon;
-                      const moneyLabel = swap.costDiff > 0 ? 'Save ' + displayCurrency(swap.costDiff) + '/mo'
-                        : swap.costDiff < 0 ? 'Extra cost ' + displayCurrency(Math.abs(swap.costDiff)) + '/mo'
-                        : 'No cost estimate';
-                      const created = new Date(swap.createdAt);
-                      const dateLabel = Number.isNaN(created.getTime()) || created.getFullYear() === 1970
-                        ? 'Part of your routine'
-                        : 'Added ' + created.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-                      return (
-                        <article className="adopted-swap-item" key={swap.id}>
-                          <span className={`swap-icon-square tone-${visual.tone}`}><Icon size={27} strokeWidth={1.8}/></span>
-                          <div className="adopted-item-left">
-                            <span className="swap-date-label">{dateLabel} <i>·</i> {visual.label}</span>
-                            <h3 className="adopted-item-title">{swap.title}</h3>
-                            <p className="adopted-item-meta">{swap.category} <i>•</i> {moneyLabel}</p>
-                          </div>
-                          <div className="adopted-item-right">
-                            <span className="adopted-co2-pill">−{new Intl.NumberFormat('en-IN', { maximumFractionDigits: 1 }).format(swap.co2Saved)} kg CO₂e / mo</span>
-                            <button type="button" className="remove-swap-btn" onClick={() => removeRoutineSwap(swap.id)} aria-label={'Remove ' + swap.title} title="Remove swap"><Trash2 size={17}/><span>Remove</span></button>
-                          </div>
-                        </article>
-                      );
-                    })}
-                  </div>
-                )}
-                <div className="swaps-panel-footer"><span><CircleCheck size={18}/> {routineSwaps.length} sustainable {routineSwaps.length === 1 ? 'choice' : 'choices'} in your toolkit</span><Link to="/catalogue" className="swaps-footer-link">Add another <ArrowRight size={16}/></Link></div>
-              </section>
-
-              <aside className="swaps-widgets">
-                <article className="impact-widget">
-                  <span className="widget-overline">THE BIGGER PICTURE</span>
-                  <div className="impact-widget-icon"><TrendingUp size={23}/></div>
-                  <h3>Total impact <span>this month</span></h3>
-                  <p className="impact-number">{new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(totalSwapImpact)} <span>kg CO₂e</span></p>
-                  <p className="impact-caption">estimated carbon emissions avoided</p>
-                  <div className="impact-progress-track" role="progressbar" aria-label="Monthly carbon goal" aria-valuemin={0} aria-valuemax={100} aria-valuenow={impactProgress}><span style={{ width: impactProgress + '%' }}/></div>
-                  <div className="impact-progress-meta"><strong>{impactProgress}% of goal</strong><span>{Math.max(0, impactGoal - totalSwapImpact).toLocaleString('en-IN')} kg to go</span></div>
-                  <div className="impact-widget-foot"><Leaf size={17}/> Your choices are adding up.</div>
-                </article>
-                <article className="streak-widget">
-                  <div className="streak-orb"><Flame size={30} fill="currentColor"/></div>
-                  <span className="widget-overline">CONSISTENCY IS EVERYTHING</span>
-                  <h3>Your streak</h3>
-                  <p className="streak-number">12 <span>days</span></p>
-                  <div className="streak-week-dots" aria-label="Seven day activity streak"><span/><span/><span/><span/><span/><span/><span/></div>
-                  <p className="streak-note">One good choice makes the next one easier.</p>
-                </article>
-              </aside>
+        {activeTab === 'goals' && (
+          <section className="goals-view" aria-labelledby="goals-heading">
+            <div className="goals-view-heading">
+              <div>
+                <span className="panel-overline">YOUR PERSONAL PLAN</span>
+                <h2 id="goals-heading">Your goals</h2>
+                <p>Keep your small commitments visible and update them as you go.</p>
+              </div>
+              <span className="goals-summary">{completedCount} of {actions.length} complete</span>
             </div>
-          </>
+            <div className="goals-list">
+              {actions.map((action) => (
+                <button type="button" key={action.id} className={\`goal-row ${action.completed ? 'is-completed' : ''}\`} onClick={() => toggleAction(action.id)} aria-pressed={action.completed}>
+                  <span className="goal-check"><Check size={16} /></span>
+                  <span className="goal-row-copy"><strong>{action.label}</strong><span>{action.category} · {action.saving} estimated impact</span></span>
+                  <span className="goal-status">{action.completed ? 'Completed' : 'In progress'}</span>
+                </button>
+              ))}
+            </div>
+            <button type="button" className="goal-add-button" onClick={() => setCustomHabitOpen((open) => !open)}><Plus size={16} /> Add a goal</button>
+            {customHabitOpen && (
+              <form className="custom-habit-form" onSubmit={saveCustomHabit}>
+                <label htmlFor="custom-habit-name-goals">Name your next goal</label>
+                <div><input id="custom-habit-name-goals" autoFocus value={customHabitLabel} onChange={(event) => setCustomHabitLabel(event.target.value)} placeholder="e.g. Bring my own coffee cup" maxLength={90} required/><button type="submit"><Plus size={16}/> Add goal</button></div>
+              </form>
+            )}
+          </section>
         )}
 
         {activeTab === 'analytics' && <AnalyticsTab embedded onBack={() => setActiveTab('plan')} {...(premiumAnalyticsData ?? {})} />}
