@@ -75,7 +75,30 @@ export function ExploreDetailPage() {
     );
   }
 
-  const relatedItems = EXPLORE_ITEMS.filter((other) => other.id !== item.id).slice(0, 3);
+  const relatedItems: ExploreItem[] = collectionPath === '/catalogue'
+    ? EXPANDED_SWAPS.filter((other) => other.id !== item.id).slice(0, 3).map((other) => ({
+        id: other.id,
+        title: other.title,
+        subtitle: `A practical ${other.categoryLabel.toLowerCase()} swap to complement your routine.`,
+        category: other.category,
+        categoryLabel: other.categoryLabel,
+        co2Saving: other.co2Saving,
+        costSaving: other.costSaving,
+        image: other.image.replace(/w=300/, 'w=800'),
+        topics: [other.category, 'all'],
+        difficulty: 'Easy',
+        timeToImplement: 'Start today',
+        verifiedBy: 'GreenSwap catalogue estimates; see the methodology for estimate limits',
+        description: `This swap focuses on ${other.title.toLowerCase()}.`,
+        whyItMatters: 'Choosing reusable, efficient, and lower-impact alternatives can reduce resource use and associated emissions.',
+        actionSteps: ['Choose a version that fits your routine.', 'Try the change consistently for seven days.', 'Adjust it to suit your needs.'],
+        keyStats: [
+          { label: 'Estimated monthly carbon impact', value: other.co2Saving.replace(/^Save up to /, '') },
+          { label: 'Cost impact', value: other.costSaving },
+          { label: 'Category', value: other.categoryLabel },
+        ],
+      }))
+    : EXPLORE_ITEMS.filter((other) => other.id !== item.id).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-[#F8F6F0] text-[#1B2A20] selection:bg-[#2B543A]/20 transition-colors">
