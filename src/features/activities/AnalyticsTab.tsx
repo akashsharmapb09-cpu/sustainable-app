@@ -232,7 +232,7 @@ export function AnalyticsTab({
   }
 
   return (
-    <main id="overview" className="min-h-screen bg-[#f7f5f0] text-[#101310]" style={{ fontFamily: 'Inter, "Geist Sans", ui-sans-serif, system-ui, sans-serif' }}>
+    <div id="overview" className="min-h-screen bg-[#FFFEF9] text-[#101310]" style={{ fontFamily: 'Inter, "Geist Sans", ui-sans-serif, system-ui, sans-serif' }}>
       <div className={"mx-auto grid min-h-screen w-full " + (embedded ? "max-w-none grid-cols-1" : "max-w-[1680px] grid-cols-1 lg:grid-cols-[236px_minmax(0,1fr)]")}>
         {!embedded ? (
           <aside className="hidden min-h-screen flex-col border-r border-black/[0.10] bg-[#f2efe8] px-[17px] py-[26px] lg:flex" aria-label="Main navigation">
@@ -344,16 +344,40 @@ export function AnalyticsTab({
 
             {!hasMatch && searchQuery ? <p className="mt-4 rounded-xl border border-dashed border-black/20 p-4 text-[18px] text-[#777a72]">No matching analytics found. Try “carbon”, “water”, “savings”, “transport”, or “energy”.</p> : null}
 
-            <section id="methodology" className="mt-5 flex flex-col items-start justify-between gap-3 rounded-[11px] border border-black/[0.08] bg-[#eef0e8] px-4 py-3.5 sm:flex-row sm:items-center sm:px-[17px]">
-              <div className="flex min-w-0 items-center gap-2.5"><span className="grid h-[31px] w-[31px] shrink-0 place-items-center rounded-[9px] bg-[#dcebdc] text-[#2d7946]"><ShieldCheck className="h-[16px] w-[16px]" strokeWidth={1.7} /></span><div><p className="m-0 text-[14px] font-bold text-[#242b23]">Impact should be useful, not opaque.</p><p className="mb-0 mt-1 text-[14px] leading-relaxed text-[#73786e]">Practical swaps, transparent environmental data references.</p></div></div>
-              <a href="#methodology" className="inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[#2f7848] no-underline hover:underline">Data methodology <ArrowUpRight className="h-[13px] w-[13px]" /></a>
+            <section id="methodology" className="mt-10 scroll-mt-8 overflow-hidden rounded-[24px] border border-[#dce8d8] bg-[#eef5e9] p-6 shadow-[0_16px_36px_rgba(26,61,46,0.06)] sm:p-8">
+              <div className="flex flex-col justify-between gap-5 border-b border-[#d5e3d1] pb-6 md:flex-row md:items-end">
+                <div className="max-w-[620px]">
+                  <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#d0e3ce] bg-[#fffef9] px-3 py-2 text-[14px] font-extrabold uppercase tracking-[0.12em] text-[#56775d]"><ShieldCheck className="h-5 w-5 text-[#2e7d52]" /> Open book. Honest impact.</div>
+                  <h2 className="m-0 text-[32px] font-black leading-[1.08] tracking-[-0.055em] text-[#1a3d2e]">Good choices deserve <span className="font-serif font-medium italic text-[#2e7d52]">clear numbers.</span></h2>
+                  <p className="mb-0 mt-3 max-w-[560px] text-[16px] leading-[1.65] text-[#617765]">The thinking behind your progress, made visible. Know what each number represents and how your everyday swaps add up.</p>
+                </div>
+                <span className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#1a3d2e] px-4 py-3 text-[14px] font-bold text-[#fffef9]"><Leaf className="h-5 w-5 text-[#b7e4b4]" /> Built for transparency</span>
+              </div>
+              <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+                <article className="group rounded-[18px] border border-[#e3eadf] bg-[#fffef9] p-5 transition duration-200 hover:-translate-y-1 hover:border-[#b6d3b2] hover:shadow-[0_12px_28px_rgba(26,61,46,0.08)]">
+                  <span className="grid h-12 w-12 place-items-center rounded-[15px] bg-[#e5f3e2] text-[#287a48]"><Leaf className="h-6 w-6" /></span>
+                  <h3 className="mb-2 mt-4 text-[19px] font-extrabold tracking-[-0.03em] text-[#203c29]">Carbon estimates</h3>
+                  <p className="m-0 text-[15px] leading-[1.6] text-[#6f7d70]">Each swap uses GreenSwap’s catalogue estimate for monthly CO₂e avoided. It helps compare choices on a consistent basis.</p>
+                </article>
+                <article className="group rounded-[18px] border border-[#e3eadf] bg-[#fffef9] p-5 transition duration-200 hover:-translate-y-1 hover:border-[#b6d3b2] hover:shadow-[0_12px_28px_rgba(26,61,46,0.08)]">
+                  <span className="grid h-12 w-12 place-items-center rounded-[15px] bg-[#fff3d7] text-[#a06b24]"><Wallet className="h-6 w-6" /></span>
+                  <h3 className="mb-2 mt-4 text-[19px] font-extrabold tracking-[-0.03em] text-[#203c29]">Savings & resources</h3>
+                  <p className="m-0 text-[15px] leading-[1.6] text-[#6f7d70]">Water and money figures follow the values recorded for your adopted swaps. A zero means no saving has been recorded for that measure.</p>
+                </article>
+                <article className="group rounded-[18px] border border-[#e3eadf] bg-[#fffef9] p-5 transition duration-200 hover:-translate-y-1 hover:border-[#b6d3b2] hover:shadow-[0_12px_28px_rgba(26,61,46,0.08)]">
+                  <span className="grid h-12 w-12 place-items-center rounded-[15px] bg-[#e8e8fb] text-[#6252a2]"><TrendingUp className="h-6 w-6" /></span>
+                  <h3 className="mb-2 mt-4 text-[19px] font-extrabold tracking-[-0.03em] text-[#203c29]">Progress over time</h3>
+                  <p className="m-0 text-[15px] leading-[1.6] text-[#6f7d70]">Your dashboard updates when swaps are added or removed. The weekly curve spreads the month’s total by calendar days when weekly event data is unavailable.</p>
+                </article>
+              </div>
+              <p className="mb-0 mt-5 flex items-start gap-2 text-[14px] leading-relaxed text-[#738274]"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" /> These are directional estimates for learning and comparison, not a certified personal carbon-footprint audit.</p>
             </section>
             <footer className="mt-6 flex flex-col justify-between gap-2 text-[14px] text-[#a1a398] sm:flex-row sm:items-center"><span>© 2026 GreenSwap <span className="px-1 text-[#c1c2ba]">·</span> Make a lighter footprint. Keep the good life.</span><span className="font-mono text-[14px] uppercase tracking-[0.08em]">DEFRA · CEA · EPA / ROUTINE ANALYTICS</span></footer>
           </section>
         </div>
       </div>
       {exportMessage ? <div className="fixed bottom-5 right-5 z-30 flex max-w-[calc(100vw-32px)] items-center gap-2.5 rounded-[11px] bg-[#151a15] px-4 py-3 text-[15px] text-[#fffefa] shadow-[0_16px_40px_rgba(0,0,0,0.18)]" role="status" aria-live="polite"><span className="text-[#a8e8b7]">✓</span>{exportMessage}</div> : null}
-    </main>
+    </div>
   );
 }
 
