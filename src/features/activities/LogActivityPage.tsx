@@ -179,7 +179,7 @@ function getSwapVisual(swap: RoutineSwap): { Icon: LucideIcon; tone: string; lab
 
 export function LogActivityPage() {
   const [actions, setActions] = useState<RoutineAction[]>(INITIAL_ACTIONS);
-  const [activeTab, setActiveTab] = useState<'plan' | 'swaps' | 'analytics'>('plan');
+  const [activeTab, setActiveTab] = useState<'plan' | 'goals' | 'swaps' | 'analytics'>('plan');
   const [routineSwaps, setRoutineSwaps] = useState<RoutineSwap[]>([]);
   const [customHabitOpen, setCustomHabitOpen] = useState(false);
   const [customHabitLabel, setCustomHabitLabel] = useState('');
