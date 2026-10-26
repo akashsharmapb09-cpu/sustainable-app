@@ -211,6 +211,7 @@ export function LogActivityPage() {
       saving: '-0.5 kg CO₂e',
       completed: false,
     }].slice(0, 12));
+    setShowAllHabits(true);
     setCustomHabitLabel('');
     setCustomHabitOpen(false);
   };
@@ -1239,7 +1240,7 @@ export function LogActivityPage() {
         .routine-app.routine-plan-active .routine-title {
           margin: 8px 0 0;
           color: #18251D;
-          font-family: Fraunces, Georgia, serif;
+          font-family: var(--font-serif), Fraunces, Georgia, serif;
           font-size: 44px;
           font-weight: 500;
           letter-spacing: -.045em;
