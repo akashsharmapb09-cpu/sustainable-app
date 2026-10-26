@@ -59,50 +59,67 @@ function buildRoutineAnalytics(swaps: RoutineSwap[]) {
   if (swaps.length === 0) return undefined;
 
   const categoryNames = ['Transport', 'Food', 'Energy', 'Shopping & Waste'] as const;
-  const categoryTotals: Record<(typeof categoryNames)[number], number> = {
-    Transport: 0,
-    Food: 0,
-    Energy: 0,
-    'Shopping & Waste': 0,
-  };
-
-  let monthlyCo2eKg = 0;
-  let waterLitres = 0;
-  let netSavings = 0;
-  const weekly = [0, 0, 0, 0];
   const now = new Date();
+  now.setDate(1);
+  now.setHours(0, 0, 0, 0);
+  const monthlyData: Record<string, {
+    monthlyCo2eKg: number;
+    waterLitres: number;
+    netSavings: number;
+    streak: number;
+    categories: { name: string; percent: number }[];
+  }> = {};
 
-  for (const swap of swaps) {
-    const co2 = Number.isFinite(swap.co2Saved) ? Math.max(0, swap.co2Saved) : 0;
-    monthlyCo2eKg += co2;
-    waterLitres += Number.isFinite(swap.waterSaved) ? Math.max(0, swap.waterSaved) : 0;
-    netSavings += Number.isFinite(swap.costDiff) ? swap.costDiff : 0;
-    categoryTotals[normalizeRoutineCategory(swap.category)] += co2;
+  for (let offset = 11; offset >= 0; offset -= 1) {
+    const monthStart = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() - offset + 1, 0, 23, 59, 59, 999);
+    const monthKey = monthStart.getFullYear() + '-' + String(monthStart.getMonth() + 1).padStart(2, '0');
+    const activeByMonthEnd = swaps.filter((swap) => {
+      const created = new Date(swap.createdAt);
+      return Number.isNaN(created.getTime()) || created.getFullYear() === 1970 || created <= monthEnd;
+    });
 
-    const created = new Date(swap.createdAt);
-    if (!Number.isNaN(created.getTime()) && created.getFullYear() === now.getFullYear() && created.getMonth() === now.getMonth()) {
-      const weekIndex = Math.min(3, Math.floor((created.getDate() - 1) / 7));
-      weekly[weekIndex] += co2;
+    const categoryTotals: Record<(typeof categoryNames)[number], number> = {
+      Transport: 0,
+      Food: 0,
+      Energy: 0,
+      'Shopping & Waste': 0,
+    };
+    let monthlyCo2eKg = 0;
+    let waterLitres = 0;
+    let netSavings = 0;
+
+    for (const swap of activeByMonthEnd) {
+      const co2 = Number.isFinite(swap.co2Saved) ? Math.max(0, swap.co2Saved) : 0;
+      monthlyCo2eKg += co2;
+      waterLitres += Number.isFinite(swap.waterSaved) ? Math.max(0, swap.waterSaved) : 0;
+      netSavings += Number.isFinite(swap.costDiff) ? swap.costDiff : 0;
+      categoryTotals[normalizeRoutineCategory(swap.category)] += co2;
     }
+
+    const categoryTotal = Object.values(categoryTotals).reduce((sum, value) => sum + value, 0);
+    const categories = categoryNames.map((name) => ({
+      name: name === 'Shopping & Waste' ? 'Shopping' : name,
+      percent: categoryTotal > 0 ? Math.round((categoryTotals[name] / categoryTotal) * 100) : 0,
+    }));
+    monthlyData[monthKey] = {
+      monthlyCo2eKg: Math.round(monthlyCo2eKg),
+      waterLitres: Math.round(waterLitres),
+      netSavings: Math.round(netSavings),
+      streak: routineStreak(activeByMonthEnd),
+      categories,
+    };
   }
 
-  const categoryTotal = Object.values(categoryTotals).reduce((sum, value) => sum + value, 0);
-  const fallbackShares = [45, 30, 20, 5];
-  const categories = categoryNames.map((name, index) => ({
-    name: name === 'Shopping & Waste' ? 'Shopping' : name,
-    percent: categoryTotal > 0
-      ? Math.round((categoryTotals[name] / categoryTotal) * 100)
-      : fallbackShares[index],
-  }));
-
-  return {
-    monthlyCo2eKg,
-    waterLitres,
-    netSavings,
-    streak: routineStreak(swaps),
-    weekly,
-    categories,
+  const currentMonthKey = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  const current = monthlyData[currentMonthKey] ?? {
+    monthlyCo2eKg: 0,
+    waterLitres: 0,
+    netSavings: 0,
+    streak: 0,
+    categories: categoryNames.map((name) => ({ name: name === 'Shopping & Waste' ? 'Shopping' : name, percent: 0 })),
   };
+  return { ...current, weekly: [0, 0, 0, 0], monthlyData };
 }
 
 export function LogActivityPage() {
