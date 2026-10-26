@@ -294,7 +294,7 @@ export function LogActivityPage() {
       {activeTab === 'analytics' && <AnalyticsTab embedded onBack={() => setActiveTab('plan')} {...(premiumAnalyticsData ?? {})} />}
 
       <style>{`
-        .routine-root-premium-analytics { max-width: none; margin: 0; padding: 0; }
+        .routine-root.routine-root-premium-analytics { max-width: none; margin: 0; padding: 0; }
         .routine-root {
           max-width: 1080px;
           margin: 0 auto;
