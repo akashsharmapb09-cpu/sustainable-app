@@ -40,7 +40,8 @@ function RecommendationPhoto({ kind, priority }: { kind: RecommendationPhotoKind
       if (!frame) return;
       const rect = frame.getBoundingClientRect();
       const displacement = (window.innerHeight / 2 - (rect.top + rect.height / 2)) * 0.025;
-      setParallaxY(Math.max(-12, Math.min(12, displacement)));
+      const nextOffset = Math.max(-12, Math.min(12, displacement));
+      setParallaxY((current) => Math.abs(current - nextOffset) < 0.5 ? current : nextOffset);
     };
     updateParallax();
     window.addEventListener('scroll', updateParallax, { passive: true });
@@ -129,6 +130,7 @@ export function RecommendationsPage() {
     };
     return rankRecommendations(ctx, alts, scoring, 8);
   })();
+  const firstPhotoId = recs.find((candidate) => getRecommendationPhoto(candidate.alternative))?.alternative.id;
 
   const act = async (id: string, status: 'adopted' | 'maybe_later' | 'not_for_me') => {
     try {
@@ -221,7 +223,7 @@ export function RecommendationsPage() {
                 <Button size="sm" variant="ghost" disabled={upsert.isPending} onClick={() => void act(rec.alternative.id, 'not_for_me')}>Not for me</Button>
               </div>
                 </div>
-                {photo && <RecommendationPhoto kind={photo} priority={rec.rank === 1} />}
+                {photo && <RecommendationPhoto kind={photo} priority={rec.alternative.id === firstPhotoId} />}
               </div>
             </Card>
           );
