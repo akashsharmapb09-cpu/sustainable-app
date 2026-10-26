@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Search, SlidersHorizontal, Check, Bookmark } from 'lucide-react';
+import { addRoutineSwapFromCatalog, getRoutineSwaps, removeRoutineSwap, subscribeToRoutineSwaps } from '../../features/activities/routineSwapStore';
 
 interface SwapItem {
   id: string;
@@ -205,14 +206,30 @@ const EXPANDED_SWAPS: SwapItem[] = [
 ];
 
 export function CataloguePage() {
-  const [swaps, setSwaps] = useState<SwapItem[]>(EXPANDED_SWAPS);
+  const [swaps, setSwaps] = useState<SwapItem[]>(() => {
+    const savedIds = new Set(getRoutineSwaps().map((swap) => swap.id));
+    return EXPANDED_SWAPS.map((swap) => ({ ...swap, saved: savedIds.has(swap.id) }));
+  });
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  useEffect(() => {
+    const syncSavedSwaps = () => {
+      const savedIds = new Set(getRoutineSwaps().map((swap) => swap.id));
+      setSwaps((current) => current.map((swap) => ({ ...swap, saved: savedIds.has(swap.id) })));
+    };
+    return subscribeToRoutineSwaps(syncSavedSwaps);
+  }, []);
+
   const toggleSave = (id: string) => {
-    setSwaps((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, saved: !s.saved } : s))
-    );
+    const item = swaps.find((swap) => swap.id === id);
+    if (!item) return;
+
+    if (item.saved) removeRoutineSwap(id);
+    else addRoutineSwapFromCatalog(item);
+
+    const savedIds = new Set(getRoutineSwaps().map((swap) => swap.id));
+    setSwaps((current) => current.map((swap) => ({ ...swap, saved: savedIds.has(swap.id) })));
   };
 
   const filteredSwaps = swaps.filter((s) => {
