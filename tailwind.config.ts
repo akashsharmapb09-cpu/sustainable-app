@@ -74,7 +74,7 @@ const config: Config = {
       },
       fontFamily: {
         serif: ['var(--font-serif)', 'Fraunces', 'Georgia', 'serif'],
-        sans: ['var(--font-sans)', 'DM Sans', '-apple-system', 'sans-serif'],
+        sans: ['var(--font-sans)', 'Inter', '-apple-system', 'sans-serif'],
         mono: ['JetBrains Mono', 'SF Mono', 'Menlo', 'monospace'],
       },
       spacing: {
