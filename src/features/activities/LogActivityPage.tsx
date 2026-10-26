@@ -149,7 +149,8 @@ function buildRoutineAnalytics(swaps: RoutineSwap[]) {
 
 function getHabitIcon(label: string): LucideIcon {
   const value = label.toLowerCase();
-  if (value.includes('water') || value.includes('shower') || value.includes('tap')) return Droplets;
+  if (value.includes('shower')) return ShowerHead;
+  if (value.includes('water') || value.includes('tap')) return Droplets;
   if (value.includes('plant') || value.includes('garden')) return Sprout;
   if (value.includes('walk') || value.includes('cycle') || value.includes('bike')) return Bike;
   if (value.includes('meal') || value.includes('food') || value.includes('waste')) return Utensils;
@@ -227,7 +228,6 @@ export function LogActivityPage() {
   const progressPercent = actions.length ? Math.round((completedCount / actions.length) * 100) : 0;
   const premiumAnalyticsData = useMemo(() => buildRoutineAnalytics(routineSwaps), [routineSwaps]);
   const totalSwapImpact = routineSwaps.reduce((total, swap) => total + Math.max(0, swap.co2Saved), 0);
-  const totalSwapSavings = routineSwaps.reduce((total, swap) => total + swap.costDiff, 0);
   const displayCurrency = (value: number) => new Intl.NumberFormat('en-IN', {
     style: 'currency', currency: 'INR', maximumFractionDigits: 0,
   }).format(value);
