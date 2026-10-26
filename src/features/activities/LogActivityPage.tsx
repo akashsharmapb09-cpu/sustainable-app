@@ -1200,6 +1200,441 @@ export function LogActivityPage() {
           .routine-app.routine-plan-active .habit-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
           .routine-app.routine-plan-active .habit-item { min-height: 88px; }
         }
+
+        /* Balanced premium SaaS routine page */
+        .routine-app { background: #FFFBF5; }
+        .routine-app.routine-plan-active {
+          min-height: calc(100vh - 72px);
+          background: #FFFBF5;
+          color: #252C26;
+          font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+          overflow: visible;
+        }
+        .routine-app.routine-plan-active .routine-main {
+          width: 100%;
+          max-width: none;
+          min-height: 0;
+          padding: 24px 32px 28px;
+        }
+        .routine-app.routine-plan-active .routine-page-header {
+          padding: 0 0 20px;
+          border-bottom: 1px solid #F0EBE0;
+        }
+        .routine-app.routine-plan-active .routine-heading-row {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          gap: 24px;
+          margin-top: 0;
+        }
+        .routine-app.routine-plan-active .routine-heading-copy { min-width: 0; }
+        .routine-app.routine-plan-active .routine-eyebrow {
+          display: block;
+          color: #6B8A7A;
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: .16em;
+          line-height: 1.4;
+        }
+        .routine-app.routine-plan-active .routine-title {
+          margin: 8px 0 0;
+          color: #18251D;
+          font-family: Fraunces, Georgia, serif;
+          font-size: 44px;
+          font-weight: 500;
+          letter-spacing: -.045em;
+          line-height: 1.05;
+        }
+        .routine-app.routine-plan-active .routine-sub {
+          max-width: 640px;
+          margin: 8px 0 0;
+          color: #69716B;
+          font-size: 15px;
+          line-height: 1.45;
+        }
+        .routine-app.routine-plan-active .routine-header-actions {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-shrink: 0;
+          padding-bottom: 2px;
+        }
+        .routine-app.routine-plan-active .routine-header-pill {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 7px;
+          min-height: 34px;
+          padding: 7px 12px;
+          border: 1px solid #E9E4D9;
+          border-radius: 999px;
+          background: #FFFFFF;
+          color: #414A42;
+          cursor: pointer;
+          text-decoration: none;
+          font: inherit;
+          font-size: 13px;
+          font-weight: 550;
+          transition: background .18s ease, border-color .18s ease, color .18s ease;
+        }
+        .routine-app.routine-plan-active .routine-header-pill:hover {
+          background: #F6F7F1;
+          border-color: #D4DFD1;
+          color: #234B31;
+        }
+        .routine-app.routine-plan-active .routine-tabs {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 12px;
+          margin: 17px 0 20px;
+        }
+        .routine-app.routine-plan-active .routine-tab {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 40px;
+          padding: 9px 24px;
+          gap: 8px;
+          border: 1px solid #E8E6DE;
+          border-radius: 999px;
+          background: #FFFFFF;
+          color: #626B63;
+          font-size: 15px;
+          font-weight: 500;
+          box-shadow: none;
+          transition: all .18s ease;
+        }
+        .routine-app.routine-plan-active .routine-tab:hover {
+          border-color: #CAD9C8;
+          background: #F8FAF6;
+          box-shadow: none;
+          transform: none;
+        }
+        .routine-app.routine-plan-active .routine-tab.is-active {
+          border-color: #4A7C59;
+          background: #4A7C59;
+          color: #FFFFFF;
+          box-shadow: none;
+          font-weight: 600;
+        }
+        .routine-app.routine-plan-active .tab-count { display: none; }
+
+        .routine-app.routine-plan-active .challenge-progress-card {
+          display: grid;
+          grid-template-columns: 80px minmax(0, 1fr) minmax(190px, .55fr);
+          align-items: center;
+          gap: 28px;
+          min-height: 124px;
+          padding: 20px 24px;
+          border: 1px solid #F0EBE0;
+          border-radius: 20px;
+          background: #FFFFFF;
+          box-shadow: 0 3px 12px rgba(29, 40, 28, .035);
+          overflow: hidden;
+        }
+        .routine-app.routine-plan-active .progress-ring-wrap,
+        .routine-app.routine-plan-active .progress-ring {
+          width: 80px;
+          height: 80px;
+        }
+        .routine-app.routine-plan-active .progress-ring circle { stroke-width: 10; }
+        .routine-app.routine-plan-active .progress-ring-track { stroke: #E8F0E8; }
+        .routine-app.routine-plan-active .progress-ring-value { stroke: #4A7C59; }
+        .routine-app.routine-plan-active .progress-ring-label { color: #27332B; }
+        .routine-app.routine-plan-active .progress-ring-label strong {
+          font-size: 22px;
+          font-weight: 700;
+          letter-spacing: -.045em;
+          line-height: 1;
+        }
+        .routine-app.routine-plan-active .progress-ring-label span {
+          margin-top: 4px;
+          color: #737B74;
+          font-size: 11px;
+          font-weight: 500;
+        }
+        .routine-app.routine-plan-active .progress-card-copy { min-width: 0; }
+        .routine-app.routine-plan-active .progress-card-copy h3 {
+          margin: 0;
+          color: #273129;
+          font-size: 20px;
+          font-weight: 600;
+          letter-spacing: -.035em;
+          line-height: 1.3;
+        }
+        .routine-app.routine-plan-active .progress-card-copy p {
+          margin: 8px 0 0;
+          color: #707970;
+          font-size: 13px;
+          line-height: 1.4;
+        }
+        .routine-app.routine-plan-active .progress-bar-track {
+          width: 100%;
+          max-width: 400px;
+          height: 10px;
+          margin-top: 12px;
+          border-radius: 999px;
+          background: #E8F0E8;
+          overflow: hidden;
+        }
+        .routine-app.routine-plan-active .progress-bar-track span {
+          display: block;
+          height: 100%;
+          border-radius: inherit;
+          background: #4A7C59;
+          transition: width .4s ease;
+        }
+        .routine-app.routine-plan-active .progress-meta { display: none; }
+        .routine-app.routine-plan-active .progress-card-stats {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          min-width: 0;
+          padding-left: 24px;
+          border-left: 1px solid #F0EBE0;
+        }
+        .routine-app.routine-plan-active .impact-stat { display: flex; align-items: center; gap: 12px; }
+        .routine-app.routine-plan-active .impact-stat-icon {
+          display: grid;
+          place-items: center;
+          width: 42px;
+          height: 42px;
+          flex-shrink: 0;
+          border-radius: 13px;
+          background: #EAF2E8;
+          color: #4A7C59;
+          box-shadow: none;
+        }
+        .routine-app.routine-plan-active .impact-stat-icon svg { width: 21px; height: 21px; }
+        .routine-app.routine-plan-active .impact-stat > div { gap: 2px; }
+        .routine-app.routine-plan-active .impact-stat strong {
+          display: block;
+          color: #27332B;
+          font-size: 24px;
+          font-weight: 700;
+          line-height: 1.12;
+          letter-spacing: -.04em;
+          white-space: nowrap;
+        }
+        .routine-app.routine-plan-active .impact-stat span:not(.impact-stat-icon) {
+          color: #727B73;
+          font-size: 13px;
+          line-height: 1.35;
+          white-space: nowrap;
+        }
+
+        .routine-app.routine-plan-active .plan-layout {
+          display: block;
+          margin-top: 22px;
+        }
+        .routine-app.routine-plan-active .habits-panel {
+          min-width: 0;
+          padding: 0;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+        }
+        .routine-app.routine-plan-active .panel-heading-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          margin-bottom: 14px;
+        }
+        .routine-app.routine-plan-active .panel-heading-row h2 {
+          margin: 0;
+          color: #273129;
+          font-size: 22px;
+          font-weight: 650;
+          line-height: 1.3;
+          letter-spacing: -.035em;
+        }
+        .routine-app.routine-plan-active .panel-heading-row .panel-overline,
+        .routine-app.routine-plan-active .panel-heading-row p,
+        .routine-app.routine-plan-active .habits-count { display: none; }
+        .routine-app.routine-plan-active .routine-view-all {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 0;
+          border: 0;
+          background: transparent;
+          color: #4A7C59;
+          font: inherit;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+        }
+        .routine-app.routine-plan-active .routine-view-all:hover { color: #2F6542; }
+        .routine-app.routine-plan-active .habit-list {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 16px;
+        }
+        .routine-app.routine-plan-active .habit-item {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          justify-content: flex-start;
+          gap: 14px;
+          min-width: 0;
+          min-height: 130px;
+          padding: 20px;
+          border: 1px solid #F0EBE0;
+          border-radius: 16px;
+          background: #FFFFFF;
+          color: #29332C;
+          box-shadow: 0 2px 8px rgba(27, 39, 26, .025);
+          animation: card-enter .25s both;
+          transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+        .routine-app.routine-plan-active .habit-item:hover {
+          transform: translateY(-1px);
+          border-color: #D4E0D0;
+          box-shadow: 0 7px 18px rgba(27, 39, 26, .055);
+        }
+        .routine-app.routine-plan-active .habit-item.is-completed { background: #FFFFFF; border-color: #F0EBE0; color: #29332C; }
+        .routine-app.routine-plan-active .habit-card-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          min-height: 32px;
+          gap: 8px;
+        }
+        .routine-app.routine-plan-active .habit-toggle {
+          display: grid;
+          place-items: center;
+          width: 32px;
+          height: 32px;
+          flex: 0 0 32px;
+          padding: 0;
+          border: 0;
+          border-radius: 50%;
+          background: #4A7C59;
+          color: #FFFFFF;
+          cursor: pointer;
+          transition: transform .16s ease, background .16s ease, box-shadow .16s ease;
+        }
+        .routine-app.routine-plan-active .habit-toggle:hover { transform: scale(1.04); box-shadow: 0 3px 8px #4A7C5926; }
+        .routine-app.routine-plan-active .habit-item:not(.is-completed) .habit-toggle {
+          background: #E8F0E8;
+          color: #4A7C59;
+          border: 1px solid #D6E4D5;
+        }
+        .routine-app.routine-plan-active .habit-edit {
+          width: 26px;
+          height: 26px;
+          flex: 0 0 26px;
+          border: 0;
+          border-radius: 7px;
+          background: transparent;
+          color: #929B92;
+          opacity: .8;
+        }
+        .routine-app.routine-plan-active .habit-edit:hover { background: #F2F5F0; color: #4A7C59; }
+        .routine-app.routine-plan-active .habit-copy { display: flex; min-width: 0; flex: 1; gap: 0; }
+        .routine-app.routine-plan-active .habit-name {
+          display: block;
+          color: #303A32;
+          font-size: 16px;
+          font-weight: 550;
+          line-height: 1.35;
+          letter-spacing: -.015em;
+          overflow-wrap: anywhere;
+        }
+        .routine-app.routine-plan-active .habit-name.has-strike { color: #303A32; text-decoration: none; }
+        .routine-app.routine-plan-active .habit-subline,
+        .routine-app.routine-plan-active .habit-saving,
+        .routine-app.routine-plan-active .habit-confetti { display: none; }
+        .routine-app.routine-plan-active .habit-edit-form { gap: 5px; min-width: 0; }
+        .routine-app.routine-plan-active .habit-edit-form input { width: 100%; min-width: 0; padding: 6px 8px; font-size: 13px; }
+        .routine-app.routine-plan-active .habit-edit-form button { width: 25px; height: 25px; flex: 0 0 25px; }
+        .routine-app.routine-plan-active .add-habit-btn {
+          width: auto;
+          min-height: 36px;
+          gap: 7px;
+          margin-top: 14px;
+          padding: 8px 12px;
+          border: 1px solid #E7E4DA;
+          border-radius: 10px;
+          background: #FFFFFF;
+          color: #4E6653;
+          font-size: 13px;
+          font-weight: 550;
+        }
+        .routine-app.routine-plan-active .add-habit-btn svg { width: 15px; height: 15px; }
+        .routine-app.routine-plan-active .add-habit-btn span { margin-left: 4px; color: #8A948B; font-size: 12px; font-weight: 450; }
+        .routine-app.routine-plan-active .custom-habit-form {
+          margin-top: 10px;
+          padding: 16px;
+          border-radius: 13px;
+          font-size: 14px;
+        }
+        .routine-app.routine-plan-active .custom-habit-form label { margin-bottom: 8px; font-size: 14px; }
+        .routine-app.routine-plan-active .custom-habit-form input { padding: 9px 11px; font-size: 14px; }
+        .routine-app.routine-plan-active .custom-habit-form button { padding: 9px 12px; font-size: 13px; }
+        .routine-app.routine-plan-active .plan-widgets,
+        .routine-app.routine-plan-active .methodology-panel,
+        .routine-app.routine-plan-active .discover-banner { display: none; }
+
+        .routine-app.routine-goals-active { min-height: calc(100vh - 72px); background: #FFFBF5; }
+        .routine-app.routine-goals-active .routine-main { padding: 24px 32px 28px; }
+        .routine-app.routine-goals-active .goals-view {
+          padding: 24px;
+          border: 1px solid #F0EBE0;
+          border-radius: 20px;
+          background: #FFFFFF;
+          box-shadow: 0 3px 12px rgba(29, 40, 28, .035);
+        }
+        .routine-app.routine-goals-active .goals-view-heading { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 18px; }
+        .routine-app.routine-goals-active .goals-view-heading h2 { margin: 5px 0 4px; color: #273129; font-size: 22px; font-weight: 650; }
+        .routine-app.routine-goals-active .goals-view-heading p { margin: 0; color: #69716B; font-size: 14px; }
+        .routine-app.routine-goals-active .goals-summary { color: #4A7C59; font-size: 14px; font-weight: 600; white-space: nowrap; }
+        .routine-app.routine-goals-active .goals-list { display: flex; flex-direction: column; }
+        .routine-app.routine-goals-active .goal-row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 62px; padding: 10px 12px; border: 0; border-top: 1px solid #F0EBE0; background: #FFFFFF; text-align: left; cursor: pointer; }
+        .routine-app.routine-goals-active .goal-row:hover { background: #FAFBF8; }
+        .routine-app.routine-goals-active .goal-check { display: grid; place-items: center; width: 28px; height: 28px; flex: 0 0 28px; border-radius: 50%; background: #E8F0E8; color: #4A7C59; }
+        .routine-app.routine-goals-active .goal-row.is-completed .goal-check { background: #4A7C59; color: #FFFFFF; }
+        .routine-app.routine-goals-active .goal-row-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 4px; }
+        .routine-app.routine-goals-active .goal-row-copy strong { color: #303A32; font-size: 15px; font-weight: 550; }
+        .routine-app.routine-goals-active .goal-row-copy span { color: #798078; font-size: 13px; }
+        .routine-app.routine-goals-active .goal-status { color: #4A7C59; font-size: 13px; }
+        .routine-app.routine-goals-active .goal-add-button { display: inline-flex; align-items: center; gap: 7px; margin-top: 14px; padding: 8px 12px; border: 1px solid #E7E4DA; border-radius: 10px; background: #FFFFFF; color: #4E6653; cursor: pointer; font-size: 13px; }
+
+        @media (max-width: 1100px) {
+          .routine-app.routine-plan-active .routine-main,
+          .routine-app.routine-goals-active .routine-main { padding: 22px 22px 24px; }
+          .routine-app.routine-plan-active .challenge-progress-card { grid-template-columns: 80px minmax(0,1fr) minmax(170px,.6fr); gap: 17px; }
+          .routine-app.routine-plan-active .progress-card-stats { padding-left: 14px; }
+          .routine-app.routine-plan-active .habit-list { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+          .routine-app.routine-plan-active .habit-item { padding: 16px; }
+        }
+        @media (max-width: 760px) {
+          .routine-app.routine-plan-active .routine-main,
+          .routine-app.routine-goals-active .routine-main { padding: 20px 16px 24px; }
+          .routine-app.routine-plan-active .routine-heading-row { align-items: flex-start; flex-direction: column; gap: 12px; }
+          .routine-app.routine-plan-active .routine-header-actions { padding-bottom: 0; }
+          .routine-app.routine-plan-active .routine-tabs { gap: 8px; margin: 15px 0 17px; }
+          .routine-app.routine-plan-active .routine-tab { min-height: 38px; padding: 8px 16px; font-size: 14px; }
+          .routine-app.routine-plan-active .challenge-progress-card { grid-template-columns: 68px minmax(0,1fr); gap: 12px; padding: 16px; }
+          .routine-app.routine-plan-active .progress-ring-wrap,
+          .routine-app.routine-plan-active .progress-ring { width: 68px; height: 68px; }
+          .routine-app.routine-plan-active .progress-card-copy h3 { font-size: 17px; }
+          .routine-app.routine-plan-active .progress-card-stats { grid-column: 1 / -1; padding: 12px 0 0; border-left: 0; border-top: 1px solid #F0EBE0; justify-content: flex-start; }
+          .routine-app.routine-plan-active .habit-list { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+          .routine-app.routine-plan-active .habit-item { min-height: 125px; padding: 15px; }
+          .routine-app.routine-goals-active .goals-view { padding: 16px; }
+          .routine-app.routine-goals-active .goals-view-heading { align-items: flex-start; flex-direction: column; }
+        }
+        @media (max-width: 420px) {
+          .routine-app.routine-plan-active .routine-title { font-size: 36px; }
+          .routine-app.routine-plan-active .routine-sub { max-width: 320px; font-size: 14px; }
+          .routine-app.routine-plan-active .routine-header-pill { min-height: 32px; padding: 6px 10px; font-size: 12px; }
+          .routine-app.routine-plan-active .routine-tabs { gap: 6px; }
+          .routine-app.routine-plan-active .routine-tab { padding: 8px 12px; font-size: 13px; }
+        }
       `}</style>
     </div>
   );
