@@ -1,0 +1,24 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "GreenSwap",
+    "identifier": "did:web:sustainable-app-qccf.vercel.app",
+    "documentationUrl": "https://sustainable-app-qccf.vercel.app/llms.txt"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:sustainable-app-qccf.vercel.app:docs:greenswap",
+      "displayName": "GreenSwap Documentation",
+      "type": "text/markdown",
+      "url": "https://sustainable-app-qccf.vercel.app/llms.txt",
+      "description": "Documentation for GreenSwap sustainable living platform helping users track and swap eco-friendly products",
+      "tags": ["sustainability", "docs", "green-living"],
+      "representativeQueries": [
+        "what is greenswap and how does it work",
+        "how to find sustainable products to swap"
+      ],
+      "version": "1.0.0",
+      "updatedAt": "2026-05-13T00:00:00.000Z"
+    }
+  ]
+}
