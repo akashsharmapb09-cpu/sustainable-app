@@ -166,11 +166,11 @@ export function monthlyCo2e(quantity: number, frequencyPerWeek: number, factor: 
   const safeFrequency = Number.isFinite(frequencyPerWeek) ? Math.max(0, frequencyPerWeek) : 0;
   // Catalog emission factors are explicitly kg per unit; don't apply the
   // legacy unit-less tonnes heuristic to these small per-unit values.
-  const safeFactor = Number.isFinite(factor) ? parseCO2ToKg(\`\${factor} kg\`) : 0;
+  const safeFactor = Number.isFinite(factor) ? parseCO2ToKg(String(factor) + " kg") : 0;
   const estimate = safeQuantity * safeFrequency * 4.33 * safeFactor;
   if (!Number.isFinite(estimate)) return 0;
 
-  return parseCO2ToKg(\`\${Number(estimate.toFixed(2))} kg\`);
+  return parseCO2ToKg(String(Number(estimate.toFixed(2))) + " kg");
 }
 
 export function validateActivityLogForm(input: unknown) {
