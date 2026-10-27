@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './ProgressPage.css';
 import { CalendarDays, Download, Leaf, Plus, ShoppingBag, TrainFront, Trophy, Utensils } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Badge } from '../../shared/ui';
