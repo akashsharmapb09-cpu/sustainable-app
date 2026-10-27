@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import './ProgressPage.css';
+import { CalendarDays, Download, Leaf, Plus, ShoppingBag, TrainFront, Trophy, Utensils } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Badge } from '../../shared/ui';
 import { MetricSkeleton } from '../../shared/ui/Skeleton';
@@ -50,6 +52,23 @@ export function ProgressPage() {
   const unresolved = footprintError || logsError || actionsError || challengesError || userChallengesError || goalsError || userBadgesError;
   const goalBaseline = goalCategory === 'all' ? footprint?.total ?? 0 : footprint?.byCategory[goalCategory] ?? 0;
   const baselineMonthLabel = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(new Date(monthStart));
+  const chartCategories = [
+    { key: 'transport' as const, label: 'Transit', color: '#1A3C2A', Icon: TrainFront },
+    { key: 'food' as const, label: 'Food', color: '#8AB686', Icon: Utensils },
+    { key: 'shopping' as const, label: 'Shopping', color: '#D3A66A', Icon: ShoppingBag },
+  ];
+  const chartTotal = chartCategories.reduce((sum, category) => sum + (footprint?.byCategory[category.key] ?? 0), 0);
+  let chartCursor = 0;
+  const chartGradient = chartTotal > 0
+    ? chartCategories.map((category) => {
+        const start = chartCursor;
+        chartCursor += ((footprint?.byCategory[category.key] ?? 0) / chartTotal) * 100;
+        return category.color + ' ' + start + '% ' + chartCursor + '%';
+      }).join(', ')
+    : '#E6EDE3 0% 100%';
+  const donutLabel = chartTotal > 0
+    ? Math.round((chartTotal / Math.max(footprint?.total ?? chartTotal, 0.1)) * 100) + '%'
+    : '0%';
 
   const updateChallenge = async (challengeId: string, status: 'active' | 'completed' | 'abandoned') => {
     try {
@@ -96,25 +115,42 @@ export function ProgressPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10 md:px-12 space-y-6">
-      <div>
-        <p className="taxonomy-label mb-1">SEC.04 // PROGRESS</p>
-        <h1 className="font-serif text-3xl font-semibold">What changed this month</h1>
+    <div className="progress-premium-root mx-auto max-w-5xl px-6 py-10 md:px-12 space-y-6">
+      <div className="progress-page-header">
+        <div className="progress-page-heading-copy">
+          <p className="taxonomy-label mb-1">YOUR IMPACT / 04</p>
+          <h1 className="font-serif text-3xl font-semibold">What changed this month</h1>
+          <p className="progress-page-subtitle">A thoughtful look at your footprint, habits, and next small step.</p>
+        </div>
+        <div className="progress-page-actions">
+          <label className="progress-date-filter"><CalendarDays size={16} aria-hidden="true" /><select aria-label="Date filter" defaultValue="Oct 2024"><option value="Oct 2024">Oct 2024</option></select></label>
+          <button type="button" className="progress-export-btn" onClick={() => window.print()}><Download size={16} aria-hidden="true" /> Export PDF</button>
+          <Link to="/log" className="progress-log-cta"><Plus size={17} aria-hidden="true" /> Log your first activity</Link>
+        </div>
       </div>
-      <div className="grid sm:grid-cols-3 gap-4">
-        {loading ? (
+      <section className="progress-kpi-grid" aria-label="Key impact metrics">
+        {loading ? <><MetricSkeleton /><MetricSkeleton /><MetricSkeleton /></> : (
           <>
-            <MetricSkeleton />
-            <MetricSkeleton />
-            <MetricSkeleton />
+            <article className="progress-kpi-tile progress-kpi-footprint">
+              <div className="progress-kpi-heading"><span className="progress-kpi-icon"><Leaf size={20} /></span><span>Footprint</span></div>
+              <p className="progress-kpi-number">{footprintError ? '—' : (footprint?.total ?? 0).toFixed(1)}</p>
+              <p className="progress-kpi-caption">kg CO₂e logged</p><span className="progress-kpi-note">Current measured footprint</span>
+            </article>
+            <article className="progress-kpi-tile progress-kpi-goals">
+              <div className="progress-kpi-heading"><span className="progress-kpi-icon"><Trophy size={20} /></span><span>Reduction goals</span></div>
+              <p className="progress-kpi-number">{goalsError ? '—' : (goals?.length ?? 0) + '/3'}</p>
+              <p className="progress-kpi-caption">goals in progress</p><span className="progress-kpi-note">Build a measurable next step</span>
+            </article>
+            <article className="progress-kpi-tile progress-kpi-adopted">
+              <div className="progress-kpi-heading"><span className="progress-kpi-icon"><ShoppingBag size={20} /></span><span>Adopted alternatives</span></div>
+              <p className="progress-kpi-number">{actionsError ? '—' : adopted.length}</p>
+              <p className="progress-kpi-caption">swaps adopted</p><span className="progress-kpi-note">Small choices add up</span>
+            </article>
           </>
-        ) : (
-          <>
-            <Card taxonomyCode="FOOTPRINT">
-              <p className="font-mono text-2xl font-bold">{footprintError ? '—' : (footprint?.total ?? 0).toFixed(1)}</p>
-              <p className="text-xs text-ink-muted">kg CO2e logged</p>
-            </Card>
-            <Card taxonomyCode="REDUCTION GOALS">
+        )}
+      </section>
+      <section className="progress-goal-builder" aria-label="Reduction goal settings">
+            <Card taxonomyCode="SET A REDUCTION GOAL">
               <p className="mb-4 text-sm text-ink-muted">
                 Set a measurable reduction target using your actual footprint for {baselineMonthLabel}. Progress compares the current month's logged estimate with this saved baseline.
               </p>
@@ -211,17 +247,7 @@ export function ProgressPage() {
                 </ul>
               )}
             </Card>
-            <Card taxonomyCode="SWAPS">
-              <p className="font-mono text-2xl font-bold">{actionsError ? '—' : adopted.length}</p>
-              <p className="text-xs text-ink-muted">adopted alternatives</p>
-            </Card>
-            <Card taxonomyCode="RECORDS">
-              <p className="font-mono text-2xl font-bold">{logsError ? '—' : monthLogs.length}</p>
-              <p className="text-xs text-ink-muted">activity logs</p>
-            </Card>
-          </>
-        )}
-      </div>
+      </section>
       {unresolved && (
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-burnt" role="alert">
           <span>Some progress data could not be loaded.</span>
@@ -235,26 +261,33 @@ export function ProgressPage() {
         </div>
       )}
       {!loading && !unresolved && (
-        <Card taxonomyCode="ACTIVITY BREAKDOWN">
-          {Object.keys(footprint?.byCategory ?? {}).length === 0 ? (
-            <p className="text-sm text-ink-muted">
-              No activity logged this month yet. <Link to="/log" className="underline">Record an activity</Link> to start tracking.
-            </p>
-          ) : (
-            <ul className="space-y-3">
-              {Object.entries(footprint?.byCategory ?? {})
-                .sort((a, b) => b[1] - a[1])
-                .map(([category, kg]) => (
-                  <li key={category} className="flex items-center justify-between gap-4 text-sm">
-                    <span className="capitalize">{category}</span>
-                    <span className="font-mono">{kg.toFixed(1)} kg CO2e/mo</span>
-                  </li>
+        <section className="progress-panel progress-breakdown-panel">
+          <Card taxonomyCode="ACTIVITY BREAKDOWN">
+            <div className="progress-breakdown-layout">
+              <div className="progress-donut" style={{ background: 'conic-gradient(' + chartGradient + ')' }} role="img" aria-label={donutLabel + ' of activity impact represented across Transit, Food, and Shopping'}>
+                <div className="progress-donut-center"><strong>{donutLabel}</strong><span>tracked mix</span></div>
+              </div>
+              <div className="progress-breakdown-legend">
+                {chartCategories.map(({ key, label, color, Icon }) => {
+                  const value = footprint?.byCategory[key] ?? 0;
+                  return <div className="progress-legend-row" key={key}><span className="progress-legend-icon" style={{ background: color }}><Icon size={15} /></span><span className="progress-legend-label">{label}</span><strong>{value.toFixed(1)} kg</strong></div>;
+                })}
+              </div>
+            </div>
+            {Object.keys(footprint?.byCategory ?? {}).length === 0 ? (
+              <p className="progress-empty-inline">No activity logged this month yet. <Link to="/log" className="underline">Record an activity</Link> to start tracking.</p>
+            ) : (
+              <ul className="progress-other-breakdown">
+                {Object.entries(footprint?.byCategory ?? {}).sort((a, b) => b[1] - a[1]).map(([category, kg]) => (
+                  <li key={category} className="flex items-center justify-between gap-4 text-sm"><span className="capitalize">{category}</span><span className="font-mono">{kg.toFixed(1)} kg CO2e/mo</span></li>
                 ))}
-            </ul>
-          )}
-        </Card>
+              </ul>
+            )}
+          </Card>
+        </section>
       )}
-      <Card taxonomyCode="ADOPTED">
+      <section className="progress-panel progress-adopted-panel">
+      <Card taxonomyCode="ADOPTED ALTERNATIVES">
         {loading || unresolved ? (
           <p className="text-sm text-ink-muted">Adoption history is unavailable.</p>
         ) : adopted.length === 0 ? (
@@ -270,11 +303,17 @@ export function ProgressPage() {
           </ul>
         )}
       </Card>
+      </section>
+      <section className="progress-panel progress-badges-panel">
       <Card taxonomyCode="BADGES EARNED">
         {userBadgesError ? (
           <p className="text-sm text-burnt">Badges could not be loaded. Use the retry control above.</p>
         ) : !userBadges?.length ? (
-          <p className="text-sm text-ink-muted">Complete a challenge to earn its badge. Awards are based on self-reported completion.</p>
+          <div className="progress-badge-empty">
+            <div className="progress-badge-art" aria-hidden="true"><Trophy size={30} /><span><Leaf size={17} /></span></div>
+            <strong>Your first badge is waiting</strong>
+            <p>Complete a field challenge to earn a badge. Awards are based on self-reported completion.</p>
+          </div>
         ) : (
           <ul className="grid gap-3 sm:grid-cols-2">
             {userBadges.map((award) => (
@@ -289,8 +328,13 @@ export function ProgressPage() {
           </ul>
         )}
       </Card>
-      {!loading && !logsError && monthLogs.length > 0 && (
-        <Card taxonomyCode="RECENT ACTIVITY">
+      </section>
+      {!loading && !logsError && (
+        <section className="progress-panel progress-logs-panel">
+        <Card taxonomyCode="ACTIVITY LOGS">
+          {monthLogs.length === 0 ? (
+            <div className="progress-logs-empty"><p>No activity logs for this period yet.</p><Link to="/log" className="progress-logs-empty-link"><Plus size={15} /> Log your first activity</Link></div>
+          ) : (
           <ul className="divide-y divide-border">
             {monthLogs.slice(0, 5).map((log) => (
               <li key={log.id} className="flex flex-wrap items-center justify-between gap-2 py-3 first:pt-0 last:pb-0">
@@ -304,8 +348,11 @@ export function ProgressPage() {
               </li>
             ))}
           </ul>
+          )}
         </Card>
+        </section>
       )}
+      <section className="progress-panel progress-challenges-panel">
       <Card taxonomyCode="FIELD CHALLENGES">
         <p className="mb-4 text-sm text-ink-muted">
           Choose a practical habit challenge and track completion at your own pace. Progress is self-reported and is not independently verified.
@@ -321,10 +368,12 @@ export function ProgressPage() {
             {challenges.map((challenge) => {
               const userChallenge = userChallenges?.find((item) => item.challenge_id === challenge.id);
               const status = userChallenge?.status;
+              const ChallengeIcon = challenge.category.toLowerCase().includes('transport') ? TrainFront : challenge.category.toLowerCase().includes('food') ? Utensils : Leaf;
+              const statusProgress = status === 'completed' ? 100 : status === 'active' ? 50 : 0;
               return (
-                <li key={challenge.id} className="border-t border-border pt-3 first:border-0 first:pt-0">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1">
+                <li key={challenge.id} className="progress-challenge-card">
+                  <span className="progress-challenge-icon"><ChallengeIcon size={22} /></span>
+                  <div className="progress-challenge-content">
                       <div className="flex flex-wrap items-center gap-2">
                         <h2 className="font-serif font-semibold text-base">{challenge.title}</h2>
                         {status && <Badge variant={status === 'completed' ? 'moss' : status === 'active' ? 'clay' : 'outline'}>{status.replace('_', ' ')}</Badge>}
@@ -333,6 +382,7 @@ export function ProgressPage() {
                       <p className="mt-2 font-mono text-xs text-ink-muted">
                         {challenge.duration_days} days · {challenge.category} · up to {parseCO2ToKg(`${challenge.co2e_impact_potential_kg ?? 0} kg`).toFixed(1)} kg CO2e potential
                       </p>
+                      <div className="progress-challenge-bar" role="img" aria-label={challenge.title + ' status indicator'}><span style={{ width: statusProgress + '%' }} /></div>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {!status || status === 'abandoned' ? (
@@ -361,6 +411,7 @@ export function ProgressPage() {
           </ul>
         )}
       </Card>
+      </section>
     </div>
   );
 }

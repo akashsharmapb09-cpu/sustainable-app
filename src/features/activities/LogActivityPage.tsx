@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import {
   ArrowRight,
+  Bell,
   Bike,
   Check,
   CircleCheck,
@@ -250,6 +251,8 @@ export function LogActivityPage() {
                   <p className="routine-sub">Build sustainable habits with your 7-day plan and track your impact</p>
                 </div>
                 <div className="routine-header-actions">
+                  <span className="routine-streak-pill"><Flame size={16} fill="currentColor" strokeWidth={1.8} /> 6 day streak</span>
+                  <button type="button" className="routine-notification-btn" aria-label="Notifications"><Bell size={17} /></button>
                   <button type="button" className="routine-header-pill" onClick={() => {
                     const shareUrl = window.location.href;
                     if (typeof navigator !== 'undefined' && navigator.share) {
@@ -276,6 +279,7 @@ export function LogActivityPage() {
             <section className="challenge-progress-card" aria-label="Challenge progress">
               <div className="progress-ring-wrap">
                 <svg className="progress-ring" viewBox="0 0 132 132" role="img" aria-label={`${completedCount} of ${actions.length} habits completed`}>
+                  <defs><linearGradient id="routine-progress-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#8AB686" /><stop offset="100%" stopColor="#1A3C2A" /></linearGradient></defs>
                   <circle className="progress-ring-track" cx="66" cy="66" r="52" />
                   <circle className="progress-ring-value" cx="66" cy="66" r="52" strokeDasharray="326.73" strokeDashoffset={String(326.73 * (1 - completedCount / Math.max(1, actions.length)))} />
                 </svg>
@@ -315,8 +319,10 @@ export function LogActivityPage() {
                           <button type="button" className="habit-toggle" onClick={() => toggleAction(action.id)} aria-pressed={action.completed} aria-label={action.completed ? 'Mark ' + action.label + ' incomplete' : 'Complete ' + action.label}>
                             <Check size={16} strokeWidth={2.5} />
                           </button>
+                          {action.completed && <span className="habit-done-pill"><Check size={12} /> Done</span>}
                           <button type="button" className="habit-edit" aria-label={'Edit ' + action.label} title="Edit habit" onClick={() => { setEditingActionId(action.id); setEditingLabel(action.label); }}><Pencil size={13}/></button>
                         </div>
+                        <span className={`habit-icon-wrap ${action.completed ? 'completed-icon' : ''}`} aria-hidden="true"><Icon size={20} strokeWidth={1.8} /></span>
                         <div className="habit-copy">
                           {isEditing ? (
                             <form className="habit-edit-form" onSubmit={saveEditedHabit}>
@@ -380,6 +386,7 @@ export function LogActivityPage() {
                   <span className="goal-check"><Check size={16} /></span>
                   <span className="goal-row-copy"><strong>{action.label}</strong><span>{action.category} · {action.saving} estimated impact</span></span>
                   <span className="goal-status">{action.completed ? 'Completed' : 'In progress'}</span>
+                  <span className="goal-impact-badge">{action.saving}</span>
                 </button>
               ))}
             </div>
@@ -1636,6 +1643,101 @@ export function LogActivityPage() {
           .routine-app.routine-plan-active .routine-tabs { gap: 6px; }
           .routine-app.routine-plan-active .routine-tab { padding: 8px 12px; font-size: 13px; }
         }
+
+        /* Premium eco-luxury routine refinements */
+        .routine-app.routine-plan-active { background:#FFFBF0; color:#1A3022; overflow:visible; }
+        .routine-app.routine-plan-active .routine-main { display:grid; grid-template-columns:minmax(290px,.78fr) minmax(0,1.22fr); align-content:start; align-items:start; column-gap:22px; row-gap:0; padding:26px clamp(18px,2.2vw,34px) 36px; }
+        .routine-app.routine-plan-active .routine-page-header,.routine-app.routine-plan-active .routine-tabs { grid-column:1/-1; }
+        .routine-app.routine-plan-active .routine-page-header { padding-bottom:18px; border-bottom-color:#E9E4D9; }
+        .routine-app.routine-plan-active .routine-heading-row { align-items:center; margin-top:0; gap:16px; }
+        .routine-app.routine-plan-active .routine-title { font-size:clamp(34px,3.6vw,46px); font-weight:750; letter-spacing:-.055em; color:#1A3C2A; }
+        .routine-app.routine-plan-active .routine-sub { margin-top:8px; font-size:14px; color:#6A766C; line-height:1.5; }
+        .routine-app.routine-plan-active .routine-eyebrow { color:#66816B; font-size:11px; letter-spacing:.14em; }
+        .routine-app.routine-plan-active .routine-header-actions { gap:8px; }
+        .routine-app.routine-plan-active .routine-header-pill { min-height:38px; padding:8px 12px; border-radius:12px; background:#FFFFFF; border-color:#E8E3D9; color:#405748; font-size:12px; box-shadow:0 2px 5px rgba(26,60,42,.03); }
+        .routine-app.routine-plan-active .routine-header-pill:hover { background:#F3F7F0; border-color:#C5D9C0; color:#1A3C2A; }
+        .routine-app.routine-plan-active .routine-streak-pill { display:inline-flex; align-items:center; gap:6px; padding:9px 12px; border:1px solid #F0DDC3; border-radius:999px; background:#FFF5E5; color:#9C5B19; font-size:12px; font-weight:750; white-space:nowrap; }
+        .routine-app.routine-plan-active .routine-streak-pill svg { color:#E08B36; }
+        .routine-app.routine-plan-active .routine-notification-btn { display:grid; place-items:center; width:38px; height:38px; border:1px solid #E8E3D9; border-radius:12px; background:#FFFFFF; color:#405748; cursor:pointer; }
+        .routine-app.routine-plan-active .routine-notification-btn:hover { background:#F3F7F0; border-color:#C5D9C0; color:#1A3C2A; }
+        .routine-app.routine-plan-active .routine-tabs { display:flex; width:fit-content; max-width:100%; gap:4px; margin:17px 0 20px; padding:4px; border:1px solid #E8E3D9; border-radius:999px; background:#F6F4ED; }
+        .routine-app.routine-plan-active .routine-tab { min-height:37px; padding:8px 17px; border-color:transparent; border-radius:999px; background:transparent; color:#677469; font-size:13px; font-weight:600; box-shadow:none; }
+        .routine-app.routine-plan-active .routine-tab:hover { background:#EFF3EB; border-color:transparent; box-shadow:none; transform:none; }
+        .routine-app.routine-plan-active .routine-tab.is-active { background:#C5D9C0; border-color:#C5D9C0; color:#1A3C2A; box-shadow:0 3px 8px rgba(26,60,42,.08); }
+        .routine-app.routine-plan-active .challenge-progress-card { grid-column:1; grid-row:3; display:flex; flex-direction:column; align-items:center; gap:20px; min-width:0; min-height:0; margin:0; padding:26px 24px; border:1px solid #E5EBDD; border-radius:22px; background:linear-gradient(160deg,#FFFFFF 0%,#F0F7EC 100%); box-shadow:0 12px 30px rgba(32,60,39,.07); text-align:center; }
+        .routine-app.routine-plan-active .progress-ring-wrap,.routine-app.routine-plan-active .progress-ring { width:180px; height:180px; }
+        .routine-app.routine-plan-active .progress-ring-track { stroke:#E0EBDD; }
+        .routine-app.routine-plan-active .progress-ring-value { stroke:url(#routine-progress-gradient); stroke-linecap:round; filter:drop-shadow(0 2px 2px rgba(26,60,42,.12)); }
+        .routine-app.routine-plan-active .progress-ring-label { color:#1A3C2A; }
+        .routine-app.routine-plan-active .progress-ring-label strong { font-size:37px; font-weight:800; letter-spacing:-1.8px; }
+        .routine-app.routine-plan-active .progress-ring-label span { margin-top:7px; font-size:13px; color:#647565; font-weight:600; }
+        .routine-app.routine-plan-active .progress-card-copy { width:100%; }
+        .routine-app.routine-plan-active .progress-card-copy h3 { margin:0; font-size:19px; font-weight:750; color:#1A3C2A; }
+        .routine-app.routine-plan-active .progress-card-copy p { margin-top:9px; color:#69786B; font-size:13px; }
+        .routine-app.routine-plan-active .progress-bar-track { height:10px; max-width:none; margin-top:15px; background:#E1EBDD; }
+        .routine-app.routine-plan-active .progress-bar-track span { background:linear-gradient(90deg,#8AB686,#1A3C2A); }
+        .routine-app.routine-plan-active .progress-meta { display:flex; margin-top:8px; color:#718071; font-size:11px; }
+        .routine-app.routine-plan-active .progress-card-stats { width:100%; justify-content:center; border-left:0; border-top:1px solid #DFE8DC; padding:17px 0 0; }
+        .routine-app.routine-plan-active .impact-stat { justify-content:center; gap:10px; }
+        .routine-app.routine-plan-active .impact-stat-icon { width:42px; height:42px; border-radius:14px; background:#DCEBD7; color:#1A3C2A; }
+        .routine-app.routine-plan-active .impact-stat strong { font-size:21px; color:#1A3C2A; }
+        .routine-app.routine-plan-active .impact-stat span:not(.impact-stat-icon) { font-size:12px; color:#6B796D; }
+        .routine-app.routine-plan-active .plan-layout { grid-column:2; grid-row:3; display:block; min-width:0; margin:0; }
+        .routine-app.routine-plan-active .habits-panel { padding:21px; border:1px solid #E8E3D9; border-radius:22px; background:rgba(255,255,255,.86); box-shadow:0 10px 28px rgba(38,51,40,.055); }
+        .routine-app.routine-plan-active .panel-heading-row { align-items:center; margin-bottom:15px; }
+        .routine-app.routine-plan-active .panel-heading-row h2 { margin:0; color:#1A3C2A; font-size:21px; font-weight:750; }
+        .routine-app.routine-plan-active .panel-heading-row .panel-overline,.routine-app.routine-plan-active .panel-heading-row p,.routine-app.routine-plan-active .habits-count { display:none; }
+        .routine-app.routine-plan-active .routine-view-all { color:#486D4F; font-size:12px; }
+        .routine-app.routine-plan-active .habit-list { display:flex; flex-direction:column; gap:10px; }
+        .routine-app.routine-plan-active .habit-item { display:flex; flex-direction:row; align-items:center; gap:11px; min-height:72px; padding:12px; border:1px solid #E8E3D9; border-radius:16px; background:#FFFFFF; box-shadow:0 3px 10px rgba(26,60,42,.035); color:#29382D; }
+        .routine-app.routine-plan-active .habit-item:hover { transform:translateY(-2px); border-color:#D1E0CC; box-shadow:0 10px 20px rgba(26,60,42,.075); }
+        .routine-app.routine-plan-active .habit-item.is-completed { background:#FFFFFF; border-color:#D9E8D5; color:#29382D; }
+        .routine-app.routine-plan-active .habit-card-top { display:flex; align-items:center; gap:7px; width:auto; min-height:0; flex:0 0 auto; order:3; }
+        .routine-app.routine-plan-active .habit-toggle { width:28px; height:28px; flex-basis:28px; border:0; background:#E5F0E0; color:#315B3A; }
+        .routine-app.routine-plan-active .habit-item:not(.is-completed) .habit-toggle { background:#F6F4ED; border:1px solid #E8E3D9; color:#8B978C; }
+        .routine-app.routine-plan-active .habit-icon-wrap { display:grid; place-items:center; width:44px; height:44px; flex:0 0 44px; border-radius:15px; background:#E5F0E0; color:#2A6140; }
+        .routine-app.routine-plan-active .habit-icon-wrap.completed-icon { background:#D5E7D0; color:#1A3C2A; }
+        .routine-app.routine-plan-active .habit-icon-wrap svg { width:20px; height:20px; }
+        .routine-app.routine-plan-active .habit-copy { flex:1; min-width:0; }
+        .routine-app.routine-plan-active .habit-name { display:block; color:#2A342B; font-size:13px; font-weight:650; line-height:1.35; overflow-wrap:anywhere; }
+        .routine-app.routine-plan-active .habit-name.has-strike { color:#2A342B; text-decoration:none; }
+        .routine-app.routine-plan-active .habit-edit { width:27px; height:27px; flex-basis:27px; border-radius:9px; background:transparent; color:#829181; opacity:1; }
+        .routine-app.routine-plan-active .habit-edit:hover { background:#EDF4EA; color:#1A3C2A; }
+        .routine-app.routine-plan-active .habit-done-pill { display:inline-flex; align-items:center; gap:4px; margin-left:auto; padding:5px 8px; border-radius:999px; background:#D5E7D0; color:#1A3C2A; font-size:10px; font-weight:750; white-space:nowrap; }
+        .routine-app.routine-plan-active .habit-done-pill svg { width:11px; height:11px; }
+        .routine-app.routine-plan-active .add-habit-btn { display:flex; width:100%; justify-content:center; align-items:center; min-height:62px; gap:8px; margin-top:12px; padding:12px; border:1px dashed #AFC9A9; border-radius:16px; background:#F7FAF4; color:#1A3C2A; font-size:13px; font-weight:650; }
+        .routine-app.routine-plan-active .add-habit-btn:hover { background:#EFF6EB; border-color:#8AB686; }
+        .routine-app.routine-plan-active .add-habit-btn span { color:#738373; font-size:12px; }
+        .routine-app.routine-plan-active .plan-widgets { display:none; }
+        .routine-app.routine-goals-active .routine-header-actions { gap:8px; }
+        .routine-app.routine-goals-active .routine-streak-pill { display:inline-flex; align-items:center; gap:6px; padding:9px 12px; border:1px solid #F0DDC3; border-radius:999px; background:#FFF5E5; color:#9C5B19; font-size:12px; font-weight:750; }
+        .routine-app.routine-goals-active .routine-notification-btn { display:grid; place-items:center; width:38px; height:38px; border:1px solid #E8E3D9; border-radius:12px; background:#FFFFFF; color:#405748; cursor:pointer; }
+        .routine-app.routine-goals-active .routine-tabs { background:#F6F4ED; border:1px solid #E8E3D9; border-radius:999px; padding:4px; gap:4px; }
+        .routine-app.routine-goals-active .routine-tab { background:transparent; border-color:transparent; color:#677469; }
+        .routine-app.routine-goals-active .routine-tab.is-active { background:#C5D9C0; border-color:#C5D9C0; color:#1A3C2A; }
+        .routine-app.routine-goals-active .goal-row { border-radius:12px; margin-top:5px; gap:10px; }
+        .routine-app.routine-goals-active .goal-impact-badge { flex-shrink:0; padding:5px 9px; border:1px solid #D7E6D2; border-radius:999px; background:#F1F7EF; color:#365C3B; font-size:11px; font-weight:700; white-space:nowrap; }
+        .routine-app.routine-goals-active .goal-status { font-size:12px; font-weight:650; white-space:nowrap; }
+        @media (max-width:1100px) {
+          .routine-app.routine-plan-active .routine-main { grid-template-columns:minmax(260px,.72fr) minmax(0,1.28fr); column-gap:14px; padding-inline:18px; }
+          .routine-app.routine-plan-active .progress-ring-wrap,.routine-app.routine-plan-active .progress-ring { width:156px; height:156px; }
+          .routine-app.routine-plan-active .habit-item { gap:8px; padding:10px; }
+        }
+        @media (max-width:760px) {
+          .routine-app.routine-plan-active .routine-main { display:block; padding:20px 16px 24px; }
+          .routine-app.routine-plan-active .challenge-progress-card { margin-bottom:18px; }
+          .routine-app.routine-plan-active .progress-ring-wrap,.routine-app.routine-plan-active .progress-ring { width:150px; height:150px; }
+          .routine-app.routine-plan-active .plan-layout { margin-top:0; }
+          .routine-app.routine-plan-active .habit-item { min-height:70px; }
+        }
+        @media (max-width:440px) {
+          .routine-app.routine-plan-active .routine-heading-row { align-items:flex-start; flex-direction:column; }
+          .routine-app.routine-plan-active .routine-streak-pill { font-size:11px; padding:7px 9px; }
+          .routine-app.routine-plan-active .routine-header-actions { flex-wrap:wrap; }
+          .routine-app.routine-plan-active .habit-done-pill { display:none; }
+          .routine-app.routine-plan-active .goal-impact-badge { white-space:normal; }
+        }
+
       `}</style>
     </div>
   );

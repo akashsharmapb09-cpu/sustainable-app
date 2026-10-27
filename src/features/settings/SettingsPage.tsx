@@ -93,7 +93,9 @@ export function SettingsPage() {
       {activeTab === 'profile' && (
         <div className="settings-card">
           <div className="settings-user-row">
-            <div className="user-avatar-circle">A</div>
+            <div className="user-avatar-circle" aria-label="Profile initials">
+              {name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase() || 'A'}
+            </div>
             <div className="user-meta">
               <strong className="user-name">{name}</strong>
               <span className="user-email">{email}</span>
@@ -178,9 +180,20 @@ export function SettingsPage() {
             </div>
 
             <div className="form-actions">
-              <button type="submit" className="save-settings-btn">
-                Save Profile Changes
+              <button
+                type="button"
+                className="cancel-settings-btn"
+                onClick={() => {
+                  setName('Akash Sharma');
+                  setLocation('India');
+                  setInterests(['Sustainability', 'Clean Energy', 'Healthy Living']);
+                  setBio('Making small everyday choices for a lighter household carbon footprint.');
+                  setSavedFeedback(null);
+                }}
+              >
+                Cancel
               </button>
+              <button type="submit" className="save-settings-btn">Save Changes</button>
             </div>
           </form>
         </div>
@@ -865,6 +878,47 @@ export function SettingsPage() {
           .settings-card { padding: 1.5rem; }
           .toggle-row, .export-box, .danger-box { flex-direction: column; align-items: flex-start; }
         }
+
+        /* Premium eco-luxury profile polish — presentation only */
+        .settings-root { max-width: 1040px; padding: 2rem 2.25rem 3.5rem; }
+        .settings-title { color: #1A3C2A; letter-spacing: -.035em; }
+        .settings-sub { max-width: 650px; line-height: 1.65; }
+        .settings-tabs { gap: .45rem; padding: .35rem; width: fit-content; max-width: 100%; border: 1px solid #E8E3D9; border-radius: 999px; background: #FBF9F4; }
+        .settings-root .settings-tab { border-color: transparent; background: transparent; color: #657267; padding: .65rem 1rem; }
+        .settings-root .settings-tab.is-active { background: #D5E7D0; border-color: #D5E7D0; color: #1A3C2A; box-shadow: none; }
+        .settings-root .settings-card { background: #F5F1E8; border: 1px solid #E8E3D9; border-radius: 24px; padding: 2rem; box-shadow: 0 16px 42px rgba(33,47,35,.075); }
+        .settings-root .settings-user-row { gap: 1.1rem; padding-bottom: 1.6rem; border-color: #E8E3D9; }
+        .settings-root .user-avatar-circle { width: 72px; height: 72px; background: #D5E7D0; color: #1A3C2A; font-size: 1.35rem; letter-spacing: -.03em; box-shadow: inset 0 0 0 1px rgba(26,60,42,.06); }
+        .settings-root .user-name { font-family: var(--font-sans,'Inter',sans-serif); font-size: 1.05rem; letter-spacing: -.02em; }
+        .settings-root .user-badge { background: #D5E7D0; color: #1A3C2A; border: 1px solid #C4D9BE; padding: .45rem .8rem; font-size: .75rem; font-weight: 650; white-space: nowrap; }
+        .settings-root .form-label { color: #42584A; text-transform: none; letter-spacing: 0; font-size: .83rem; font-weight: 650; }
+        .settings-root .form-input, .settings-root .form-select { min-height: 46px; padding: .75rem .9rem; border-radius: 12px; border: 1px solid #E8E3D9; background: #FFFEFB; color: #1B3024; font: inherit; font-size: .9rem; transition: border-color .18s ease,box-shadow .18s ease,background .18s ease; }
+        .settings-root .form-textarea { min-height: 88px; resize: vertical; }
+        .settings-root .form-input.is-readonly { background: #EFEBE2; color: #6E796F; }
+        .settings-root .form-input:focus, .settings-root .form-select:focus { border-color: #1A3C2A; outline: none; box-shadow: 0 0 0 4px rgba(26,60,42,.14); }
+        .settings-root .interest-tags-grid { gap: .6rem; }
+        .settings-root .tag-pill { padding: .55rem .9rem; border: 1px solid #E8E3D9; background: #F5F1E8; color: #536557; font-size: .82rem; font-weight: 550; }
+        .settings-root .tag-pill:hover { border-color: #1A3C2A; color: #1A3C2A; }
+        .settings-root .tag-pill.is-selected { border-color: #1A3C2A; background: #1A3C2A; color: #FFFFFF; font-weight: 650; box-shadow: 0 4px 10px rgba(26,60,42,.12); }
+        .settings-root .tag-pill.is-selected svg { color: #FFFFFF; }
+        .settings-root .form-actions { display: flex; justify-content: flex-end; align-items: center; gap: .65rem; padding-top: 1.25rem; border-top: 1px solid #E8E3D9; }
+        .settings-root .save-settings-btn, .settings-root .cancel-settings-btn { min-height: 44px; padding: .7rem 1.2rem; border-radius: 12px; font-size: .86rem; font-weight: 650; transition: transform .15s ease,background .15s ease,box-shadow .15s ease; }
+        .settings-root .save-settings-btn { background: #1A3C2A; box-shadow: 0 6px 14px rgba(26,60,42,.16); }
+        .settings-root .save-settings-btn:hover { background: #244C36; box-shadow: 0 9px 18px rgba(26,60,42,.2); }
+        .settings-root .cancel-settings-btn { border: 1px solid #D8DCCF; background: transparent; color: #334C3B; cursor: pointer; }
+        .settings-root .cancel-settings-btn:hover { background: #EDEFE7; transform: translateY(-1px); }
+        .settings-root .settings-toast { background: #1A3C2A; border-radius: 14px; }
+        @media (max-width: 640px) {
+          .settings-root { padding: 1.4rem .9rem 2rem; }
+          .settings-root .settings-card { padding: 1.2rem; border-radius: 20px; }
+          .settings-root .settings-tabs { width: 100%; overflow-x: auto; border-radius: 15px; }
+          .settings-root .settings-tab { padding: .6rem .8rem; white-space: nowrap; }
+          .settings-root .settings-user-row { flex-wrap: wrap; }
+          .settings-root .user-badge { margin-left: 84px; }
+          .settings-root .form-actions { flex-wrap: wrap; }
+          .settings-root .save-settings-btn, .settings-root .cancel-settings-btn { flex: 1; }
+        }
+
       `}</style>
     </div>
   );
