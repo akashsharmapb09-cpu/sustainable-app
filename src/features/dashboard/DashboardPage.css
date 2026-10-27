@@ -9,3 +9,249 @@
 @media(max-width:767px){.shell-root:has(.gs-dashboard){padding:0!important}.shell-root:has(.gs-dashboard) .shell-sidebar{position:fixed!important;left:10px!important;top:10px!important;bottom:10px!important;height:auto!important;min-height:0!important;width:min(280px,calc(100vw - 36px))!important;transform:translateX(calc(-100% - 24px))!important;border:1px solid #e5eee6!important;border-radius:20px!important;box-shadow:0 18px 55px #1b211b20!important}.shell-root:has(.gs-dashboard) .shell-sidebar.is-open{transform:translateX(0)!important}.shell-root:has(.gs-dashboard) .shell-topbar{padding:0 12px!important;min-height:68px!important;height:auto!important;flex-wrap:wrap!important}}
 @media(max-width:650px){.gs-dashboard{padding:14px 12px 24px}.gs-view-tabs{gap:3px;overflow:auto}.gs-view-tabs>a{padding:10px 11px;font-size:11px}.gs-view-tabs>a.gs-impact-tab{margin-left:auto}.gs-impact-tab small{display:none}.gs-progress-card{padding:18px;gap:17px}.gs-ring{width:112px;height:112px}.gs-ring strong{font-size:30px}.gs-progress-copy h1{font-size:19px}.gs-co2-card{padding:22px}.gs-co2-value{font-size:52px}.gs-earth-art{width:46%;right:0;opacity:.62}.gs-section-head{align-items:flex-start;flex-direction:column;margin-top:24px}.gs-section-head h2{font-size:23px}.gs-slogan{padding-left:36px}.gs-wins-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.gs-win-art{height:140px}.gs-win-body{padding:12px 10px}.gs-win-body h3{font-size:13px}.gs-win-body p{font-size:11px}.gs-footer-note{flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.gs-win-card,.gs-win-art img,.gs-done-btn,.gs-toast{transition:none}}
+
+
+
+/* Website-aligned GreenSwap dashboard — botanical editorial theme */
+.gs-dashboard {
+  --gs-paper: #F5F0E8;
+  --gs-surface: #FCFAF6;
+  --gs-border: #DFD7CA;
+  --gs-ink: #1B211E;
+  --gs-muted: #535C55;
+  --gs-forest: #1B2B1F;
+  --gs-leaf: #33593A;
+  --gs-sage: #E4E8DA;
+  max-width: 1540px;
+  padding: clamp(20px, 2.5vw, 38px) clamp(16px, 2.8vw, 42px) 40px;
+  color: var(--gs-ink);
+  background: transparent;
+  font-family: 'DM Sans', var(--font-sans, sans-serif);
+}
+.shell-root:has(.gs-dashboard) {
+  padding: 0 !important;
+  gap: 0 !important;
+  background: var(--gs-paper, #F5F0E8) !important;
+  color: #1B211E !important;
+}
+.shell-root:has(.gs-dashboard) .shell-sidebar {
+  width: 246px !important;
+  flex: 0 0 246px !important;
+  margin: 12px 0 12px 12px !important;
+  height: calc(100vh - 24px) !important;
+  min-height: calc(100vh - 24px) !important;
+  top: 12px !important;
+  border: 1px solid #DFD7CA !important;
+  border-radius: 22px !important;
+  background: #FCFAF6 !important;
+  color: #3E4841 !important;
+  box-shadow: 0 8px 32px rgba(27, 33, 30, .045) !important;
+}
+.shell-root:has(.gs-dashboard) .sidebar-brand-box { padding: 1.45rem 1.2rem 1.1rem !important; }
+.shell-root:has(.gs-dashboard) .sidebar-logo {
+  font-family: 'Fraunces', Georgia, serif !important;
+  color: #1B211E !important;
+  font-size: 1.55rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -.045em !important;
+}
+.shell-root:has(.gs-dashboard) .sidebar-logo .dot { color: #33593A !important; }
+.shell-root:has(.gs-dashboard) .sidebar-nav { padding: .5rem .7rem !important; gap: .22rem !important; }
+.shell-root:has(.gs-dashboard) .sidebar-nav-item {
+  color: #535C55 !important;
+  border-radius: 12px !important;
+  padding: .72rem .8rem !important;
+  border: 1px solid transparent !important;
+}
+.shell-root:has(.gs-dashboard) .sidebar-nav-item:hover { background: #F1EDE4 !important; color: #1B2B1F !important; }
+.shell-root:has(.gs-dashboard) .sidebar-nav-item.is-active {
+  background: #E4E8DA !important;
+  border-color: #D8DECC !important;
+  color: #1B2B1F !important;
+  box-shadow: none !important;
+}
+.shell-root:has(.gs-dashboard) .sidebar-nav-item.is-active .nav-icon { color: #33593A !important; }
+.shell-root:has(.gs-dashboard) .sidebar-footer { border-top: 1px solid #DFD7CA !important; }
+.shell-root:has(.gs-dashboard) .shell-main { min-height: 100vh !important; background: transparent !important; border-radius: 0 !important; }
+.shell-root:has(.gs-dashboard) .shell-topbar {
+  height: 72px !important;
+  padding: 0 clamp(18px, 2.6vw, 38px) !important;
+  background: rgba(245, 240, 232, .9) !important;
+  border-bottom: 1px solid #DFD7CA !important;
+  backdrop-filter: blur(16px) !important;
+}
+.shell-root:has(.gs-dashboard) .topbar-search { background: #FCFAF6 !important; border-color: #DFD7CA !important; }
+.shell-root:has(.gs-dashboard) .topbar-action-btn { background: #FCFAF6 !important; border-color: #DFD7CA !important; color: #1B2B1F !important; }
+.shell-root:has(.gs-dashboard) .topbar-avatar { background: #1B2B1F !important; color: #F5F0E8 !important; }
+
+.gs-view-tabs { gap: 8px; margin-bottom: 22px; padding-bottom: 15px; border-bottom: 1px solid var(--gs-border); }
+.gs-view-tabs>a {
+  padding: 10px 15px;
+  border: 1px solid transparent;
+  color: #535C55;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background .2s ease, border-color .2s ease, color .2s ease;
+}
+.gs-view-tabs>a:hover { background: #EDE8DE; color: #1B2B1F; }
+.gs-view-tabs>a.active {
+  background: #1B2B1F;
+  color: #F5F0E8;
+  box-shadow: none;
+  font-weight: 650;
+}
+.gs-view-tabs>a.gs-impact-tab { background: #E4E8DA; border-color: #D8DECC; color: #1B2B1F; }
+.gs-view-tabs>a.gs-impact-tab:hover { background: #DCE4D2; }
+.gs-impact-tab small { color: #535C55; }
+
+.gs-summary { gap: 18px; }
+.gs-progress-card,.gs-co2-card {
+  min-height: 218px;
+  border: 1px solid var(--gs-border);
+  border-radius: 22px;
+  box-shadow: 0 9px 28px rgba(27, 33, 30, .055);
+}
+.gs-progress-card {
+  background: linear-gradient(145deg, #FCFAF6 0%, #F1ECE2 100%);
+  padding: 26px;
+  gap: 24px;
+}
+.gs-ring {
+  background: conic-gradient(from -2deg, #33593A 57.14%, #D9DFCE 57.14%);
+  box-shadow: 0 0 0 6px #E8E6DA, 0 5px 17px rgba(27, 43, 31, .08);
+}
+.gs-ring:before { background: #FCFAF6; }
+.gs-ring strong { color: #1B2B1F; font-family: 'DM Sans', sans-serif; font-weight: 750; }
+.gs-ring span { color: #535C55; }
+.gs-eyebrow { color: #33593A; font-size: 11px; text-transform: uppercase; letter-spacing: .13em; font-weight: 700; }
+.gs-progress-copy h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(25px, 2vw, 32px);
+  line-height: 1.18;
+  letter-spacing: -.035em;
+  font-weight: 600;
+  color: #1B211E;
+}
+.gs-progress-track { background: #DFD7CA; }
+.gs-progress-track span { background: linear-gradient(90deg, #33593A, #8EA77C); }
+.gs-sprig { color: #647D54; opacity: .52; }
+
+.gs-co2-card {
+  background:
+    radial-gradient(ellipse at 88% 20%, rgba(143, 163, 113, .45) 0, transparent 38%),
+    linear-gradient(118deg, #1B2B1F 0%, #29432D 66%, #33593A 100%);
+  color: #F5F0E8;
+  padding: 27px 30px;
+}
+.gs-co2-card:before { background: linear-gradient(0deg, rgba(13, 27, 17, .32), transparent 76%); }
+.gs-co2-title { color: #F5F0E8; font-size: 14px; letter-spacing: .01em; }
+.gs-co2-title svg { color: #D8E2C9; }
+.gs-co2-value { color: #FCFAF6; font-size: clamp(52px, 4.2vw, 62px); font-weight: 750; letter-spacing: -.055em; }
+.gs-co2-badge { border-color: rgba(245, 240, 232, .34); background: rgba(245, 240, 232, .12); color: #FCFAF6; }
+.gs-earth-art { opacity: .48; filter: drop-shadow(0 10px 8px rgba(13, 27, 17, .32)); }
+
+.gs-wins-section { margin-top: 34px; }
+.gs-section-head { align-items: end; margin: 0 1px 18px; }
+.gs-section-head h2 {
+  color: #1B211E;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(26px, 2.3vw, 34px);
+  font-weight: 600;
+  letter-spacing: -.035em;
+}
+.gs-section-head h2 svg { color: #33593A; }
+.gs-wins-count { color: #535C55; font-size: 12px; margin-top: 8px; }
+.gs-slogan { color: #535C55; font-size: 12px; }
+.gs-wins-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
+.gs-win-card {
+  border: 1px solid var(--gs-border);
+  border-radius: 19px;
+  background: #FCFAF6;
+  box-shadow: 0 6px 20px rgba(27, 33, 30, .04);
+}
+.gs-win-card:hover { transform: translateY(-3px); border-color: #B8C6AD; box-shadow: 0 14px 30px rgba(27, 43, 31, .09); }
+.gs-win-card.is-done { border-color: #9CAE91; box-shadow: inset 0 0 0 1px #D8E2CD, 0 8px 23px rgba(27, 43, 31, .06); }
+.gs-win-art {
+  height: 190px;
+  background: linear-gradient(145deg, #F0ECE2, #E5E8DC);
+  padding: 10px;
+}
+.gs-win-art img { object-fit: contain; mix-blend-mode: multiply; }
+.gs-completed-mark { background: #1B2B1F; color: #F5F0E8; box-shadow: 0 4px 12px rgba(27, 43, 31, .2); }
+.gs-win-body { padding: 17px 17px 15px; }
+.gs-win-body h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  color: #1B211E;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.3;
+  min-height: 47px;
+}
+.gs-win-body p { color: #535C55; font-size: 12px; line-height: 1.6; }
+.gs-win-foot small { color: #535C55; font-size: 11px; }
+.gs-done-btn { background: #E4E8DA; color: #1B2B1F; }
+.gs-done-btn:hover { background: #D5DFC9; }
+.gs-win-card.is-done .gs-done-btn { background: #1B2B1F; color: #F5F0E8; }
+.gs-done-btn:focus-visible { outline-color: #33593A; }
+.gs-no-results { border-color: #C5BCAD; color: #535C55; background: #FCFAF6; }
+.gs-footer-note { color: #535C55; border-top: 1px solid var(--gs-border); padding-top: 16px; }
+.gs-footer-note svg { color: #33593A; }
+.gs-toast { background: #1B2B1F; color: #F5F0E8; border-radius: 14px; box-shadow: 0 14px 30px rgba(27, 33, 30, .18); }
+
+@media (max-width: 1250px) {
+  .gs-wins-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gs-win-art { height: 176px; }
+}
+@media (max-width: 1000px) {
+  .shell-root:has(.gs-dashboard) .shell-sidebar { width: 226px !important; flex-basis: 226px !important; }
+  .gs-dashboard { padding: 18px 18px 30px; }
+  .gs-summary { grid-template-columns: 1fr; }
+}
+@media (max-width: 767px) {
+  .shell-root:has(.gs-dashboard) { padding: 0 !important; }
+  .shell-root:has(.gs-dashboard) .shell-sidebar {
+    position: fixed !important; margin: 0 !important; left: 10px !important; top: 10px !important; bottom: 10px !important;
+    width: min(280px, calc(100vw - 36px)) !important; height: auto !important; min-height: 0 !important;
+    transform: translateX(calc(-100% - 24px)) !important; border-radius: 20px !important; z-index: 40 !important;
+  }
+  .shell-root:has(.gs-dashboard) .shell-sidebar.is-open { transform: translateX(0) !important; }
+  .shell-root:has(.gs-dashboard) .shell-topbar { padding: 0 12px !important; min-height: 68px !important; height: auto !important; flex-wrap: wrap !important; }
+  .gs-dashboard { padding: 15px 13px 24px; }
+  .gs-view-tabs { gap: 4px; overflow-x: auto; margin-bottom: 16px; }
+  .gs-view-tabs>a { padding: 9px 12px; font-size: 11px; }
+  .gs-view-tabs>a.gs-impact-tab { margin-left: auto; }
+  .gs-impact-tab small { display: none; }
+  .gs-progress-card { padding: 19px; gap: 17px; }
+  .gs-ring { width: 112px; height: 112px; }
+  .gs-ring strong { font-size: 30px; }
+  .gs-progress-copy h1 { font-size: 22px; }
+  .gs-co2-card { padding: 23px; }
+  .gs-co2-value { font-size: 52px; }
+  .gs-earth-art { width: 46%; right: 0; opacity: .42; }
+  .gs-section-head { align-items: flex-start; flex-direction: column; gap: 9px; }
+  .gs-section-head h2 { font-size: 26px; }
+  .gs-slogan { padding-left: 36px; }
+  .gs-wins-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+  .gs-win-art { height: 145px; padding: 8px; }
+  .gs-win-body { padding: 13px 12px 12px; }
+  .gs-win-body h3 { font-size: 15px; min-height: 42px; }
+  .gs-win-body p { font-size: 11px; }
+  .gs-footer-note { flex-direction: column; }
+}
+@media (max-width: 430px) {
+  .gs-summary { gap: 12px; }
+  .gs-progress-card { flex-wrap: wrap; align-items: center; }
+  .gs-ring { width: 96px; height: 96px; }
+  .gs-ring strong { font-size: 27px; }
+  .gs-progress-copy { flex-basis: calc(100% - 118px); }
+  .gs-progress-copy h1 { font-size: 20px; }
+  .gs-co2-card { min-height: 176px; padding: 20px; }
+  .gs-wins-grid { grid-template-columns: 1fr; }
+  .gs-win-art { height: 180px; }
+  .gs-win-body h3 { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gs-win-card,.gs-win-art img,.gs-done-btn,.gs-toast { transition: none; }
+}
