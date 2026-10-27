@@ -383,7 +383,7 @@ export function ProgressPage() {
                       </p>
                       <div className="progress-challenge-bar" role="img" aria-label={challenge.title + ' status indicator'}><span style={{ width: statusProgress + '%' }} /></div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="progress-challenge-actions flex flex-wrap gap-2">
                       {!status || status === 'abandoned' ? (
                         <Button size="sm" variant="primary" disabled={setChallengeStatus.isPending} onClick={() => void updateChallenge(challenge.id, 'active')}>
                           Start
@@ -403,7 +403,6 @@ export function ProgressPage() {
                         </Button>
                       )}
                     </div>
-                  </div>
                 </li>
               );
             })}
