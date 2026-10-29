@@ -1,687 +1,537 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUpdateProfile } from '../../shared/lib/hooks/useData';
-import { useAuth } from '../auth/context/authContextDef';
+import { Check, ArrowRight, ArrowLeft } from 'lucide-react';
 import type { CommuteMode, Diet, EffortLevel } from '../../shared/types/database';
 
-const DIET_ITEMS: { value: Diet; label: string; icon: string; desc: string; cut: string }[] = [
-  { value: 'omnivore', label: 'Balanced Mix', icon: '🥩🥗', desc: 'Everyday variety of food', cut: 'Standard base' },
-  { value: 'vegetarian', label: 'Vegetarian', icon: '🌱🧀', desc: 'Plant & dairy focused', cut: '-0.4t CO₂/yr' },
-  { value: 'vegan', label: 'Plant-Based', icon: '🌿🥑', desc: '100% plant centered', cut: '-0.8t CO₂/yr' },
+const COMMUTE_OPTIONS = [
+  {
+    value: 'public_transit' as CommuteMode,
+    label: 'Metro & Bus',
+    cut: 'Up to -1.2t CO₂/yr',
+    image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    value: 'two_wheeler' as CommuteMode,
+    label: 'Two-Wheeler',
+    cut: 'Up to -0.6t CO₂/yr',
+    image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    value: 'car_ev' as CommuteMode,
+    label: 'Electric Car',
+    cut: 'Up to -0.9t CO₂/yr',
+    image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    value: 'car_petrol' as CommuteMode,
+    label: 'Petrol Car',
+    cut: 'Standard base',
+    image: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    value: 'walk_cycle' as CommuteMode,
+    label: 'Walk & Cycle',
+    cut: 'Zero emissions',
+    image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    value: 'carpool' as CommuteMode,
+    label: 'Carpooling',
+    cut: 'Up to -0.5t CO₂/yr',
+    image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&auto=format&fit=crop&q=80',
+  },
 ];
 
-const COMMUTE_ITEMS: { value: CommuteMode; label: string; icon: string; cut: string }[] = [
-  { value: 'public_transit', label: 'Metro & Bus', icon: '🚇', cut: 'Up to -1.2t CO₂/yr' },
-  { value: 'two_wheeler', label: 'Two-Wheeler', icon: '🛵', cut: 'Up to -0.6t CO₂/yr' },
-  { value: 'car_ev', label: 'Electric Car', icon: '⚡🚗', cut: 'Up to -0.9t CO₂/yr' },
-  { value: 'car_petrol', label: 'Petrol Car', icon: '⛽🚗', cut: 'Standard base' },
-  { value: 'walk_cycle', label: 'Walk & Cycle', icon: '🚲', cut: 'Zero emissions' },
-  { value: 'carpool', label: 'Carpooling', icon: '👥', cut: 'Up to -0.5t CO₂/yr' },
+const DIET_OPTIONS = [
+  {
+    value: 'omnivore' as Diet,
+    label: 'Balanced Mix',
+    desc: 'Chicken, rice, avocado & fresh harvest bowl',
+    cut: 'Standard base',
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    value: 'vegetarian' as Diet,
+    label: 'Vegetarian',
+    desc: 'Hummus, chickpea & Mediterranean bowl',
+    cut: '-0.4t CO₂/yr',
+    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    value: 'vegan' as Diet,
+    label: 'Plant-Based',
+    desc: 'Quinoa, avocado & organic superfoods bowl',
+    cut: '-0.8t CO₂/yr',
+    image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&auto=format&fit=crop&q=80',
+  },
 ];
 
-const TOPIC_CHIPS = [
-  { id: 'transport', label: '🚗 Transport', tag: 'High impact' },
-  { id: 'energy', label: '⚡ Clean Energy', tag: 'Cost saver' },
-  { id: 'food', label: '🌿 Sustainable Food', tag: 'Everyday' },
-  { id: 'waste', label: '♻️ Zero Waste', tag: 'Habit' },
-  { id: 'shopping', label: '🛍️ Mindful Goods', tag: 'Low effort' },
-  { id: 'travel', label: '✈️ Green Travel', tag: 'Seasonal' },
+const FOCUS_TOPICS = [
+  {
+    id: 'transport',
+    label: 'Transport',
+    tag: 'High impact',
+    image: 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'energy',
+    label: 'Clean Energy',
+    tag: 'Cost saver',
+    image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'food',
+    label: 'Sustainable Food',
+    tag: 'Everyday',
+    image: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'waste',
+    label: 'Zero Waste',
+    tag: 'Habit shift',
+    image: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'shopping',
+    label: 'Mindful Goods',
+    tag: 'Low effort',
+    image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'travel',
+    label: 'Green Travel',
+    tag: 'Seasonal',
+    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&auto=format&fit=crop&q=80',
+  },
+];
+
+const EFFORT_OPTIONS = [
+  {
+    val: 'easy' as EffortLevel,
+    label: 'Easy swaps only',
+    desc: 'No routine change (LED bulbs, aerators, eco brush)',
+    image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=300&auto=format&fit=crop&q=80',
+  },
+  {
+    val: 'moderate' as EffortLevel,
+    label: 'Moderate changes',
+    desc: 'Light habit shifts (transit 2x/wk, meal swaps, steel bottle)',
+    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300&auto=format&fit=crop&q=80',
+  },
+  {
+    val: 'committed' as EffortLevel,
+    label: 'Willing to invest',
+    desc: 'High impact interventions (solar panels, EV, composting)',
+    image: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?w=300&auto=format&fit=crop&q=80',
+  },
+];
+
+const BUDGET_OPTIONS = [
+  {
+    val: 'low' as const,
+    label: 'Low — impact first',
+    desc: 'Prioritise gross carbon cuts over upfront cost',
+    image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&auto=format&fit=crop&q=80',
+  },
+  {
+    val: 'medium' as const,
+    label: 'Medium — balanced',
+    desc: 'Balanced between household rupee savings and carbon mitigation',
+    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=300&auto=format&fit=crop&q=80',
+  },
+  {
+    val: 'high' as const,
+    label: 'High — savings first',
+    desc: 'Zero or negative net expenditure with quickest payback period',
+    image: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=300&auto=format&fit=crop&q=80',
+  },
 ];
 
 export function OnboardingPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const updateProfile = useUpdateProfile();
 
   const [step, setStep] = useState<1 | 2>(1);
-  const [householdSize, setHouseholdSize] = useState(3);
-  const [region] = useState('IN');
-  const [diet, setDiet] = useState<Diet>('vegetarian');
   const [commute, setCommute] = useState<CommuteMode>('public_transit');
-  const [budget, setBudget] = useState<'low' | 'medium' | 'high'>('medium');
+  const [diet, setDiet] = useState<Diet>('vegetarian');
+  const [householdSize, setHouseholdSize] = useState(3);
+  const [interests, setInterests] = useState<string[]>(['transport', 'energy', 'food']);
   const [effort, setEffort] = useState<EffortLevel>('moderate');
-  const [interests, setInterests] = useState<string[]>(['energy', 'transport', 'food']);
-  const [error, setError] = useState<string | null>(null);
+  const [budget, setBudget] = useState<'low' | 'medium' | 'high'>('medium');
 
   const toggleInterest = (id: string) => {
     setInterests((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
-  const handleFinish = async () => {
-    setError(null);
-    try {
-      await updateProfile.mutateAsync({
-        full_name: user?.user_metadata?.full_name ?? 'Akash Sharma',
-        region,
-        household_size: householdSize,
-        diet,
-        commute_mode: commute,
-        budget_sensitivity: budget,
-        effort_level: effort,
-        interests,
-        onboarding_completed: true,
-      });
-      navigate('/dashboard');
-    } catch {
-      // Direct access fallback
-      navigate('/dashboard');
+  const handleFinish = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('onboarding_completed', 'true');
     }
+    navigate('/dashboard');
   };
 
   return (
-    <div className="onboard-root">
-      {/* Background ambient orbs */}
-      <div className="onboard-orb onboard-orb-1" aria-hidden="true" />
-      <div className="onboard-orb onboard-orb-2" aria-hidden="true" />
+    <div className="relative min-h-screen bg-[#F5F0E8] text-[#1B211E] font-sans pb-16">
+      {/* Absolute Skip to Dashboard Button */}
+      <button
+        onClick={() => navigate('/dashboard')}
+        className="absolute top-4 right-6 px-4 py-2 text-sm font-semibold text-[#162a20] bg-white/90 hover:bg-white rounded-full transition-all z-50 shadow-sm border border-[#DFD7CA]"
+      >
+        Skip to Dashboard →
+      </button>
 
-      <div className="onboard-shell">
-        {/* Top Header */}
-        <header className="onboard-header">
-          <div className="onboard-brand">
-            <span className="onboard-logo">GreenSwap<span className="dot">.</span></span>
-            <span className="onboard-badge">CALIBRATION PROTOCOL</span>
+      {/* Main Container */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-10">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-[#DFD7CA] pb-6 mb-8">
+          <div>
+            <span className="font-serif text-2xl font-bold tracking-tight text-[#162A20]">
+              GreenSwap<span className="text-[#3EAC6A]">.</span>
+            </span>
+            <span className="ml-3 text-[11px] font-mono tracking-widest text-[#535C55] uppercase bg-[#E8E0D2] px-2.5 py-1 rounded-full">
+              CALIBRATION PROTOCOL
+            </span>
           </div>
-          <button
-            type="button"
-            className="onboard-skip-btn absolute top-4 right-6"
-            onClick={() => navigate('/dashboard')}
-          >
-            Skip to Dashboard →
-          </button>
-        </header>
 
-        {/* Stepper bar */}
-        <div className="onboard-stepper">
-          <div
-            className={`onboard-step-pill ${step === 1 ? 'is-active' : 'is-done'}`}
-            onClick={() => setStep(1)}
-          >
-            <span className="step-num">1</span>
-            <span>Lifestyle & Routine</span>
-          </div>
-          <div className="onboard-step-line" />
-          <div
-            className={`onboard-step-pill ${step === 2 ? 'is-active' : ''}`}
-            onClick={() => setStep(2)}
-          >
-            <span className="step-num">2</span>
-            <span>Impact & Priorities</span>
+          {/* Stepper Pills */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setStep(1)}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                step === 1 ? 'bg-[#162A20] text-white shadow-sm' : 'bg-[#E8E0D2] text-[#535C55] hover:bg-[#DDD4C4]'
+              }`}
+            >
+              <span className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-[10px]">1</span>
+              <span>Lifestyle &amp; Commute</span>
+            </button>
+            <div className="w-4 h-px bg-[#DFD7CA]" />
+            <button
+              onClick={() => setStep(2)}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                step === 2 ? 'bg-[#162A20] text-white shadow-sm' : 'bg-[#E8E0D2] text-[#535C55] hover:bg-[#DDD4C4]'
+              }`}
+            >
+              <span className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-[10px]">2</span>
+              <span>Impact &amp; Priorities</span>
+            </button>
           </div>
         </div>
 
-        {/* Main Card Container */}
-        <main className="onboard-card">
-          {step === 1 ? (
-            <div className="onboard-step-content">
-              <div className="onboard-title-group">
-                <span className="onboard-eyebrow">STEP 01 OF 02</span>
-                <h2>Tell us about your daily footprint</h2>
-                <p>We use government-verified emission factors (DEFRA, CEA) to tailor swaps for your life.</p>
-              </div>
+        {/* STEP 1 */}
+        {step === 1 ? (
+          <div className="space-y-10">
+            <div>
+              <span className="text-[11px] font-mono tracking-widest text-[#3EAC6A] font-semibold uppercase block mb-1">
+                STEP 01 OF 02
+              </span>
+              <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#162A20]">
+                Tell us about your daily footprint
+              </h1>
+              <p className="text-sm text-[#535C55] mt-1">
+                We use government-verified emission factors (DEFRA, CEA) to tailor swaps for your life.
+              </p>
+            </div>
 
-              {/* Commute Mode Selector */}
-              <div className="onboard-section">
-                <label className="onboard-label">PRIMARY COMMUTE</label>
-                <div className="onboard-grid-commute">
-                  {COMMUTE_ITEMS.map((item) => (
-                    <button
+            {/* Commute Mode Cards */}
+            <div className="space-y-3">
+              <label className="text-xs font-mono tracking-wider text-[#535C55] uppercase font-bold block">
+                PRIMARY COMMUTE MODE
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                {COMMUTE_OPTIONS.map((item) => {
+                  const isSelected = commute === item.value;
+                  return (
+                    <div
                       key={item.value}
-                      type="button"
-                      className={`commute-card ${commute === item.value ? 'is-selected' : ''}`}
                       onClick={() => setCommute(item.value)}
+                      className={`bg-white rounded-2xl shadow-md hover:shadow-xl transition-all cursor-pointer relative overflow-hidden flex flex-col ${
+                        isSelected ? 'border-2 border-emerald-600 ring-2 ring-emerald-600/20' : 'border border-[#DFD7CA]'
+                      }`}
                     >
-                      <span className="commute-icon">{item.icon}</span>
-                      <strong className="commute-label">{item.label}</strong>
-                      <span className="commute-cut">{item.cut}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Diet Choice */}
-              <div className="onboard-section">
-                <label className="onboard-label">DIETARY PREFERENCE</label>
-                <div className="onboard-grid-diet">
-                  {DIET_ITEMS.map((item) => (
-                    <button
-                      key={item.value}
-                      type="button"
-                      className={`diet-card ${diet === item.value ? 'is-selected' : ''}`}
-                      onClick={() => setDiet(item.value)}
-                    >
-                      <span className="diet-icon">{item.icon}</span>
-                      <div className="diet-info">
-                        <strong>{item.label}</strong>
-                        <span>{item.desc}</span>
+                      <div className="relative w-full h-[180px] bg-[#E8E0D2] overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={item.label}
+                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                          loading="lazy"
+                        />
+                        {isSelected && (
+                          <div className="absolute top-3 right-3 bg-emerald-600 text-white rounded-full p-1.5 shadow-md flex items-center justify-center z-10">
+                            <Check className="h-4 w-4 stroke-[3]" />
+                          </div>
+                        )}
                       </div>
-                      <span className="diet-cut">{item.cut}</span>
-                    </button>
-                  ))}
-                </div>
+                      <div className="p-4 flex flex-col justify-between flex-1">
+                        <div>
+                          <strong className="block text-base font-bold text-[#162A20]">{item.label}</strong>
+                          <span className="text-xs font-mono text-emerald-700 font-semibold mt-1 block">
+                            {item.cut}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
+            </div>
 
-              {/* Household Size */}
-              <div className="onboard-section onboard-split">
-                <div>
-                  <label className="onboard-label">HOUSEHOLD MEMBERS</label>
-                  <p className="onboard-subhint">Helps calculate shared utility and energy deltas</p>
-                </div>
-                <div className="household-stepper">
-                  <button
-                    type="button"
-                    onClick={() => setHouseholdSize((s) => Math.max(1, s - 1))}
-                    disabled={householdSize <= 1}
-                  >
-                    -
-                  </button>
-                  <span className="household-val">{householdSize} {householdSize === 1 ? 'Person' : 'People'}</span>
-                  <button
-                    type="button"
-                    onClick={() => setHouseholdSize((s) => Math.min(10, s + 1))}
-                  >
-                    +
-                  </button>
-                </div>
+            {/* Dietary Cards */}
+            <div className="space-y-3">
+              <label className="text-xs font-mono tracking-wider text-[#535C55] uppercase font-bold block">
+                DIETARY PREFERENCE
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                {DIET_OPTIONS.map((item) => {
+                  const isSelected = diet === item.value;
+                  return (
+                    <div
+                      key={item.value}
+                      onClick={() => setDiet(item.value)}
+                      className={`bg-white rounded-2xl shadow-md hover:shadow-xl transition-all cursor-pointer relative overflow-hidden flex flex-col ${
+                        isSelected ? 'border-2 border-emerald-600 ring-2 ring-emerald-600/20' : 'border border-[#DFD7CA]'
+                      }`}
+                    >
+                      <div className="relative w-full h-[180px] bg-[#E8E0D2] overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={item.label}
+                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                          loading="lazy"
+                        />
+                        {isSelected && (
+                          <div className="absolute top-3 right-3 bg-emerald-600 text-white rounded-full p-1.5 shadow-md flex items-center justify-center z-10">
+                            <Check className="h-4 w-4 stroke-[3]" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-4 flex flex-col justify-between flex-1">
+                        <div>
+                          <strong className="block text-base font-bold text-[#162A20]">{item.label}</strong>
+                          <p className="text-xs text-[#535C55] mt-1 leading-snug">{item.desc}</p>
+                        </div>
+                        <span className="text-xs font-mono text-emerald-700 font-semibold mt-3 block">
+                          {item.cut}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
+            </div>
 
-              <div className="onboard-actions">
+            {/* Household Members */}
+            <div className="bg-white rounded-2xl p-6 border border-[#DFD7CA] shadow-sm flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <strong className="text-base font-bold text-[#162A20] block">Household Members</strong>
+                <p className="text-xs text-[#535C55] mt-0.5">Calculates shared kitchen, heating, and vehicle emission allocations</p>
+              </div>
+              <div className="flex items-center gap-3">
                 <button
                   type="button"
-                  className="onboard-next-btn"
-                  onClick={() => setStep(2)}
+                  onClick={() => setHouseholdSize((s) => Math.max(1, s - 1))}
+                  className="w-10 h-10 rounded-full border border-[#DFD7CA] bg-[#FAF8F4] text-lg font-bold hover:bg-[#E8E0D2] transition-colors flex items-center justify-center"
                 >
-                  Continue to Priorities →
+                  -
+                </button>
+                <span className="font-serif font-bold text-lg min-w-[70px] text-center text-[#162A20]">
+                  {householdSize} {householdSize === 1 ? 'Person' : 'People'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setHouseholdSize((s) => Math.min(10, s + 1))}
+                  className="w-10 h-10 rounded-full border border-[#DFD7CA] bg-[#FAF8F4] text-lg font-bold hover:bg-[#E8E0D2] transition-colors flex items-center justify-center"
+                >
+                  +
                 </button>
               </div>
             </div>
-          ) : (
-            <div className="onboard-step-content">
-              <div className="onboard-title-group">
-                <span className="onboard-eyebrow">STEP 02 OF 02</span>
-                <h2>What matters most to you?</h2>
-                <p>Personalize your 7-day swap recommendations based on cost, effort, and interest.</p>
-              </div>
 
-              {/* Topics of Interest */}
-              <div className="onboard-section">
-                <label className="onboard-label">FOCUS TOPICS (SELECT MULTIPLE)</label>
-                <div className="topics-chips-grid">
-                  {TOPIC_CHIPS.map((chip) => {
-                    const isSelected = interests.includes(chip.id);
-                    return (
-                      <button
-                        key={chip.id}
-                        type="button"
-                        className={`topic-chip ${isSelected ? 'is-selected' : ''}`}
-                        onClick={() => toggleInterest(chip.id)}
-                      >
-                        <span className="chip-label">{chip.label}</span>
-                        <span className="chip-tag">{chip.tag}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+            {/* Navigation Actions */}
+            <div className="flex justify-end pt-4">
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#162A20] text-white rounded-full font-semibold text-sm hover:bg-[#234333] transition-all shadow-md hover:shadow-lg"
+              >
+                Continue to Priorities <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* STEP 2 */
+          <div className="space-y-10">
+            <div>
+              <span className="text-[11px] font-mono tracking-widest text-[#3EAC6A] font-semibold uppercase block mb-1">
+                STEP 02 OF 02
+              </span>
+              <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#162A20]">
+                What matters most to you?
+              </h1>
+              <p className="text-sm text-[#535C55] mt-1">
+                Personalize your 7-day swap recommendations based on cost, effort, and interest.
+              </p>
+            </div>
 
-              {/* Effort Tolerated */}
-              <div className="onboard-section">
-                <label className="onboard-label">EFFORT YOU WILL TOLERATE</label>
-                <div className="effort-cards">
-                  {[
-                    { val: 'easy', label: 'Easy swaps only', desc: 'No routine change (LEDs, aerators, setpoints)' },
-                    { val: 'moderate', label: 'Moderate changes', desc: 'Light habit shifts (transit 2x/wk, meal swaps)' },
-                    { val: 'committed', label: 'Willing to invest', desc: 'High impact interventions (solar, EV, composting)' },
-                  ].map((e) => (
-                    <button
-                      key={e.val}
-                      type="button"
-                      className={`effort-card ${effort === e.val ? 'is-selected' : ''}`}
-                      onClick={() => setEffort(e.val as EffortLevel)}
+            {/* 1. FOCUS TOPICS CARDS */}
+            <div className="space-y-3">
+              <label className="text-xs font-mono tracking-wider text-[#535C55] uppercase font-bold block">
+                FOCUS TOPICS (SELECT MULTIPLE)
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                {FOCUS_TOPICS.map((topic) => {
+                  const isSelected = interests.includes(topic.id);
+                  return (
+                    <div
+                      key={topic.id}
+                      onClick={() => toggleInterest(topic.id)}
+                      className={`relative rounded-2xl overflow-hidden h-[220px] text-left transition-all cursor-pointer shadow-md hover:shadow-xl group ${
+                        isSelected ? 'border-2 border-emerald-500 ring-2 ring-emerald-500/20' : 'border border-[#DFD7CA]'
+                      }`}
                     >
-                      <strong>{e.label}</strong>
-                      <span>{e.desc}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Budget Sensitivity */}
-              <div className="onboard-section">
-                <label className="onboard-label">BUDGET SENSITIVITY</label>
-                <div className="effort-cards">
-                  {[
-                    { val: 'low', label: 'Low — impact first', desc: 'Prioritise carbon cuts over costs' },
-                    { val: 'medium', label: 'Medium — balanced', desc: 'Good balance of savings and cuts' },
-                    { val: 'high', label: 'High — savings first', desc: 'Zero or negative net expenditure' },
-                  ].map((b) => (
-                    <button
-                      key={b.val}
-                      type="button"
-                      className={`effort-card ${budget === b.val ? 'is-selected' : ''}`}
-                      onClick={() => setBudget(b.val as 'low' | 'medium' | 'high')}
-                    >
-                      <strong>{b.label}</strong>
-                      <span>{b.desc}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Live Preview Box */}
-              <div className="onboard-preview-box">
-                <div className="preview-stat">
-                  <span className="preview-label">PROJECTED MONTHLY CO₂ SAVINGS</span>
-                  <strong className="preview-num">0.7t <span>CO₂e / mo</span></strong>
-                </div>
-                <div className="preview-div" />
-                <div className="preview-stat">
-                  <span className="preview-label">ESTIMATED EXPENSE REDUCTION</span>
-                  <strong className="preview-num preview-cash">₹2,840 <span>/ mo</span></strong>
-                </div>
-              </div>
-
-              {error && <p className="onboard-error">{error}</p>}
-
-              <div className="onboard-actions-row">
-                <button
-                  type="button"
-                  className="onboard-back-btn"
-                  onClick={() => setStep(1)}
-                >
-                  ← Back
-                </button>
-                <button
-                  type="button"
-                  className="onboard-finish-btn"
-                  onClick={handleFinish}
-                  disabled={updateProfile.isPending}
-                >
-                  {updateProfile.isPending ? 'Preparing your dashboard…' : 'Launch My GreenSwap Dashboard →'}
-                </button>
+                      <img
+                        src={topic.image}
+                        alt={topic.label}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                      {isSelected && (
+                        <div className="absolute top-3 left-3 bg-emerald-600 text-white rounded-full p-1.5 shadow-md flex items-center justify-center z-10">
+                          <Check className="h-4 w-4 stroke-[3]" />
+                        </div>
+                      )}
+                      <div className="absolute bottom-4 left-4 right-4 z-10">
+                        <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/90 text-white uppercase tracking-wider mb-1.5">
+                          {topic.tag}
+                        </span>
+                        <h3 className="font-serif text-xl font-bold text-white tracking-wide">{topic.label}</h3>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          )}
-        </main>
+
+            {/* 2. EFFORT YOU WILL TOLERATE */}
+            <div className="space-y-3">
+              <label className="text-xs font-mono tracking-wider text-[#535C55] uppercase font-bold block">
+                EFFORT YOU WILL TOLERATE
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                {EFFORT_OPTIONS.map((item) => {
+                  const isSelected = effort === item.val;
+                  return (
+                    <div
+                      key={item.val}
+                      onClick={() => setEffort(item.val)}
+                      className={`bg-white rounded-2xl p-5 shadow-md hover:shadow-xl transition-all cursor-pointer text-center flex flex-col items-center justify-between ${
+                        isSelected ? 'border-2 border-emerald-600 bg-emerald-50/40 ring-2 ring-emerald-600/20' : 'border border-[#DFD7CA]'
+                      }`}
+                    >
+                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden mb-3 border border-[#DFD7CA]">
+                        <img
+                          src={item.image}
+                          alt={item.label}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div>
+                        <strong className="block text-base font-bold text-[#162A20]">{item.label}</strong>
+                        <p className="text-xs text-[#535C55] mt-1 leading-snug">{item.desc}</p>
+                      </div>
+                      {isSelected && (
+                        <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-mono font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
+                          <Check className="h-3.5 w-3.5" /> Selected
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 3. BUDGET SENSITIVITY */}
+            <div className="space-y-3">
+              <label className="text-xs font-mono tracking-wider text-[#535C55] uppercase font-bold block">
+                BUDGET SENSITIVITY
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                {BUDGET_OPTIONS.map((item) => {
+                  const isSelected = budget === item.val;
+                  return (
+                    <div
+                      key={item.val}
+                      onClick={() => setBudget(item.val)}
+                      className={`bg-white rounded-2xl p-5 shadow-md hover:shadow-xl transition-all cursor-pointer text-center flex flex-col items-center justify-between ${
+                        isSelected ? 'border-2 border-emerald-600 bg-emerald-50/40 ring-2 ring-emerald-600/20' : 'border border-[#DFD7CA]'
+                      }`}
+                    >
+                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden mb-3 border border-[#DFD7CA]">
+                        <img
+                          src={item.image}
+                          alt={item.label}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div>
+                        <strong className="block text-base font-bold text-[#162A20]">{item.label}</strong>
+                        <p className="text-xs text-[#535C55] mt-1 leading-snug">{item.desc}</p>
+                      </div>
+                      {isSelected && (
+                        <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-mono font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
+                          <Check className="h-3.5 w-3.5" /> Selected
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Projected Savings Banner */}
+            <div className="bg-[#162A20] rounded-2xl p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
+              <div>
+                <span className="text-[11px] font-mono tracking-widest text-emerald-400 uppercase font-semibold block mb-1">
+                  CALIBRATED ESTIMATE
+                </span>
+                <h3 className="font-serif text-2xl font-bold">Your Projected Impact</h3>
+                <p className="text-xs text-white/70 mt-1 max-w-md">
+                  Based on your selections, we estimate meaningful reductions with zero lifestyle compromise.
+                </p>
+              </div>
+              <div className="flex items-center gap-6 divide-x divide-white/20">
+                <div className="text-right">
+                  <span className="block text-xs font-mono text-emerald-400">ESTIMATED CO₂ REDUCTION</span>
+                  <strong className="font-serif text-2xl sm:text-3xl font-bold text-white">0.7t <span className="text-xs font-sans font-normal text-white/70">/ mo</span></strong>
+                </div>
+                <div className="pl-6 text-right">
+                  <span className="block text-xs font-mono text-emerald-400">ESTIMATED CASH SAVED</span>
+                  <strong className="font-serif text-2xl sm:text-3xl font-bold text-white">₹2,840 <span className="text-xs font-sans font-normal text-white/70">/ mo</span></strong>
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation Actions */}
+            <div className="flex items-center justify-between pt-4">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="inline-flex items-center gap-2 px-6 py-3 border border-[#DFD7CA] bg-white text-[#162A20] rounded-full font-semibold text-sm hover:bg-[#FAF8F4] transition-all"
+              >
+                <ArrowLeft className="h-4 w-4" /> Back to Step 1
+              </button>
+              <button
+                type="button"
+                onClick={handleFinish}
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#162A20] text-white rounded-full font-semibold text-sm hover:bg-[#234333] transition-all shadow-md hover:shadow-lg"
+              >
+                Launch My Dashboard <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-
-      <style>{`
-        .onboard-root {
-          min-height: 100vh;
-          background: linear-gradient(135deg, #F4EFE6 0%, #EDE5D8 50%, #F5F0E8 100%);
-          color: #1B211E;
-          font-family: 'DM Sans', sans-serif;
-          position: relative;
-          overflow-x: hidden;
-          padding: 2.5rem 1.5rem 4rem;
-        }
-        .onboard-orb {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(80px);
-          pointer-events: none;
-          z-index: 0;
-        }
-        .onboard-orb-1 {
-          width: 500px;
-          height: 500px;
-          top: -100px;
-          left: -100px;
-          background: radial-gradient(circle, rgba(51, 89, 58, 0.12), transparent 70%);
-        }
-        .onboard-orb-2 {
-          width: 450px;
-          height: 450px;
-          bottom: 0;
-          right: -100px;
-          background: radial-gradient(circle, rgba(163, 90, 56, 0.08), transparent 70%);
-        }
-        .onboard-shell {
-          max-width: 860px;
-          margin: 0 auto;
-          position: relative;
-          z-index: 2;
-        }
-        .onboard-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 2rem;
-        }
-        .onboard-brand {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-        .onboard-logo {
-          font-family: 'Fraunces', Georgia, serif;
-          font-size: 1.6rem;
-          font-weight: 700;
-          color: #1B211E;
-        }
-        .onboard-logo .dot { color: #33593A; }
-        .onboard-badge {
-          font-size: 0.62rem;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          padding: 0.25rem 0.6rem;
-          background: rgba(51, 89, 58, 0.1);
-          color: #33593A;
-          border: 1px solid rgba(51, 89, 58, 0.2);
-          border-radius: 999px;
-        }
-        .onboard-skip-btn {
-          background: none;
-          border: none;
-          color: #535C55;
-          font-size: 0.82rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: color 0.2s;
-        }
-        .onboard-skip-btn:hover { color: #1B211E; }
-        .onboard-stepper {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 1rem;
-          margin-bottom: 2rem;
-        }
-        .onboard-step-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.4rem 1rem;
-          background: rgba(255, 255, 255, 0.5);
-          border: 1px solid #DFD7CA;
-          border-radius: 999px;
-          font-size: 0.78rem;
-          color: #535C55;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-        .onboard-step-pill.is-active {
-          background: #1B2B1F;
-          border-color: #1B2B1F;
-          color: #F5F0E8;
-          font-weight: 600;
-        }
-        .onboard-step-pill.is-done {
-          background: rgba(51, 89, 58, 0.12);
-          border-color: #33593A;
-          color: #33593A;
-        }
-        .step-num {
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.7rem;
-          font-weight: 700;
-          background: rgba(0, 0, 0, 0.08);
-        }
-        .onboard-step-pill.is-active .step-num {
-          background: rgba(255, 255, 255, 0.25);
-          color: #fff;
-        }
-        .onboard-step-line {
-          width: 32px;
-          height: 2px;
-          background: #DFD7CA;
-        }
-        .onboard-card {
-          background: rgba(253, 251, 247, 0.85);
-          border: 1px solid #DFD7CA;
-          box-shadow: 0 16px 48px rgba(27, 43, 31, 0.08);
-          border-radius: 20px;
-          padding: 2.8rem;
-          backdrop-filter: blur(16px);
-        }
-        .onboard-title-group {
-          margin-bottom: 2rem;
-        }
-        .onboard-eyebrow {
-          font-size: 0.65rem;
-          font-weight: 700;
-          letter-spacing: 0.14em;
-          color: #7A8A7D;
-          text-transform: uppercase;
-          display: block;
-          margin-bottom: 0.5rem;
-        }
-        .onboard-title-group h2 {
-          font-family: 'Fraunces', Georgia, serif;
-          font-size: 2rem;
-          font-weight: 700;
-          color: #1B211E;
-          margin: 0 0 0.5rem;
-          letter-spacing: -0.02em;
-        }
-        .onboard-title-group p {
-          font-size: 0.9rem;
-          color: #535C55;
-          margin: 0;
-          line-height: 1.5;
-        }
-        .onboard-section {
-          margin-bottom: 2rem;
-        }
-        .onboard-label {
-          display: block;
-          font-size: 0.68rem;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-          color: #848E86;
-          text-transform: uppercase;
-          margin-bottom: 0.85rem;
-        }
-        .onboard-grid-commute {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 0.85rem;
-        }
-        .commute-card {
-          padding: 1rem;
-          background: #FAF8F4;
-          border: 1.5px solid #DFD7CA;
-          border-radius: 12px;
-          text-align: left;
-          cursor: pointer;
-          transition: all 0.2s;
-          display: flex;
-          flex-direction: column;
-          gap: 0.35rem;
-        }
-        .commute-card:hover {
-          border-color: #33593A;
-          transform: translateY(-2px);
-        }
-        .commute-card.is-selected {
-          border-color: #33593A;
-          background: rgba(51, 89, 58, 0.08);
-          box-shadow: 0 0 0 3px rgba(51, 89, 58, 0.18);
-        }
-        .commute-icon { font-size: 1.4rem; }
-        .commute-label { font-size: 0.85rem; color: #1B211E; font-weight: 700; }
-        .commute-cut { font-size: 0.68rem; color: #33593A; font-weight: 600; }
-
-        .onboard-grid-diet {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 0.85rem;
-        }
-        .diet-card {
-          padding: 1rem 1.2rem;
-          background: #FAF8F4;
-          border: 1.5px solid #DFD7CA;
-          border-radius: 12px;
-          text-align: left;
-          cursor: pointer;
-          transition: all 0.2s;
-          display: flex;
-          align-items: center;
-          gap: 0.85rem;
-        }
-        .diet-card:hover { border-color: #33593A; transform: translateY(-2px); }
-        .diet-card.is-selected {
-          border-color: #33593A;
-          background: rgba(51, 89, 58, 0.08);
-          box-shadow: 0 0 0 3px rgba(51, 89, 58, 0.18);
-        }
-        .diet-icon { font-size: 1.6rem; }
-        .diet-info strong { display: block; font-size: 0.85rem; color: #1B211E; }
-        .diet-info span { font-size: 0.72rem; color: #535C55; }
-        .diet-cut { font-size: 0.68rem; font-weight: 700; color: #33593A; margin-left: auto; }
-
-        .onboard-split {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 1rem 1.25rem;
-          background: #FAF8F4;
-          border: 1px solid #DFD7CA;
-          border-radius: 12px;
-        }
-        .onboard-split .onboard-label { margin-bottom: 0.2rem; }
-        .onboard-subhint { font-size: 0.75rem; color: #848E86; margin: 0; }
-        .household-stepper {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-        }
-        .household-stepper button {
-          width: 34px;
-          height: 34px;
-          border-radius: 50%;
-          border: 1px solid #DFD7CA;
-          background: #fff;
-          font-size: 1.1rem;
-          font-weight: 700;
-          color: #1B211E;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.15s;
-        }
-        .household-stepper button:hover:not(:disabled) {
-          border-color: #33593A;
-          color: #33593A;
-        }
-        .household-val {
-          font-weight: 700;
-          font-size: 0.9rem;
-          min-width: 70px;
-          text-align: center;
-        }
-
-        .topics-chips-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 0.75rem;
-        }
-        .topic-chip {
-          padding: 0.85rem 1rem;
-          background: #FAF8F4;
-          border: 1.5px solid #DFD7CA;
-          border-radius: 12px;
-          cursor: pointer;
-          text-align: left;
-          display: flex;
-          flex-direction: column;
-          gap: 0.25rem;
-          transition: all 0.2s;
-        }
-        .topic-chip:hover { border-color: #33593A; }
-        .topic-chip.is-selected {
-          border-color: #33593A;
-          background: rgba(51, 89, 58, 0.1);
-        }
-        .chip-label { font-size: 0.82rem; font-weight: 700; color: #1B211E; }
-        .chip-tag { font-size: 0.65rem; color: #33593A; font-weight: 600; }
-
-        .effort-cards {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 0.75rem;
-        }
-        .effort-card {
-          padding: 1rem;
-          background: #FAF8F4;
-          border: 1.5px solid #DFD7CA;
-          border-radius: 12px;
-          text-align: left;
-          cursor: pointer;
-          transition: all 0.2s;
-          display: flex;
-          flex-direction: column;
-          gap: 0.3rem;
-        }
-        .effort-card:hover { border-color: #33593A; }
-        .effort-card.is-selected {
-          border-color: #33593A;
-          background: rgba(51, 89, 58, 0.1);
-          box-shadow: 0 0 0 3px rgba(51, 89, 58, 0.18);
-        }
-        .effort-card strong { font-size: 0.85rem; color: #1B211E; }
-        .effort-card span { font-size: 0.72rem; color: #535C55; line-height: 1.4; }
-
-        .onboard-preview-box {
-          display: flex;
-          align-items: center;
-          justify-content: space-around;
-          padding: 1.4rem 2rem;
-          background: #1B2B1F;
-          color: #F5F0E8;
-          border-radius: 16px;
-          margin-bottom: 2rem;
-        }
-        .preview-stat { text-align: center; }
-        .preview-label { font-size: 0.62rem; letter-spacing: 0.12em; color: rgba(245, 240, 232, 0.7); display: block; margin-bottom: 0.35rem; }
-        .preview-num { font-family: 'Fraunces', Georgia, serif; font-size: 1.8rem; font-weight: 700; color: #c8dfca; }
-        .preview-num span { font-size: 0.85rem; font-family: 'DM Sans', sans-serif; font-weight: 500; color: rgba(245, 240, 232, 0.65); }
-        .preview-cash { color: #e6ad7c; }
-        .preview-div { width: 1px; height: 44px; background: rgba(255, 255, 255, 0.15); }
-
-        .onboard-actions { margin-top: 2rem; text-align: right; }
-        .onboard-actions-row { display: flex; align-items: center; justify-content: space-between; margin-top: 2rem; }
-        .onboard-next-btn, .onboard-finish-btn {
-          padding: 0.85rem 2rem;
-          background: #1B2B1F;
-          color: #F5F0E8;
-          border-radius: 999px;
-          border: none;
-          font-size: 0.88rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-        }
-        .onboard-next-btn:hover, .onboard-finish-btn:hover {
-          background: #27452d;
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(27, 43, 31, 0.25);
-        }
-        .onboard-back-btn {
-          background: none;
-          border: none;
-          color: #535C55;
-          font-size: 0.85rem;
-          font-weight: 600;
-          cursor: pointer;
-        }
-        .onboard-back-btn:hover { color: #1B211E; }
-        .onboard-error { color: #C84B26; font-size: 0.8rem; margin-top: 1rem; text-align: center; }
-
-        @media (max-width: 768px) {
-          .onboard-card { padding: 1.5rem; }
-          .onboard-grid-commute, .onboard-grid-diet, .topics-chips-grid, .effort-cards {
-            grid-template-columns: 1fr;
-          }
-          .onboard-preview-box { flex-direction: column; gap: 1rem; }
-          .preview-div { display: none; }
-        }
-      `}</style>
     </div>
   );
 }
