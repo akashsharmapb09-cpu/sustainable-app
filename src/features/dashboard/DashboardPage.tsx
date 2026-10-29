@@ -16,29 +16,6 @@ const formatHeaderDate = (d: Date) => {
 import { Link } from 'react-router-dom';
 
 export function DashboardPage() {
-  const [userName, setUserName] = useState<string>('there');
-
-  useEffect(() => {
-    try {
-      const stored =
-        localStorage.getItem('userName') ||
-        localStorage.getItem('user_name') ||
-        localStorage.getItem('name');
-      if (
-        stored &&
-        stored.trim() &&
-        !stored.toLowerCase().includes('field') &&
-        !stored.toLowerCase().includes('demo')
-      ) {
-        setUserName(stored.trim().split(' ')[0]);
-      } else {
-        setUserName('there');
-      }
-    } catch {
-      setUserName('there');
-    }
-  }, []);
-
   const [now, setNow] = useState<Date | null>(null);
   const [completedDays, setCompletedDays] = useState<number[]>([]);
   const today = now ? dayKey(now) : null;
@@ -99,9 +76,8 @@ export function DashboardPage() {
       {/* ── Top Greeting Header (Matching Image Exactly) ── */}
       <header className="dash-greeting-row">
         <div>
-          <span className="dash-greeting-small">Good morning,</span>
           <h1 className="dash-greeting-title">
-            {userName} <span className="wave-hand">👋</span>
+            Good morning <span className="wave-hand">👋</span>
           </h1>
           <p className="dash-greeting-sub">Small changes today. A lighter tomorrow.</p>
         </div>
