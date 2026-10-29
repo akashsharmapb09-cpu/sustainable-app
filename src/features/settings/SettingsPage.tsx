@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../auth/context/authContextDef';
 import { Check, Shield, Bell, Sliders, User, Download, Trash2 } from 'lucide-react';
 
@@ -9,8 +9,25 @@ export function SettingsPage() {
 
   // Profile Form State
   const [name, setName] = useState(user?.user_metadata?.full_name || 'User');
-  const [email] = useState(user?.email || 'user@example.com');
-  const [location, setLocation] = useState('India');
+  const [email, setEmail] = useState((typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null) || user?.email || 'demo@greenswap.local');
+  const [emailErr, setEmailErr] = useState('');
+
+  const [countries, setCountries] = useState<{ name: string; code: string }[]>([]);
+  const [q, setQ] = useState('');
+  const [country, setCountry] = useState((typeof window !== 'undefined' ? localStorage.getItem('country') : null) || 'IN');
+
+  useEffect(() => {
+    fetch('https://restcountries.com/v3.1/all?fields=name,cca2')
+      .then((r) => r.json())
+      .then((d: any[]) =>
+        setCountries(
+          d
+            .map((c: any) => ({ name: c.name.common, code: c.cca2 }))
+            .sort((a, b) => a.name.localeCompare(b.name))
+        )
+      )
+      .catch(() => {});
+  }, []);
   const [interests, setInterests] = useState<string[]>(['Sustainability', 'Clean Energy', 'Healthy Living']);
   const [bio, setBio] = useState('Making small everyday choices for a lighter household carbon footprint.');
 
@@ -48,7 +65,7 @@ export function SettingsPage() {
 
   const exportUserData = () => {
     const data = {
-      profile: { name, email, location, interests, bio },
+      profile: { name, email, location: country, interests, bio },
       preferences: { unit, budgetSensitivity, defaultLanding, regionGrid },
       notifications: { notifyWeekly, notifyDailyReminder, notifyMilestones },
       exportedAt: new Date().toISOString(),
@@ -107,11 +124,13 @@ export function SettingsPage() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              try {
-                if (name && name.trim()) {
-                  localStorage.setItem('userName', name.trim());
-                }
-              } catch {}
+              if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert('Invalid email');
+              localStorage.setItem('userEmail', email);
+              if (name && name.trim()) {
+                localStorage.setItem('userName', name.trim());
+              }
+              localStorage.setItem('country', country);
+              alert('Saved!');
               triggerSave('Profile information updated successfully!');
             }}
             className="settings-form"
@@ -133,24 +152,41 @@ export function SettingsPage() {
               <input
                 id="user-email-input"
                 type="email"
-                className="form-input is-readonly"
+                className="form-input"
                 value={email}
-                readOnly
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailErr(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value) ? '' : 'Invalid email');
+                }}
+                placeholder="you@email.com"
               />
+              {emailErr && <p className="text-red-500 text-xs mt-1">{emailErr}</p>}
             </div>
 
             <div className="form-field">
               <label className="form-label" htmlFor="user-location-select">Primary Region / Country</label>
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search country"
+                className="w-full p-2 mb-2 border rounded"
+              />
               <select
                 id="user-location-select"
-                className="form-select"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                value={country}
+                onChange={(e) => {
+                  setCountry(e.target.value);
+                  localStorage.setItem('country', e.target.value);
+                }}
+                className="w-full p-2 border rounded"
               >
-                <option value="India">India (CEA Grid Factor 0.716 kg/kWh)</option>
-                <option value="United Kingdom">United Kingdom (DEFRA 2024 Factors)</option>
-                <option value="United States">United States (US EPA eGRID Factors)</option>
-                <option value="Global">Global Weighted Averages</option>
+                {countries
+                  .filter((c) => c.name.toLowerCase().includes(q.toLowerCase()))
+                  .map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.name}
+                    </option>
+                  ))}
               </select>
             </div>
 
