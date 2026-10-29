@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '../auth/context/authContextDef';
 
 const RITUAL_KEY = 'ritualCompletion';
 const LAST_DATE_KEY = 'lastLoginDate';
@@ -17,8 +16,28 @@ const formatHeaderDate = (d: Date) => {
 import { Link } from 'react-router-dom';
 
 export function DashboardPage() {
-  const { user } = useAuth();
-  const displayName = user?.user_metadata?.full_name?.split(" ")[0] || "there";
+  const [userName, setUserName] = useState<string>('there');
+
+  useEffect(() => {
+    try {
+      const stored =
+        localStorage.getItem('userName') ||
+        localStorage.getItem('user_name') ||
+        localStorage.getItem('name');
+      if (
+        stored &&
+        stored.trim() &&
+        !stored.toLowerCase().includes('field') &&
+        !stored.toLowerCase().includes('demo')
+      ) {
+        setUserName(stored.trim().split(' ')[0]);
+      } else {
+        setUserName('there');
+      }
+    } catch {
+      setUserName('there');
+    }
+  }, []);
 
   const [now, setNow] = useState<Date | null>(null);
   const [completedDays, setCompletedDays] = useState<number[]>([]);
@@ -82,7 +101,7 @@ export function DashboardPage() {
         <div>
           <span className="dash-greeting-small">Good morning,</span>
           <h1 className="dash-greeting-title">
-            {displayName} <span className="wave-hand">👋</span>
+            {userName} <span className="wave-hand">👋</span>
           </h1>
           <p className="dash-greeting-sub">Small changes today. A lighter tomorrow.</p>
         </div>

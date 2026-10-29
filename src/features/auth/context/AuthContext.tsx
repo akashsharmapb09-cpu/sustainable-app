@@ -23,7 +23,7 @@ function demoUser(): AuthUser {
     email: "demo@greenswap.local",
     created_at: new Date().toISOString(),
     email_confirmed_at: new Date().toISOString(),
-    user_metadata: { full_name: "Field Demo" },
+    user_metadata: { full_name: "Demo User" },
   };
 }
 
@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const enterDemoSession = useCallback(() => {
     const user = demoUser();
     const existing = getLocalProfile(user.id)
-      ?? defaultProfile(user.id, user.email ?? "", "Field Demo");
+      ?? defaultProfile(user.id, user.email ?? "", "Demo User");
     setLocalProfile(existing);
     localStorage.setItem(DEMO_STORAGE_KEY, "1");
     setDemoActive(true);

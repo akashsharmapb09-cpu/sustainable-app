@@ -174,8 +174,12 @@ export function AppShell() {
             </button>
 
             {/* User Avatar Circle with letter 'A' */}
-            <NavLink to="/settings" className="topbar-avatar" title={`${user?.user_metadata?.full_name || "User"} (Settings)`}>
-              <span>{(user?.user_metadata?.full_name || "U")[0].toUpperCase()}</span>
+            <NavLink
+              to="/settings"
+              className="topbar-avatar"
+              title={`${(typeof window !== 'undefined' ? localStorage.getItem('userName') : null) || (user?.user_metadata?.full_name && !user.user_metadata.full_name.includes('Field') ? user.user_metadata.full_name : null) || 'User'} (Settings)`}
+            >
+              <span>{((typeof window !== 'undefined' ? localStorage.getItem('userName') : null) || (user?.user_metadata?.full_name && !user.user_metadata.full_name.includes('Field') ? user.user_metadata.full_name : null) || 'U')[0].toUpperCase()}</span>
             </NavLink>
           </div>
         </header>

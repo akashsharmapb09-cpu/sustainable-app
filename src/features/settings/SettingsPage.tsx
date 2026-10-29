@@ -107,6 +107,11 @@ export function SettingsPage() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              try {
+                if (name && name.trim()) {
+                  localStorage.setItem('userName', name.trim());
+                }
+              } catch {}
               triggerSave('Profile information updated successfully!');
             }}
             className="settings-form"
