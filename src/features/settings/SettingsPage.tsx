@@ -1,12 +1,15 @@
 import { useState } from 'react';
+import { useAuth } from '../auth/context/authContextDef';
 import { Check, Shield, Bell, Sliders, User, Download, Trash2 } from 'lucide-react';
 
 export function SettingsPage() {
+  const { user } = useAuth();
+
   const [activeTab, setActiveTab] = useState<'profile' | 'preferences' | 'notifications' | 'privacy'>('profile');
 
   // Profile Form State
-  const [name, setName] = useState('Akash Sharma');
-  const [email] = useState('akash@example.com');
+  const [name, setName] = useState(user?.user_metadata?.full_name || 'User');
+  const [email] = useState(user?.email || 'user@example.com');
   const [location, setLocation] = useState('India');
   const [interests, setInterests] = useState<string[]>(['Sustainability', 'Clean Energy', 'Healthy Living']);
   const [bio, setBio] = useState('Making small everyday choices for a lighter household carbon footprint.');
@@ -93,7 +96,7 @@ export function SettingsPage() {
       {activeTab === 'profile' && (
         <div className="settings-card">
           <div className="settings-user-row">
-            <div className="user-avatar-circle">A</div>
+            <div className="user-avatar-circle">{(name || "U")[0].toUpperCase()}</div>
             <div className="user-meta">
               <strong className="user-name">{name}</strong>
               <span className="user-email">{email}</span>

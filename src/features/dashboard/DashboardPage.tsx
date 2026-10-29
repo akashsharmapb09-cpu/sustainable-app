@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useAuth } from '../auth/context/authContextDef';
 
 const RITUAL_KEY = 'ritualCompletion';
 const LAST_DATE_KEY = 'lastLoginDate';
@@ -16,6 +17,9 @@ const formatHeaderDate = (d: Date) => {
 import { Link } from 'react-router-dom';
 
 export function DashboardPage() {
+  const { user } = useAuth();
+  const displayName = user?.user_metadata?.full_name?.split(" ")[0] || "there";
+
   const [now, setNow] = useState<Date | null>(null);
   const [completedDays, setCompletedDays] = useState<number[]>([]);
   const today = now ? dayKey(now) : null;
@@ -78,7 +82,7 @@ export function DashboardPage() {
         <div>
           <span className="dash-greeting-small">Good morning,</span>
           <h1 className="dash-greeting-title">
-            Akash <span className="wave-hand">👋</span>
+            {displayName} <span className="wave-hand">👋</span>
           </h1>
           <p className="dash-greeting-sub">Small changes today. A lighter tomorrow.</p>
         </div>

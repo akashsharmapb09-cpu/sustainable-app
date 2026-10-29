@@ -174,8 +174,8 @@ export function AppShell() {
             </button>
 
             {/* User Avatar Circle with letter 'A' */}
-            <NavLink to="/settings" className="topbar-avatar" title="Akash Sharma (Settings)">
-              <span>A</span>
+            <NavLink to="/settings" className="topbar-avatar" title={`${user?.user_metadata?.full_name || "User"} (Settings)`}>
+              <span>{(user?.user_metadata?.full_name || "U")[0].toUpperCase()}</span>
             </NavLink>
           </div>
         </header>
