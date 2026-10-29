@@ -8,8 +8,8 @@ import { MaybeShell } from './shared/ui/MaybeShell';
 import { CardSkeleton } from './shared/ui/Skeleton';
 import { LandingPage } from './features/public/LandingPage';
 
-import FaqPage from './pages/FaqPage';
-import MethodologyPage from './pages/MethodologyPage';
+const MethodologyPage = lazy(() => import('./features/public/MethodologyPage').then((m) => ({ default: m.MethodologyPage })));
+const FaqPage = lazy(() => import('./features/public/FaqPage').then((m) => ({ default: m.FaqPage })));
 const DataSourcesPage = lazy(() => import('./features/public/DataSourcesPage').then((m) => ({ default: m.DataSourcesPage })));
 const StyleGuidePage = lazy(() => import('./features/styleguide/StyleGuidePage').then((m) => ({ default: m.StyleGuidePage })));
 const AboutPage = lazy(() => import('./features/public/AboutPage').then((m) => ({ default: m.AboutPage })));

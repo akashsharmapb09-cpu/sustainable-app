@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ArrowLeft, ChevronDown, HelpCircle, BookOpen, Mail } from 'lucide-react';
 
 interface FaqItem {
@@ -63,14 +65,14 @@ export default function FaqPage() {
       <header className="border-b border-[#e2dacb] bg-[#ede5d8]/80 backdrop-blur-sm px-6 py-4 md:px-12 sticky top-0 z-20">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link
-            to="/"
+            href="/"
             className="inline-flex items-center gap-2 text-xs font-mono font-medium text-[#4a6b57] hover:text-[#162a20] transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to GreenSwap
           </Link>
           <div className="flex items-center gap-3">
             <Link
-              to="/methodology"
+              href="/methodology"
               className="text-xs font-mono text-[#5b7566] hover:text-[#162a20] underline transition-colors"
             >
               Calculation Methodology →
@@ -113,7 +115,7 @@ export default function FaqPage() {
           {filteredFaqs.length === 0 ? (
             <p className="text-sm text-[#6f8275] py-8 text-center">
               No matching questions found. Try a different keyword or{' '}
-              <Link to="/contact" className="underline font-semibold">
+              <Link href="/contact" className="underline font-semibold">
                 contact us
               </Link>
               .
@@ -159,13 +161,13 @@ export default function FaqPage() {
           </div>
           <div className="flex gap-2">
             <Link
-              to="/methodology"
+              href="/methodology"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#162a20] text-[#FAF8F4] text-xs font-semibold hover:bg-[#234333] transition-colors"
             >
               <BookOpen className="h-3.5 w-3.5" /> Methodology
             </Link>
             <Link
-              to="/contact"
+              href="/contact"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#162a20] text-[#162a20] text-xs font-semibold hover:bg-[#162a20]/10 transition-colors"
             >
               <Mail className="h-3.5 w-3.5" /> Contact
@@ -176,5 +178,3 @@ export default function FaqPage() {
     </div>
   );
 }
-
-export { FaqPage };
