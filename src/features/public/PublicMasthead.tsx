@@ -132,7 +132,7 @@ export function PublicFooter() {
           GreenSwap.
         </Link>
         <nav style={{ display: 'flex', flexWrap: 'wrap', gap: '1.25rem' }}>
-          {[['/', 'Home'],['/explore','Explore'],['/catalogue','Catalogue'],['/methodology','Methodology'],['/data-sources','Data Sources'],['/about','About'],['/contact','Contact'],['/privacy','Privacy'],['/terms','Terms']].map(([href, label]) => (
+          {[['/', 'Home'],['/explore','Explore'],['/catalogue','Catalogue'],['/methodology','Methodology'],['/data-sources','Data Sources'],['/about','About'],['/contact','Contact'],['/faq','FAQ'],['/privacy','Privacy'],['/terms','Terms']].map(([href, label]) => (
             <Link
               key={label}
               to={href}

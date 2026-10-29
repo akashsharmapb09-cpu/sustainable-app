@@ -8,7 +8,8 @@ import { MaybeShell } from './shared/ui/MaybeShell';
 import { CardSkeleton } from './shared/ui/Skeleton';
 import { LandingPage } from './features/public/LandingPage';
 
-const MethodologyPage = lazy(() => import('./features/public/MethodologyPage').then((m) => ({ default: m.MethodologyPage })));
+import FaqPage from './pages/FaqPage';
+import MethodologyPage from './pages/MethodologyPage';
 const DataSourcesPage = lazy(() => import('./features/public/DataSourcesPage').then((m) => ({ default: m.DataSourcesPage })));
 const StyleGuidePage = lazy(() => import('./features/styleguide/StyleGuidePage').then((m) => ({ default: m.StyleGuidePage })));
 const AboutPage = lazy(() => import('./features/public/AboutPage').then((m) => ({ default: m.AboutPage })));
@@ -45,6 +46,7 @@ export default function App() {
       <div className="route-enter" key={location.pathname}>
         <Routes location={location}>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/faq" element={<FaqPage />} />
           <Route path="/methodology" element={<MethodologyPage />} />
           <Route path="/data-sources" element={<DataSourcesPage />} />
           <Route path="/resources" element={<DataSourcesPage />} />

@@ -187,7 +187,7 @@ export function LandingPage() {
             <Link to="/about">About</Link>
             <Link to="/privacy">Privacy Policy</Link>
             <Link to="/terms">Terms & Conditions</Link>
-            <Link to="/methodology">FAQ</Link>
+            <Link to="/faq">FAQ</Link>
           </div>
 
           <div className="lp-footer__links-col">
