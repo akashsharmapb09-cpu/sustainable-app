@@ -113,21 +113,31 @@ const FOCUS_TOPICS = [
 
 const EFFORT_OPTIONS = [
   {
+    key: "Low",
     val: 'easy' as EffortLevel,
-    label: 'Easy swaps only',
+    label: 'Low — Easy swaps',
     desc: 'No routine change (LED bulbs, aerators, setpoints)',
     image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=300&auto=format&fit=crop&q=80',
   },
   {
+    key: "Medium",
     val: 'moderate' as EffortLevel,
-    label: 'Moderate changes',
+    label: 'Medium — Moderate changes',
     desc: 'Light habit shifts (transit 2x/wk, meal swaps, steel bottle)',
     image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300&auto=format&fit=crop&q=80',
   },
   {
+    key: "High",
     val: 'committed' as EffortLevel,
-    label: 'Willing to invest',
-    desc: 'High impact interventions (solar panels, EV, composting)',
+    label: 'High — Deep shifts',
+    desc: 'Bigger daily changes (public transit only, zero waste lifestyle)',
+    image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=300&auto=format&fit=crop&q=80',
+  },
+  {
+    key: "Willing to Invest",
+    val: 'committed' as EffortLevel,
+    label: 'Willing to Invest',
+    desc: 'High impact interventions (solar panels, EV, heat pumps)',
     image: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?w=300&auto=format&fit=crop&q=80',
   },
 ];
@@ -162,7 +172,15 @@ export default function OnboardingPage() {
   const [householdSize, setHouseholdSize] = useState(3);
   const [interests, setInterests] = useState<string[]>(['transport', 'energy', 'food']);
   const [effort, setEffort] = useState<EffortLevel>('moderate');
+  const [selectedEffort, setSelectedEffort] = useState("Medium");
   const [budget, setBudget] = useState<'low' | 'medium' | 'high'>('medium');
+
+  const totals: Record<string, { co2: number; cash: number }> = {
+    "Low": { co2: 0.3, cash: 1200 },
+    "Medium": { co2: 0.7, cash: 2840 },
+    "High": { co2: 1.4, cash: 5200 },
+    "Willing to Invest": { co2: 2.1, cash: 8500 }
+  };
 
   const toggleInterest = (id: string) => {
     setInterests((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -434,13 +452,16 @@ export default function OnboardingPage() {
               <label className="text-xs font-mono tracking-wider text-[#535C55] uppercase font-bold block">
                 EFFORT YOU WILL TOLERATE
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {EFFORT_OPTIONS.map((item) => {
-                  const isSelected = effort === item.val;
+                  const isSelected = selectedEffort === item.key;
                   return (
                     <div
-                      key={item.val}
-                      onClick={() => setEffort(item.val)}
+                      key={item.key}
+                      onClick={() => {
+                        setEffort(item.val);
+                        setSelectedEffort(item.key);
+                      }}
                       className={`bg-white rounded-2xl p-5 shadow-md hover:shadow-xl transition-all cursor-pointer text-center flex flex-col items-center justify-between ${
                         isSelected ? 'border-2 border-emerald-600 bg-emerald-50/40 ring-2 ring-emerald-600/20' : 'border border-[#DFD7CA]'
                       }`}
@@ -511,11 +532,11 @@ export default function OnboardingPage() {
               </div>
             </div>
 
-            {/* Projected Savings Banner */}
-            <div className="bg-[#162A20] rounded-2xl p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
+            {/* Projected Savings Banner with live update */}
+            <div className="bg-[#162A20] rounded-2xl p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg transition-all duration-300">
               <div>
                 <span className="text-[11px] font-mono tracking-widest text-emerald-400 uppercase font-semibold block mb-1">
-                  CALIBRATED ESTIMATE
+                  CALIBRATED ESTIMATE ({selectedEffort.toUpperCase()} EFFORT)
                 </span>
                 <h3 className="font-serif text-2xl font-bold">Your Projected Impact</h3>
                 <p className="text-xs text-white/70 mt-1 max-w-md">
@@ -525,11 +546,21 @@ export default function OnboardingPage() {
               <div className="flex items-center gap-6 divide-x divide-white/20">
                 <div className="text-right">
                   <span className="block text-xs font-mono text-emerald-400">ESTIMATED CO₂ REDUCTION</span>
-                  <strong className="font-serif text-2xl sm:text-3xl font-bold text-white">0.7t <span className="text-xs font-sans font-normal text-white/70">/ mo</span></strong>
+                  <strong
+                    key={`co2-${selectedEffort}`}
+                    className="font-serif text-2xl sm:text-3xl font-bold text-white transition-all duration-300 transform inline-block animate-fade-in"
+                  >
+                    {totals[selectedEffort]?.co2 ?? 0.7}t <span className="text-xs font-sans font-normal text-white/70">/ mo</span>
+                  </strong>
                 </div>
                 <div className="pl-6 text-right">
                   <span className="block text-xs font-mono text-emerald-400">ESTIMATED CASH SAVED</span>
-                  <strong className="font-serif text-2xl sm:text-3xl font-bold text-white">₹2,840 <span className="text-xs font-sans font-normal text-white/70">/ mo</span></strong>
+                  <strong
+                    key={`cash-${selectedEffort}`}
+                    className="font-serif text-2xl sm:text-3xl font-bold text-white transition-all duration-300 transform inline-block animate-fade-in"
+                  >
+                    ₹{(totals[selectedEffort]?.cash ?? 2840).toLocaleString()} <span className="text-xs font-sans font-normal text-white/70">/ mo</span>
+                  </strong>
                 </div>
               </div>
             </div>
