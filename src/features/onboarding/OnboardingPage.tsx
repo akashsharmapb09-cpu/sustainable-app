@@ -83,7 +83,7 @@ export function OnboardingPage() {
           </div>
           <button
             type="button"
-            className="onboard-skip-btn"
+            className="onboard-skip-btn absolute top-4 right-6"
             onClick={() => navigate('/dashboard')}
           >
             Skip to Dashboard →
