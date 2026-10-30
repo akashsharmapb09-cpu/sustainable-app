@@ -14,10 +14,20 @@ const formatHeaderDate = (d: Date) => {
   return `${weekday}, ${rest}`;
 };
 import { Link } from 'react-router-dom';
+import {
+  DAILY_RITUALS_CHANGED_EVENT,
+  DEFAULT_DAILY_RITUALS,
+  getDailyRituals,
+  isDailyRitualStorageEvent,
+  type DailyRitual,
+} from '../../shared/lib/ritualCompletion';
 
 export function DashboardPage() {
   const [now, setNow] = useState<Date | null>(null);
   const [completedDays, setCompletedDays] = useState<number[]>([]);
+  const [dailyRituals, setDailyRituals] = useState<DailyRitual[]>(() =>
+    DEFAULT_DAILY_RITUALS.map((ritual) => ({ ...ritual }))
+  );
   const today = now ? dayKey(now) : null;
 
   // Keep the date live; re-check every minute so it rolls over at midnight
@@ -49,7 +59,25 @@ export function DashboardPage() {
     }
   }, [today]);
 
-  const doneCount = completedDays.length;
+  // The dashboard gauge uses the exact same persisted daily ritual check-ins
+  // as Your Routine. Listen for same-tab changes and cross-tab storage updates.
+  useEffect(() => {
+    const refreshDailyRituals = () => setDailyRituals(getDailyRituals());
+    const onStorage = (event: StorageEvent) => {
+      if (isDailyRitualStorageEvent(event.key)) refreshDailyRituals();
+    };
+    refreshDailyRituals();
+    window.addEventListener(DAILY_RITUALS_CHANGED_EVENT, refreshDailyRituals);
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener(DAILY_RITUALS_CHANGED_EVENT, refreshDailyRituals);
+      window.removeEventListener('storage', onStorage);
+    };
+  }, [today]);
+
+  // Ritual completion is the number of checked daily habits, not the
+  // separate weekday markers shown in the 7-day plan strip below.
+  const doneCount = dailyRituals.filter((ritual) => ritual.completed).length;
   const remainingCount = TOTAL_STEPS - doneCount;
   const gaugeOffset = 251.2 * (1 - doneCount / TOTAL_STEPS);
   const [bookmarked, setBookmarked] = useState<Record<string, boolean>>({
