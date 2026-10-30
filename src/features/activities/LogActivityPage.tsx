@@ -230,7 +230,7 @@ export function LogActivityPage() {
                   );
                 })}
               </div>
-              <div className="challenge-panel-footer"><span><ShieldCheck size={15} /> Progress is saved as you go</span><span>{routineActions.length - completedCount} habits to complete</span></div>
+              <div className="challenge-panel-footer"><span><ShieldCheck size={15} /> Your check-in updates while this page is open</span><span>{routineActions.length - completedCount} habits to complete</span></div>
             </section>
 
             <aside className="routine-plan-aside">
@@ -261,17 +261,17 @@ export function LogActivityPage() {
               <Link to="/catalogue" className="swaps-browse-button">Explore more swaps <ArrowUpRight size={16} /></Link>
             </div>
             <div className="swaps-hero-stats">
-              <div><span>ACTIVE SWAPS</span><strong>04</strong><small>Across 4 categories</small></div>
-              <div><span>MONTHLY CO₂E AVOIDED</span><strong>150 <i>kg</i></strong><small>From your adopted habits</small></div>
-              <div><span>ESTIMATED SAVINGS</span><strong>₹4,980</strong><small>Per month</small></div>
+              <div><span>ACTIVE SWAPS</span><strong>{String(adoptedSwaps.length).padStart(2, '0')}</strong><small>Across {activeSwapCategoryCount} categories</small></div>
+              <div><span>ESTIMATED MONTHLY CO₂E AVOIDED</span><strong>{analyticsLoading ? '—' : liveAnalytics.monthlyCo2SavedKg.toFixed(1)} <i>kg</i></strong><small>From matched activity logs</small></div>
+              <div><span>ESTIMATED NET SAVINGS</span><strong>{analyticsLoading ? '—' : formatNetSavings(liveAnalytics.monthlyCashSavingsInr)}</strong><small>Per month</small></div>
             </div>
           </section>
           <div className="swaps-section-heading">
             <div><span className="panel-eyebrow">YOUR HOUSEHOLD PLAYBOOK</span><h3>Habits that are making a difference</h3></div>
-            <span className="swaps-active-label"><span /> All swaps active</span>
+            <span className="swaps-active-label"><span /> {adoptedSwaps.length} adopted swaps</span>
           </div>
           <div className="premium-swaps-grid">
-            {swaps.map((swap, index) => {
+            {adoptedSwaps.map((swap, index) => {
               const Icon = swap.icon;
               return (
                 <article key={swap.title} className={`premium-swap-card tone-${swap.tone}`}>
@@ -313,6 +313,14 @@ export function LogActivityPage() {
               );
             })}
           </div>
+          {adoptedSwaps.length === 0 && (
+            <div className="swaps-empty-state">
+              <span className="swaps-empty-icon"><Leaf size={24} /></span>
+              <h3>{userActionsLoading || alternativesLoading ? 'Loading your adopted swaps…' : 'No adopted swaps yet'}</h3>
+              <p>Adopt an alternative from Discover and it will appear here with its estimated impact and monthly cost change.</p>
+              <Link to="/catalogue" className="swaps-browse-button">Explore swaps <ArrowUpRight size={16} /></Link>
+            </div>
+          )}
         </div>
       )}
 
@@ -321,171 +329,108 @@ export function LogActivityPage() {
           <section className="analytics-hero-panel">
             <div className="analytics-hero-photo" aria-hidden="true" />
             <div className="analytics-hero-scrim" aria-hidden="true" />
-            <div><div className="panel-eyebrow light-eyebrow"><TrendingDown size={14} /> YOUR IMPACT, IN FOCUS</div><h2>Your choices are<br />adding up.</h2><p>A snapshot of the positive changes your household routines are creating.</p></div>
-            <div className="analytics-hero-highlight"><span>MONTHLY CARBON SAVED</span><strong>150.0 <i>kg</i></strong><small><TrendingDown size={14} /> 12% better than last month</small></div>
+            <div><div className="panel-eyebrow light-eyebrow"><TrendingDown size={14} /> YOUR IMPACT, IN FOCUS</div><h2>Your choices are<br />adding up.</h2><p>Live estimates from your saved activity logs and currently adopted swaps.</p></div>
+            <div className="analytics-hero-highlight"><span>MONTHLY CO₂E AVOIDED</span><strong>{analyticsLoading ? '—' : liveAnalytics.monthlyCo2SavedKg.toFixed(1)} <i>kg</i></strong><small>{analyticsLoading ? 'Loading saved activity…' : liveAnalytics.currentMonthLogCount + ' activity logs · ' + liveAnalytics.adopted.length + ' adopted swaps'}</small></div>
             <div className="analytics-hero-decoration"><Leaf size={150} strokeWidth={0.7} /></div>
           </section>
 
+          {analyticsError && (
+            <div className="routine-data-error" role="alert">
+              <span>Saved activity data could not be loaded. Analytics may be incomplete.</span>
+              <button type="button" onClick={() => { void refetchLogs(); void refetchUserActions(); }}>Retry data</button>
+            </div>
+          )}
           <div className="analytics-kpi-grid">
-            <article className="routine-premium-card kpi-premium-card kpi-carbon"><div className="kpi-top-row"><span className="kpi-icon-wrap"><TrendingDown size={19} /></span><span className="kpi-trend">+12%</span></div><span className="kpi-label">MONTHLY CO₂E SAVED</span><strong className="kpi-value">150.0 <small>kg</small></strong><span className="kpi-description">Compared with last month</span></article>
-            <article className="routine-premium-card kpi-premium-card kpi-money"><div className="kpi-top-row"><span className="kpi-icon-wrap"><Wallet size={19} /></span><span className="kpi-trend">SAVED</span></div><span className="kpi-label">NET EXPENDITURE SAVINGS</span><strong className="kpi-value">₹4,980 <small>/ mo</small></strong><span className="kpi-description">Fuel &amp; electricity deltas</span></article>
-            <article className="routine-premium-card kpi-premium-card kpi-water"><div className="kpi-top-row"><span className="kpi-icon-wrap"><Droplets size={19} /></span><span className="kpi-trend">+8%</span></div><span className="kpi-label">WATER CONSERVED</span><strong className="kpi-value">720 <small>litres</small></strong><span className="kpi-description">Showers &amp; tap aerators</span></article>
-            <article className="routine-premium-card kpi-premium-card kpi-streak"><div className="kpi-top-row"><span className="kpi-icon-wrap"><Flame size={19} /></span><span className="kpi-trend">ON TRACK</span></div><span className="kpi-label">HABIT STREAK</span><strong className="kpi-value">14 <small>days</small></strong><span className="kpi-description">Your current active streak</span></article>
+            <article className="routine-premium-card kpi-premium-card kpi-carbon"><div className="kpi-top-row"><span className="kpi-icon-wrap"><TrendingDown size={19} /></span><span className="kpi-trend">{analyticsLoading ? 'LOADING' : 'LIVE DATA'}</span></div><span className="kpi-label">MONTHLY CO₂E AVOIDED</span><strong className="kpi-value">{analyticsLoading ? '—' : liveAnalytics.monthlyCo2SavedKg.toFixed(1)} <small>kg</small></strong><span className="kpi-description">From adopted swaps matched to this month&apos;s logs</span></article>
+            <article className="routine-premium-card kpi-premium-card kpi-money"><div className="kpi-top-row"><span className="kpi-icon-wrap"><Wallet size={19} /></span><span className="kpi-trend">{analyticsLoading ? 'LOADING' : 'ADOPTED'}</span></div><span className="kpi-label">NET MONTHLY COST SAVINGS</span><strong className="kpi-value">{analyticsLoading ? '—' : formatNetSavings(liveAnalytics.monthlyCashSavingsInr)} <small>/ mo</small></strong><span className="kpi-description">Sum of adopted alternatives&apos; estimated cost changes</span></article>
+            <article className="routine-premium-card kpi-premium-card kpi-water"><div className="kpi-top-row"><span className="kpi-icon-wrap"><Droplets size={19} /></span><span className="kpi-trend">{analyticsLoading ? 'LOADING' : 'TRACKED'}</span></div><span className="kpi-label">WATER-RELATED SWAPS</span><strong className="kpi-value">{analyticsLoading ? '—' : liveAnalytics.waterRelatedSwapCount} <small>actions</small></strong><span className="kpi-description">Water savings in litres are not recorded yet</span></article>
+            <article className="routine-premium-card kpi-premium-card kpi-streak"><div className="kpi-top-row"><span className="kpi-icon-wrap"><Flame size={19} /></span><span className="kpi-trend">{analyticsLoading ? 'LOADING' : 'ACTIVITY LOGS'}</span></div><span className="kpi-label">LOGGING STREAK</span><strong className="kpi-value">{analyticsLoading ? '—' : liveAnalytics.currentStreakDays} <small>days</small></strong><span className="kpi-description">Consecutive days with a saved activity log</span></article>
           </div>
-
           <div className="analytics-premium-grid">
             <section className="routine-premium-card premium-chart-card">
-              <div className="premium-chart-heading"><div><span className="panel-eyebrow">WEEKLY PERFORMANCE</span><h3>Carbon reduction trend</h3><p>Kilograms of CO₂e avoided each week</p></div><span className="chart-period-pill">LAST 4 WEEKS</span></div>
+              <div className="premium-chart-heading"><div><span className="panel-eyebrow">WEEKLY PERFORMANCE</span><h3>Carbon reduction trend</h3><p>Weekly equivalent from the activity logs you recorded</p></div><span className="chart-period-pill">LAST 4 WEEKS</span></div>
               <div className="carbon-chart-shell">
                 <div className="carbon-chart-summary">
-                  <div><span className="carbon-chart-caption">TOTAL AVOIDED</span><strong>150 <small>kg CO₂e</small></strong></div>
+                  <div><span className="carbon-chart-caption">MONTHLY ESTIMATE</span><strong>{analyticsLoading ? '—' : liveAnalytics.monthlyCo2SavedKg.toFixed(1)} <small>kg CO₂e</small></strong></div>
                   <div className="carbon-chart-summary-right">
-                    <span className="carbon-chart-trend"><TrendingDown size={14} /> +19 kg this month</span>
-                    <small>Best week <b>47 kg</b></small>
+                    <span className="carbon-chart-trend"><TrendingDown size={14} /> {analyticsLoading ? 'Loading' : liveAnalytics.currentMonthLogCount + ' matching logs'}</span>
+                    <small>Best week <b>{analyticsLoading ? '—' : bestWeek.kg.toFixed(1) + ' kg'}</b></small>
                   </div>
                 </div>
-                <svg className="carbon-area-chart" viewBox="0 0 640 340" role="img" aria-label="Weekly carbon avoided increased from 28 to 47 kilograms over four weeks">
+                <svg className="carbon-area-chart" viewBox="0 0 640 340" role="img" aria-label="Weekly carbon savings calculated from your saved activity logs">
                   <defs>
-                    <linearGradient id="carbonAreaFill" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="#d4a66f" stopOpacity=".28" />
-                      <stop offset="100%" stopColor="#d4a66f" stopOpacity="0" />
-                    </linearGradient>
-                    <linearGradient id="carbonTrendStroke" x1="0" x2="1" y1="0" y2="0">
-                      <stop offset="0%" stopColor="#547b65" />
-                      <stop offset="100%" stopColor="#203f30" />
-                    </linearGradient>
-                    <linearGradient id="barSage" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="#b7c8b6" /><stop offset="100%" stopColor="#809a83" />
-                    </linearGradient>
-                    <linearGradient id="barSand" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="#e7c69e" /><stop offset="100%" stopColor="#bd8f61" />
-                    </linearGradient>
-                    <linearGradient id="barBlue" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="#a9c2c2" /><stop offset="100%" stopColor="#688d8c" />
-                    </linearGradient>
-                    <linearGradient id="barForest" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="#64866d" /><stop offset="100%" stopColor="#254b35" />
-                    </linearGradient>
-                    <linearGradient id="barFrontGloss" x1="0" x2="1" y1="0" y2="0">
-                      <stop offset="0%" stopColor="#ffffff" stopOpacity=".28" />
-                      <stop offset="28%" stopColor="#ffffff" stopOpacity=".06" />
-                      <stop offset="100%" stopColor="#14291c" stopOpacity=".16" />
-                    </linearGradient>
-                    <linearGradient id="barSideShade" x1="0" x2="1" y1="0" y2="0">
-                      <stop offset="0%" stopColor="#15291d" stopOpacity=".18" />
-                      <stop offset="100%" stopColor="#102419" stopOpacity=".45" />
-                    </linearGradient>
-                    <filter id="bar3DShadow" x="-50%" y="-20%" width="200%" height="160%">
-                      <feGaussianBlur stdDeviation="5" />
-                    </filter>
+                    <linearGradient id="carbonAreaFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#d4a66f" stopOpacity=".28" /><stop offset="100%" stopColor="#d4a66f" stopOpacity="0" /></linearGradient>
+                    <linearGradient id="carbonTrendStroke" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stopColor="#547b65" /><stop offset="100%" stopColor="#203f30" /></linearGradient>
+                    <linearGradient id="barSage" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#b7c8b6" /><stop offset="100%" stopColor="#809a83" /></linearGradient>
+                    <linearGradient id="barSand" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#e7c69e" /><stop offset="100%" stopColor="#bd8f61" /></linearGradient>
+                    <linearGradient id="barBlue" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#a9c2c2" /><stop offset="100%" stopColor="#688d8c" /></linearGradient>
+                    <linearGradient id="barForest" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#64866d" /><stop offset="100%" stopColor="#254b35" /></linearGradient>
+                    <linearGradient id="barFrontGloss" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stopColor="#ffffff" stopOpacity=".28" /><stop offset="28%" stopColor="#ffffff" stopOpacity=".06" /><stop offset="100%" stopColor="#14291c" stopOpacity=".16" /></linearGradient>
+                    <filter id="bar3DShadow" x="-50%" y="-20%" width="200%" height="160%"><feGaussianBlur stdDeviation="5" /></filter>
                   </defs>
-
-                  <g className="carbon-chart-grid">
-                    <line x1="58" y1="48" x2="610" y2="48" />
-                    <line x1="58" y1="114" x2="610" y2="114" />
-                    <line x1="58" y1="180" x2="610" y2="180" />
-                    <line x1="58" y1="246" x2="610" y2="246" />
-                  </g>
-                  <g className="carbon-chart-axis-labels">
-                    <text x="10" y="52">50</text><text x="10" y="118">35</text><text x="10" y="184">20</text><text x="20" y="250">0</text>
-                  </g>
-
-                  <path className="carbon-chart-area" d="M112 129 C158 121 197 116 250 105 S354 88 388 78 S490 57 526 48 L526 246 L112 246 Z" />
-
+                  <g className="carbon-chart-grid"><line x1="58" y1="48" x2="610" y2="48" /><line x1="58" y1="114" x2="610" y2="114" /><line x1="58" y1="180" x2="610" y2="180" /><line x1="58" y1="246" x2="610" y2="246" /></g>
+                  <g className="carbon-chart-axis-labels"><text x="10" y="52">{chartScale}</text><text x="10" y="118">{Math.round(chartScale * 0.66)}</text><text x="10" y="184">{Math.round(chartScale * 0.33)}</text><text x="20" y="250">0</text></g>
+                  <path className="carbon-chart-area" d={chartAreaPath} />
                   <polygon className="carbon-chart-floor" points="62,246 606,246 586,269 82,269" />
-                  <g className="carbon-chart-floor-lines">
-                    <path d="M82 269 L112 246 M208 269 L236 246 M334 269 L360 246 M460 269 L484 246 M586 269 L606 246" />
-                    <path d="M70 254 L598 254 M76 261 L592 261" />
-                  </g>
+                  <g className="carbon-chart-floor-lines"><path d="M82 269 L112 246 M208 269 L236 246 M334 269 L360 246 M460 269 L484 246 M586 269 L606 246" /><path d="M70 254 L598 254 M76 261 L592 261" /></g>
                   <g className="carbon-chart-bars-3d">
-                    <ellipse className="bar-ground-shadow" cx="119" cy="251" rx="40" ry="8" />
-                    <g className="bar-prism bar-prism-sage">
-                      <polygon className="bar-side" points="138,129 153,117 153,234 138,246" />
-                      <polygon className="bar-top" points="86,129 101,117 153,117 138,129" />
-                      <rect className="bar-front" x="86" y="129" width="52" height="117" rx="8" />
-                      <rect className="bar-front-gloss" x="86" y="129" width="52" height="117" rx="8" />
-                    </g>
-
-                    <ellipse className="bar-ground-shadow" cx="257" cy="251" rx="40" ry="8" />
-                    <g className="bar-prism bar-prism-sand">
-                      <polygon className="bar-side" points="276,105 291,93 291,234 276,246" />
-                      <polygon className="bar-top" points="224,105 239,93 291,93 276,105" />
-                      <rect className="bar-front" x="224" y="105" width="52" height="141" rx="8" />
-                      <rect className="bar-front-gloss" x="224" y="105" width="52" height="141" rx="8" />
-                    </g>
-
-                    <ellipse className="bar-ground-shadow" cx="395" cy="251" rx="40" ry="8" />
-                    <g className="bar-prism bar-prism-blue">
-                      <polygon className="bar-side" points="414,78 429,66 429,234 414,246" />
-                      <polygon className="bar-top" points="362,78 377,66 429,66 414,78" />
-                      <rect className="bar-front" x="362" y="78" width="52" height="168" rx="8" />
-                      <rect className="bar-front-gloss" x="362" y="78" width="52" height="168" rx="8" />
-                    </g>
-
-                    <ellipse className="bar-ground-shadow" cx="533" cy="251" rx="40" ry="8" />
-                    <g className="bar-prism bar-prism-forest">
-                      <polygon className="bar-side" points="552,48 567,36 567,234 552,246" />
-                      <polygon className="bar-top" points="500,48 515,36 567,36 552,48" />
-                      <rect className="bar-front" x="500" y="48" width="52" height="198" rx="8" />
-                      <rect className="bar-front-gloss" x="500" y="48" width="52" height="198" rx="8" />
-                    </g>
+                    {chartColumns.map((bar, index) => {
+                      const frontRight = bar.x + 52;
+                      const sideX = bar.x + 67;
+                      const tones = ['bar-prism-sage', 'bar-prism-sand', 'bar-prism-blue', 'bar-prism-forest'];
+                      return (
+                        <g key={bar.start} className={'bar-prism ' + tones[index]}>
+                          <ellipse className="bar-ground-shadow" cx={bar.centerX + 7} cy="251" rx="40" ry="8" />
+                          <polygon className="bar-side" points={bar.x + 52 + ',' + bar.y + ' ' + sideX + ',' + (bar.y - 12) + ' ' + sideX + ',234 ' + frontRight + ',246} />
+                          <polygon className="bar-top" points={bar.x + ',' + bar.y + ' ' + (bar.x + 15) + ',' + (bar.y - 12) + ' ' + sideX + ',' + (bar.y - 12) + ' ' + frontRight + ',' + bar.y} />
+                          <rect className="bar-front" x={bar.x} y={bar.y} width="52" height={bar.height} rx="8" />
+                          <rect className="bar-front-gloss" x={bar.x} y={bar.y} width="52" height={bar.height} rx="8" />
+                        </g>
+                      );
+                    })}
                   </g>
-
-                  <path className="carbon-chart-line" d="M112 129 C158 121 197 116 250 105 S354 88 388 78 S490 57 526 48" />
-                  <g className="carbon-chart-points">
-                    <circle cx="112" cy="129" r="6" />
-                    <circle cx="250" cy="105" r="6" />
-                    <circle cx="388" cy="78" r="6" />
-                    <circle className="carbon-point-latest" cx="526" cy="48" r="8" />
-                  </g>
-
-                  <g className="carbon-chart-values">
-                    <text x="112" y="107" textAnchor="middle">28 kg</text>
-                    <text x="250" y="83" textAnchor="middle">34 kg</text>
-                    <text x="388" y="56" textAnchor="middle">41 kg</text>
-                    <g className="carbon-latest-callout">
-                      <rect x="485" y="7" width="82" height="27" rx="13.5" />
-                      <text x="526" y="25" textAnchor="middle">47 kg</text>
-                    </g>
-                  </g>
-
-                  <g className="carbon-chart-weeks">
-                    <text x="112" y="306" textAnchor="middle">WEEK 01</text>
-                    <text x="250" y="280" textAnchor="middle">WEEK 02</text>
-                    <text x="388" y="280" textAnchor="middle">WEEK 03</text>
-                    <text x="526" y="280" textAnchor="middle">WEEK 04</text>
-                  </g>
+                  <path className="carbon-chart-line" d={chartLinePath} />
+                  <g className="carbon-chart-points">{chartColumns.map((bar, index) => <circle key={bar.start} className={index === chartColumns.length - 1 ? 'carbon-point-latest' : ''} cx={bar.centerX} cy={bar.y} r={index === chartColumns.length - 1 ? 8 : 6} />)}</g>
+                  <g className="carbon-chart-values">{chartColumns.map((bar, index) => index === chartColumns.length - 1 ? (
+                    <g key={bar.start} className="carbon-latest-callout"><rect x={bar.centerX - 41} y={Math.max(7, bar.y - 42)} width="82" height="27" rx="13.5" /><text x={bar.centerX} y={Math.max(25, bar.y - 24)} textAnchor="middle">{bar.kg.toFixed(1)} kg</text></g>
+                  ) : <text key={bar.start} x={bar.centerX} y={Math.max(24, bar.y - 16)} textAnchor="middle">{bar.kg.toFixed(1)} kg</text>)}</g>
+                  <g className="carbon-chart-weeks">{chartColumns.map((bar) => <text key={bar.start} x={bar.centerX} y="306" textAnchor="middle">{bar.label.toUpperCase()}</text>)}</g>
                 </svg>
                 <div className="carbon-chart-legend">
                   <span><i className="legend-bar" /> Weekly avoided CO₂e</span>
                   <span><i className="legend-line" /> Trend line</span>
                 </div>
               </div>
-              <div className="chart-bottom-note"><span><span className="chart-legend-dot" /> Carbon avoided each week</span><strong>Consistent upward progress</strong></div>
+              <div className="chart-bottom-note"><span><span className="chart-legend-dot" /> Estimated weekly equivalent</span><strong>{liveAnalytics.currentMonthLogCount} activity logs this month</strong></div>
             </section>
 
             <section className="routine-premium-card premium-breakdown-card">
-              <div className="premium-chart-heading"><div><span className="panel-eyebrow">WHERE IT COMES FROM</span><h3>Impact by category</h3><p>Your biggest sources of positive change</p></div><span className="breakdown-total">150 <small>kg</small></span></div>
+              <div className="premium-chart-heading"><div><span className="panel-eyebrow">WHERE IT COMES FROM</span><h3>Impact by category</h3><p>Calculated from your matched activity logs</p></div><span className="breakdown-total">{analyticsLoading ? '—' : liveAnalytics.monthlyCo2SavedKg.toFixed(1)} <small>kg</small></span></div>
               <div className="premium-category-list">
-                {[
-                  { name: 'Transport', detail: 'Metro & carpooling', pct: 50, color: '#164532', kg: '75 kg' },
-                  { name: 'Energy', detail: 'AC 24°C & LEDs', pct: 27, color: '#3b9163', kg: '40 kg' },
-                  { name: 'Food', detail: 'Plant-based meals', pct: 20, color: '#b87552', kg: '30 kg' },
-                  { name: 'Shopping & waste', detail: 'Totes & compost', pct: 3, color: '#91a196', kg: '5 kg' },
-                ].map((cat) => (
-                  <div key={cat.name} className="premium-category-row">
-                    <div className="premium-category-top"><span><i style={{ backgroundColor: cat.color }} />{cat.name}<small>{cat.detail}</small></span><strong>{cat.kg}</strong></div>
-                    <div className="premium-category-track"><span style={{ width: `${cat.pct}%`, backgroundColor: cat.color }} /></div>
-                    <div className="premium-category-foot"><span>{cat.pct}% of total impact</span></div>
-                  </div>
-                ))}
+                {liveAnalytics.categoryBreakdown.length > 0 ? liveAnalytics.categoryBreakdown.map((cat) => {
+                  const styles = {
+                    transport: { label: 'Transport', detail: 'Commute and travel', color: '#164532' },
+                    energy: { label: 'Energy', detail: 'Home electricity and fuel', color: '#3b9163' },
+                    food: { label: 'Food', detail: 'Meals and groceries', color: '#b87552' },
+                    shopping: { label: 'Shopping', detail: 'Products and clothing', color: '#8d78a8' },
+                    waste: { label: 'Waste', detail: 'Reuse and composting', color: '#91a196' },
+                    travel: { label: 'Travel', detail: 'Long-distance journeys', color: '#688d8c' },
+                  } as const;
+                  const style = styles[cat.category];
+                  return (
+                    <div key={cat.category} className="premium-category-row">
+                      <div className="premium-category-top"><span><i style={{ backgroundColor: style.color }} />{style.label}<small>{style.detail}</small></span><strong>{cat.kg.toFixed(1)} kg</strong></div>
+                      <div className="premium-category-track"><span style={{ width: cat.percentage + '%', backgroundColor: style.color }} /></div>
+                      <div className="premium-category-foot"><span>{cat.percentage}% of estimated savings</span></div>
+                    </div>
+                  );
+                }) : <p className="routine-data-empty">No CO₂ savings can be calculated yet. Adopt a swap and log its matching baseline activity to see the category breakdown.</p>}
               </div>
               <div className="premium-streak-footer">
-                <div><span className="streak-footer-icon"><Calendar size={15} /></span><span><strong>14-day consistency</strong><small>You&apos;re building a lasting rhythm</small></span></div>
-                <div className="premium-streak-dots">{['M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => <span key={i} className={i < 12 ? 'is-complete' : i === 12 ? 'is-today' : ''}>{i === 12 ? <Check size={10} /> : d}</span>)}</div>
+                <div><span className="streak-footer-icon"><Calendar size={15} /></span><span><strong>{liveAnalytics.currentStreakDays}-day logging streak</strong><small>{liveAnalytics.last14Days.filter((day) => day.logged).length} of the last 14 days with a saved activity log</small></span></div>
+                <div className="premium-streak-dots">{liveAnalytics.last14Days.map((day) => <span key={day.dateKey} className={(day.logged ? 'is-complete ' : '') + (day.isToday ? 'is-today' : '')}>{day.logged ? <Check size={10} /> : day.label}</span>)}</div>
               </div>
-            </section>
-          </div>
+            </section>         </div>
         </div>
       )}
 
@@ -1027,6 +972,15 @@ export function LogActivityPage() {
           .swap-card-benefit { align-items:flex-start; flex-direction:column; gap:.2rem; }
           .swap-card-benefit strong { font-size:.65rem; }
         }
+        .routine-data-empty { padding:.85rem 0; color:#889187; font-size:.72rem; line-height:1.6; }
+        .routine-data-error { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin:0 0 1rem; padding:.75rem 1rem; border:1px solid #ead8c6; border-radius:14px; color:#8b603b; background:#fff8ed; font-size:.72rem; }
+        .routine-data-error button { flex-shrink:0; padding:.35rem .7rem; border:1px solid #dcc7ad; border-radius:999px; color:#76502e; background:#fffdf8; font-size:.68rem; font-weight:750; cursor:pointer; }
+        .swaps-empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:260px; padding:2.5rem 1.5rem; border:1px dashed #d9d2c4; border-radius:24px; text-align:center; background:linear-gradient(145deg,rgba(255,253,248,.9),rgba(244,239,229,.86)); }
+        .swaps-empty-icon { display:grid; place-items:center; width:58px; height:58px; margin-bottom:1rem; border-radius:18px; color:#477653; background:#e9f0e5; }
+        .swaps-empty-state h3 { margin:0; color:#203b2a; font:700 1.35rem 'Fraunces',Georgia,serif; }
+        .swaps-empty-state p { max-width:470px; margin:.5rem 0 0; color:#81877d; font-size:.78rem; line-height:1.6; }
+        .swaps-empty-state .swaps-browse-button { color:#fff; background:#173c2a; margin-top:1rem; }
+        .kpi-water .kpi-value { font-size:1.35rem; }
       `}</style>
     </div>
   );
