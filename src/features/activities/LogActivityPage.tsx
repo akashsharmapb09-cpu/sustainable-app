@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Check, Flame, TrendingDown, Droplets, Wallet, Calendar, Leaf,
   ArrowUpRight, TrainFront, Utensils, Lightbulb, ShoppingBag, Bike,
@@ -8,20 +8,13 @@ import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import { useActivityLogs, useAlternatives, useUserActions } from '../../shared/lib/hooks/useData';
 import { buildRoutinePageViewModel } from './data/routineAnalytics';
-
-interface RoutineAction {
-  id: string; label: string; category: string; saving: string; completed: boolean;
-}
-
-const INITIAL_ACTIONS: RoutineAction[] = [
-  { id: '1', label: 'Use a reusable water bottle', category: 'Shopping', saving: '-1.5 kg CO₂e', completed: true },
-  { id: '2', label: 'Try a plant-based meal', category: 'Food', saving: '-2.8 kg CO₂e', completed: true },
-  { id: '3', label: 'Walk or cycle for short trips', category: 'Transport', saving: '-4.2 kg CO₂e', completed: true },
-  { id: '4', label: 'Avoid food waste', category: 'Food', saving: '-3.0 kg CO₂e', completed: true },
-  { id: '5', label: 'Use LED bulbs', category: 'Energy', saving: '-1.8 kg CO₂e', completed: false },
-  { id: '6', label: 'Choose second-hand', category: 'Shopping', saving: '-2.2 kg CO₂e', completed: false },
-  { id: '7', label: 'Take shorter showers', category: 'Home', saving: '-2.0 kg CO₂e', completed: false },
-];
+import {
+  DAILY_RITUALS_CHANGED_EVENT,
+  getDailyRituals,
+  isDailyRitualStorageEvent,
+  saveDailyRituals,
+  type DailyRitual,
+} from '../../shared/lib/ritualCompletion';
 
 const actionIcons = { Shopping: ShoppingBag, Food: Utensils, Transport: Bike, Energy: Lightbulb, Home: Droplets };
 
@@ -77,8 +70,23 @@ const formatNetSavings = (amount: number) =>
   amount < 0 ? '−' + formatINR(amount) : formatINR(amount);
 
 export function LogActivityPage() {
-  const [actions, setActions] = useState<RoutineAction[]>(INITIAL_ACTIONS);
+  const [actions, setActions] = useState<DailyRitual[]>(() => getDailyRituals());
   const [activeTab, setActiveTab] = useState<'plan' | 'swaps' | 'analytics'>('plan');
+
+  // Keep Routine in sync with the shared daily checklist when another mounted
+  // screen or browser tab changes today's check-ins.
+  useEffect(() => {
+    const refreshRituals = () => setActions(getDailyRituals());
+    const onStorage = (event: StorageEvent) => {
+      if (isDailyRitualStorageEvent(event.key)) refreshRituals();
+    };
+    window.addEventListener(DAILY_RITUALS_CHANGED_EVENT, refreshRituals);
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener(DAILY_RITUALS_CHANGED_EVENT, refreshRituals);
+      window.removeEventListener('storage', onStorage);
+    };
+  }, []);
 
   // The Routine dashboard reads the same queries used by Activity logging and Discover.
   // Their mutation hooks invalidate these query keys, so the page refreshes after saves/adoptions.
@@ -113,10 +121,13 @@ export function LogActivityPage() {
   const analyticsLoading = activityQuery.isLoading || userActionsQuery.isLoading || alternativesQuery.isLoading;
   const analyticsError = activityQuery.isError || userActionsQuery.isError;
 
-  const toggleAction = (id: string) =>
-    setActions((previous) => previous.map((action) =>
+  const toggleAction = (id: string) => {
+    const nextActions = actions.map((action) =>
       action.id === id ? { ...action, completed: !action.completed } : action
-    ));
+    );
+    setActions(nextActions);
+    saveDailyRituals(nextActions);
+  };
   const completedCount = actions.filter((action) => action.completed).length;
   const completionPercent = Math.round((completedCount / actions.length) * 100);
   return (
@@ -181,7 +192,7 @@ export function LogActivityPage() {
                   );
                 })}
               </div>
-              <div className="challenge-panel-footer"><span><ShieldCheck size={15} /> Check-ins update during this session</span><span>{7 - completedCount} habits to complete</span></div>
+              <div className="challenge-panel-footer"><span><ShieldCheck size={15} /> Check-ins save automatically for today and sync with your dashboard</span><span>{7 - completedCount} habits to complete</span></div>
             </section>
 
             <aside className="routine-plan-aside">
