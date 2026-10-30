@@ -76,16 +76,18 @@ const CATEGORY_VISUALS: Record<string, { label: string; emoji: string; image: st
 // every Transport recommendation to reuse the same train photograph.
 const ALTERNATIVE_VISUALS: Record<string, { image: string; fallback: string }> = {
   'alt-metro-commute': {
-    image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1400&q=85',
-    fallback: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1400&q=85',
+    // Verified Delhi Metro train arriving at a station — not a bus/coach.
+    image: 'https://images.unsplash.com/photo-1760816417540-cb9d731edefe?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1760816417540-cb9d731edefe?auto=format&fit=crop&w=1200&q=80',
   },
   'alt-electric-2w': {
     image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1400&q=85',
     fallback: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80',
   },
   'alt-shared-e-rickshaw': {
-    image: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=1400&q=85',
-    fallback: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=1200&q=80',
+    // A clearly identifiable Indian electric three-wheeler/e-rickshaw.
+    image: 'https://buscdn.cardekho.com/in/arrow-ev/gem/arrow-ev-gem.jpg',
+    fallback: 'https://images.unsplash.com/photo-1760818860357-72a6160ec23a?auto=format&fit=crop&w=1400&q=85',
   },
   'alt-carpool-work': {
     image: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1400&q=85',
