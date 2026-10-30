@@ -210,7 +210,11 @@ export function SettingsPage() {
                   id="primary-country-input"
                   type="text"
                   value={countrySearch}
-                  onFocus={() => setCountryDropdownOpen(true)}
+                  onFocus={() => {
+                    // Keep the saved country visible while idle, but show the full list when opened.
+                    setCountrySearch('');
+                    setCountryDropdownOpen(true);
+                  }}
                   onChange={(e) => {
                     setCountrySearch(e.target.value);
                     setCountryDropdownOpen(true);
