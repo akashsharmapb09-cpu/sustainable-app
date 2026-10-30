@@ -398,14 +398,23 @@ export default function OnboardingPage() {
                         isSelected ? 'border-2 border-emerald-500 ring-2 ring-emerald-500/20' : 'border border-[#DFD7CA]'
                       }`}
                     >
-                      {/* Image full cover */}
-                      <Image
-                        src={topic.image}
-                        alt={topic.label}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
+                      {topic.id === 'energy' ? (
+                        <img
+                          src="https://images.unsplash.com/photo-1509391365360-2e959784a276?w=1200&auto=format&fit=crop&q=85"
+                          alt={topic.label}
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <Image
+                          src={topic.image}
+                          alt={topic.label}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      )}
+
                       {/* Dark gradient at bottom */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
@@ -445,16 +454,21 @@ export default function OnboardingPage() {
                         isSelected ? 'border-2 border-emerald-600 bg-emerald-50/40 ring-2 ring-emerald-600/20' : 'border border-[#DFD7CA]'
                       }`}
                     >
-                      {/* Small product image */}
-                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden mb-3 border border-[#DFD7CA]">
-                        <Image
-                          src={item.image}
-                          alt={item.label}
-                          fill
-                          sizes="80px"
-                          className="object-cover"
-                        />
-                      </div>
+                      {item.val === 'committed' ? (
+                        <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-4xl shadow-inner">
+                          <span role="img" aria-label="Money">💰</span>
+                        </div>
+                      ) : (
+                        <div className="relative mb-3 h-20 w-20 overflow-hidden rounded-2xl border border-[#DFD7CA]">
+                          <Image
+                            src={item.image}
+                            alt={item.label}
+                            fill
+                            sizes="80px"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
                       <div>
                         <strong className="block text-base font-bold text-[#162A20]">{item.label}</strong>
                         <p className="text-xs text-[#535C55] mt-1 leading-snug">{item.desc}</p>
