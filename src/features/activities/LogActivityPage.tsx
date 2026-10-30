@@ -105,9 +105,14 @@ function formatNetSavings(value: number): string {
 
 
 export function LogActivityPage() {
+  const activityQuery = useActivityLogs();
+  const actionQuery = useUserActions();
+  const alternativeQuery = useAlternatives();
+  const liveAnalytics = calculateRoutineAnalytics(activityQuery.data || [], actionQuery.data || [], alternativeQuery.data || []);
   return (
     <div className="routine-premium">
       <h1>Your routine</h1>
+      <p>{liveAnalytics.monthlyCo2SavedKg}</p>
     </div>
   );
 }
