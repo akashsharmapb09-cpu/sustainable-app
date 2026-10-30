@@ -45,7 +45,7 @@ interface SwapVisual {
   fallbackImage?: string;
 }
 
-const swapVisuals: Record<string, SwapVisual> = {
+const swapVisuals: { [key: string]: SwapVisual } = {
   transport: {
     icon: TrainFront,
     tone: 'transport',
@@ -105,8 +105,8 @@ function formatNetSavings(value: number): string {
 
 
 export function LogActivityPage() {
-  const [routineActions, setRoutineActions] = useState<RoutineAction[]>(INITIAL_ACTIONS);
-  const [activeTab, setActiveTab] = useState<'plan' | 'swaps' | 'analytics'>('plan');
+  const [routineActions, setRoutineActions] = useState(INITIAL_ACTIONS);
+  const [activeTab, setActiveTab] = useState('plan' as 'plan' | 'swaps' | 'analytics');
 
   // These are the same saved records used by Progress and Recommendations.
   const { data: activityLogs = [], isLoading: logsLoading, isError: logsError, refetch: refetchLogs } = useActivityLogs();
