@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Check, ArrowRight, ArrowLeft } from 'lucide-react';
@@ -163,6 +163,46 @@ export default function OnboardingPage() {
   const [interests, setInterests] = useState<string[]>(['transport', 'energy', 'food']);
   const [effort, setEffort] = useState<EffortLevel>('moderate');
   const [budget, setBudget] = useState<'low' | 'medium' | 'high'>('medium');
+
+  // Live monthly estimates derived from the current onboarding selections.
+  const projectedImpact = useMemo(() => {
+    const commuteImpact = {
+      public_transit: { co2: 100, cash: 1800 },
+      two_wheeler: { co2: 45, cash: 850 },
+      car_ev: { co2: 65, cash: 1100 },
+      car_petrol: { co2: 0, cash: 0 },
+      walk_cycle: { co2: 115, cash: 2200 },
+      carpool: { co2: 55, cash: 1200 },
+    }[commute];
+
+    const dietImpact = {
+      omnivore: { co2: 0, cash: 0 },
+      vegetarian: { co2: 28, cash: 900 },
+      vegan: { co2: 48, cash: 1250 },
+    }[diet];
+
+    const effortFactor = { easy: 0.7, moderate: 1, committed: 1.3 }[effort];
+    const budgetFactor = { low: 0.9, medium: 1, high: 1.1 }[budget];
+    const householdFactor = 0.7 + householdSize * 0.1;
+
+    const focusImpact = [
+      { id: 'energy', co2: 38, cash: 650 },
+      { id: 'food', co2: 12, cash: 350 },
+      { id: 'waste', co2: 10, cash: 250 },
+      { id: 'shopping', co2: 8, cash: 300 },
+      { id: 'travel', co2: 14, cash: 200 },
+    ].filter((item) => interests.includes(item.id));
+
+    const focusCo2 = focusImpact.reduce((total, item) => total + item.co2, 0);
+    const focusCash = focusImpact.reduce((total, item) => total + item.cash, 0);
+    const transportCo2 = interests.includes('transport') ? commuteImpact.co2 : 0;
+    const transportCash = interests.includes('transport') ? commuteImpact.cash : 0;
+
+    return {
+      co2Tonnes: ((transportCo2 + dietImpact.co2 + focusCo2) * effortFactor * householdFactor) / 1000,
+      cashRupees: Math.round((transportCash + dietImpact.cash + focusCash) * effortFactor * budgetFactor * householdFactor),
+    };
+  }, [commute, diet, householdSize, interests, effort, budget]);
 
   const toggleInterest = (id: string) => {
     setInterests((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -530,11 +570,11 @@ export default function OnboardingPage() {
               <div className="flex items-center gap-6 divide-x divide-white/20">
                 <div className="text-right">
                   <span className="block text-xs font-mono text-emerald-400">ESTIMATED CO₂ REDUCTION</span>
-                  <strong className="font-serif text-2xl sm:text-3xl font-bold text-white">0.7t <span className="text-xs font-sans font-normal text-white/70">/ mo</span></strong>
+                  <strong className="font-serif text-2xl sm:text-3xl font-bold text-white">{projectedImpact.co2Tonnes.toFixed(2)}t <span className="text-xs font-sans font-normal text-white/70">/ mo</span></strong>
                 </div>
                 <div className="pl-6 text-right">
                   <span className="block text-xs font-mono text-emerald-400">ESTIMATED CASH SAVED</span>
-                  <strong className="font-serif text-2xl sm:text-3xl font-bold text-white">₹2,840 <span className="text-xs font-sans font-normal text-white/70">/ mo</span></strong>
+                  <strong className="font-serif text-2xl sm:text-3xl font-bold text-white">₹{projectedImpact.cashRupees.toLocaleString('en-IN')} <span className="text-xs font-sans font-normal text-white/70">/ mo</span></strong>
                 </div>
               </div>
             </div>
