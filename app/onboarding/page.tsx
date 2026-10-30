@@ -83,7 +83,7 @@ const FOCUS_TOPICS = [
     id: 'energy',
     label: 'Clean Energy',
     tag: 'Cost saver',
-    image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1552197892-f2ad2f75e7c8?auto=format&fit=crop&w=1200&q=85',
   },
   {
     id: 'food',
@@ -400,7 +400,7 @@ export default function OnboardingPage() {
                     >
                       {topic.id === 'energy' ? (
                         <img
-                          src="https://images.unsplash.com/photo-1509391365360-2e959784a276?w=1200&auto=format&fit=crop&q=85"
+                          src="https://images.unsplash.com/photo-1552197892-f2ad2f75e7c8?auto=format&fit=crop&w=1200&q=85"
                           alt={topic.label}
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           loading="lazy"
