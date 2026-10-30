@@ -22,10 +22,10 @@ const INITIAL_ACTIONS: RoutineAction[] = [
 
 const actionIcons = { Shopping: ShoppingBag, Food: Utensils, Transport: Bike, Energy: Lightbulb, Home: Droplets };
 const swaps = [
-  { title: 'Metro commute for office workdays', cat: 'Transport', co2: '-75 kg CO₂e / mo', money: 'Save ~₹3,200/mo', status: 'Adopted 3 weeks ago', icon: TrainFront, tone: 'transport', detail: 'A lower-carbon way to get to work', image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&auto=format&fit=crop&q=85' },
-  { title: 'Eat plant-based weekday lunches', cat: 'Food', co2: '-30 kg CO₂e / mo', money: 'Save ~₹1,100/mo', status: 'Adopted 2 weeks ago', icon: Utensils, tone: 'food', detail: 'More plants, less food-related impact', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&auto=format&fit=crop&q=85' },
-  { title: 'AC 24°C thermostat setpoint', cat: 'Energy', co2: '-40 kg CO₂e / mo', money: 'Save ~₹680/mo', status: 'Adopted 1 month ago', icon: Zap, tone: 'energy', detail: 'Comfortable cooling with less energy', image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?w=1200&auto=format&fit=crop&q=85' },
-  { title: 'Cloth totes for market purchases', cat: 'Shopping', co2: '-5 kg CO₂e / mo', money: 'Zero plastic waste', status: 'Adopted 2 months ago', icon: ShoppingBag, tone: 'shopping', detail: 'A reusable choice on every shopping trip', image: 'https://images.unsplash.com/photo-1597481499666-9a2c8d9dcbd2?w=1200&auto=format&fit=crop&q=85' },
+  { title: 'Metro commute for office workdays', cat: 'Transport', co2: '-75 kg CO₂e / mo', money: 'Save ~₹3,200/mo', status: 'Adopted 3 weeks ago', icon: TrainFront, tone: 'transport', detail: 'A lower-carbon way to get to work', benefit: 'Trade solo driving for shared city travel', image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&auto=format&fit=crop&q=85' },
+  { title: 'Eat plant-based weekday lunches', cat: 'Food', co2: '-30 kg CO₂e / mo', money: 'Save ~₹1,100/mo', status: 'Adopted 2 weeks ago', icon: Utensils, tone: 'food', detail: 'More plants, less food-related impact', benefit: 'A lighter footprint from everyday meals', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&auto=format&fit=crop&q=85' },
+  { title: 'AC 24°C thermostat setpoint', cat: 'Energy', co2: '-40 kg CO₂e / mo', money: 'Save ~₹680/mo', status: 'Adopted 1 month ago', icon: Zap, tone: 'energy', detail: 'Comfortable cooling with less energy', image: 'https://images.unsplash.com/photo-1745187946672-2c1d8cf26a2b?auto=format&fit=crop&w=1600&q=85', fallbackImage: 'https://images.unsplash.com/photo-1662340712175-349cd23a63d6?auto=format&fit=crop&w=1600&q=85', benefit: 'Use less grid electricity with efficient cooling' },
+  { title: 'Cloth totes for market purchases', cat: 'Shopping', co2: '-5 kg CO₂e / mo', money: 'Zero plastic waste', status: 'Adopted 2 months ago', icon: ShoppingBag, tone: 'shopping', detail: 'A reusable choice on every shopping trip', image: 'https://images.unsplash.com/photo-1772890753143-24991d807710?auto=format&fit=crop&w=1600&q=85', fallbackImage: 'https://images.unsplash.com/photo-1759463408569-c81a969a6c3d?auto=format&fit=crop&w=1600&q=85', benefit: 'Replace single-use bags with a durable tote' },
 ];
 
 export function LogActivityPage() {
@@ -142,10 +142,28 @@ export function LogActivityPage() {
               const Icon = swap.icon;
               return (
                 <article key={swap.title} className={`premium-swap-card tone-${swap.tone}`}>
-                  <img className="swap-card-image" src={swap.image} alt="" loading="lazy" />
+                  <img
+                    className="swap-card-image"
+                    src={swap.image}
+                    alt={`${swap.cat}: ${swap.title}`}
+                    loading="lazy"
+                    decoding="async"
+                    data-fallback={swap.fallbackImage || ''}
+                    onError={(event) => {
+                      const image = event.currentTarget;
+                      const fallback = image.dataset.fallback;
+                      if (fallback && image.src !== fallback) {
+                        image.src = fallback;
+                        image.dataset.fallback = '';
+                      } else {
+                        image.style.display = 'none';
+                      }
+                    }}
+                  />
                   <div className="swap-card-scrim" aria-hidden="true" />
                   <div className="swap-card-top"><span className="swap-feature-icon"><Icon size={21} /></span><span className="swap-active-status"><span /> ACTIVE</span><span className="swap-card-index">0{index + 1}</span></div>
                   <div className="swap-card-copy"><div className="swap-category-label">{swap.cat}</div><h3>{swap.title}</h3><p>{swap.detail}</p></div>
+                  <div className="swap-card-benefit"><span>WHY IT HELPS</span><strong>{swap.benefit}</strong></div>
                   <div className="swap-card-expanded-metrics">
                     <div className="swap-expanded-metric">
                       <span className="swap-savings-label">MONTHLY CO₂E AVOIDED</span>
@@ -858,6 +876,23 @@ export function LogActivityPage() {
           .swap-expanded-metric strong { font-size:.78rem; }
           .carbon-chart-shell { perspective:none; }
           .carbon-area-chart { transform:none; }
+        }
+
+        /* Reliable photo handling + extra context so the adopted swaps feel complete. */
+        .premium-swap-card { background:radial-gradient(circle at 80% 8%,rgba(113,157,117,.2),transparent 35%),linear-gradient(145deg,#193a2a,#081f15); }
+        .swap-card-image { display:block; background:linear-gradient(135deg,#d8ded0,#8da18b); object-position:center 48%; }
+        .swap-card-benefit {
+          position:relative; z-index:1; display:flex; align-items:center; gap:.7rem;
+          margin:0 0 1rem; padding:.58rem .78rem; border-left:2px solid rgba(205,229,196,.72);
+          border-radius:0 10px 10px 0; background:rgba(11,30,20,.34);
+        }
+        .swap-card-benefit span { flex:0 0 auto; color:rgba(234,245,231,.58); font-size:.52rem; font-weight:850; letter-spacing:.12em; }
+        .swap-card-benefit strong { color:#edf5e9; font-size:.68rem; font-weight:650; line-height:1.35; }
+        .swap-card-expanded-metrics { margin-top:auto; }
+        .swap-card-image[style*="display: none"] ~ .swap-card-scrim { background:linear-gradient(145deg,rgba(35,72,49,.9),rgba(7,28,18,.97)); }
+        @media(max-width:700px) {
+          .swap-card-benefit { align-items:flex-start; flex-direction:column; gap:.2rem; }
+          .swap-card-benefit strong { font-size:.65rem; }
         }
       `}</style>
     </div>
