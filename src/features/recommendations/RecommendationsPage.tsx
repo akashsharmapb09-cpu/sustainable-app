@@ -72,8 +72,79 @@ const CATEGORY_VISUALS: Record<string, { label: string; emoji: string; image: st
   },
 };
 
-function visualFor(category: string) {
-  return CATEGORY_VISUALS[category.toLowerCase()] || CATEGORY_VISUALS.home;
+// Keep a distinct photo for each concrete swap. Category-only images caused
+// every Transport recommendation to reuse the same train photograph.
+const ALTERNATIVE_VISUALS: Record<string, { image: string; fallback: string }> = {
+  'alt-metro-commute': {
+    image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1400&q=85',
+  },
+  'alt-electric-2w': {
+    image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80',
+  },
+  'alt-shared-e-rickshaw': {
+    image: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=1200&q=80',
+  },
+  'alt-carpool-work': {
+    image: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=85',
+  },
+  'alt-bicycle-short-trips': {
+    image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1544191696-15693072a0cf?auto=format&fit=crop&w=1400&q=85',
+  },
+  'alt-train-intercity': {
+    image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1200&q=80',
+  },
+  'alt-bldc-ceiling-fans': {
+    image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=80',
+  },
+  'alt-ac-26-degrees': {
+    image: 'https://images.unsplash.com/photo-1631545806609-3c7c8a0e28d1?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1400&q=85',
+  },
+  'alt-induction-cooktop': {
+    image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80',
+  },
+  'alt-solar-water-heater': {
+    image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=1400&q=85',
+  },
+  'alt-meatless-weekdays': {
+    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1400&q=85',
+  },
+  'alt-millets-swap-rice': {
+    image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1400&q=85',
+  },
+  'alt-home-composting-khamba': {
+    image: 'https://images.unsplash.com/photo-1532996122724-a3c354a0f50b?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?auto=format&fit=crop&w=1400&q=85',
+  },
+  'alt-reusable-steel-flask': {
+    image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1523369364227-249b4a5047d2?auto=format&fit=crop&w=1400&q=85',
+  },
+  'alt-thrift-clothing': {
+    image: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1400&q=85',
+  },
+  'alt-refurbished-electronics': {
+    image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=1400&q=85',
+    fallback: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=1400&q=85',
+  },
+};
+
+function visualFor(category: string, alternativeId: string) {
+  const base = CATEGORY_VISUALS[category.toLowerCase()] || CATEGORY_VISUALS.home;
+  const specific = ALTERNATIVE_VISUALS[alternativeId];
+  return specific ? { ...base, ...specific } : base;
 }
 
 export function RecommendationsPage() {
@@ -288,7 +359,7 @@ export function RecommendationsPage() {
         <div className="rec-grid">
           {recs.map((rec) => {
             const sourceUrl = safeHttpsUrl(rec.alternative.source_url);
-            const visual = visualFor(rec.alternative.category);
+            const visual = visualFor(rec.alternative.category, rec.alternative.id);
             const savedAction = actions?.find((action) => action.alternative_id === rec.alternative.id);
             const isAdopted = savedAction?.status === 'adopted';
             const isMaybeLater = savedAction?.status === 'maybe_later';
@@ -299,7 +370,7 @@ export function RecommendationsPage() {
                 <div className="rec-card-visual" style={{ background: visual.tint }}>
                   <img
                     src={visual.image}
-                    alt={`${visual.label} sustainable swap`}
+                    alt={`${rec.alternative.title} — ${visual.label} sustainable swap`}
                     loading="lazy"
                     onError={(event) => {
                       const image = event.currentTarget;
