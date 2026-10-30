@@ -5,6 +5,7 @@ import {
   Sparkles, ChevronRight, Zap, Clock3, ShieldCheck,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
 
 interface RoutineAction {
   id: string; label: string; category: string; saving: string; completed: boolean;
@@ -20,12 +21,26 @@ const INITIAL_ACTIONS: RoutineAction[] = [
   { id: '7', label: 'Take shorter showers', category: 'Home', saving: '-2.0 kg CO₂e', completed: false },
 ];
 
+interface AdoptedSwap {
+  title: string;
+  cat: string;
+  co2: string;
+  money: string;
+  status: string;
+  icon: LucideIcon;
+  tone: 'transport' | 'food' | 'energy' | 'shopping';
+  detail: string;
+  benefit: string;
+  image: string;
+  fallbackImage?: string;
+}
+
 const actionIcons = { Shopping: ShoppingBag, Food: Utensils, Transport: Bike, Energy: Lightbulb, Home: Droplets };
-const swaps = [
-  { title: 'Metro commute for office workdays', cat: 'Transport', co2: '-75 kg CO₂e / mo', money: 'Save ~₹3,200/mo', status: 'Adopted 3 weeks ago', icon: TrainFront, tone: 'transport', detail: 'A lower-carbon way to get to work', benefit: 'Trade solo driving for shared city travel', image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&auto=format&fit=crop&q=85' },
-  { title: 'Eat plant-based weekday lunches', cat: 'Food', co2: '-30 kg CO₂e / mo', money: 'Save ~₹1,100/mo', status: 'Adopted 2 weeks ago', icon: Utensils, tone: 'food', detail: 'More plants, less food-related impact', benefit: 'A lighter footprint from everyday meals', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&auto=format&fit=crop&q=85' },
+const swaps: AdoptedSwap[] = [
+  { title: 'Metro commute for office workdays', cat: 'Transport', co2: '-75 kg CO₂e / mo', money: 'Save ~₹3,200/mo', status: 'Adopted 3 weeks ago', icon: TrainFront, tone: 'transport', detail: 'A lower-carbon way to get to work', benefit: 'Trade solo driving for shared city travel', image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&auto=format&fit=crop&q=85', fallbackImage: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&auto=format&fit=crop&q=85' },
+  { title: 'Eat plant-based weekday lunches', cat: 'Food', co2: '-30 kg CO₂e / mo', money: 'Save ~₹1,100/mo', status: 'Adopted 2 weeks ago', icon: Utensils, tone: 'food', detail: 'More plants, less food-related impact', benefit: 'A lighter footprint from everyday meals', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&auto=format&fit=crop&q=85', fallbackImage: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&auto=format&fit=crop&q=85' },
   { title: 'AC 24°C thermostat setpoint', cat: 'Energy', co2: '-40 kg CO₂e / mo', money: 'Save ~₹680/mo', status: 'Adopted 1 month ago', icon: Zap, tone: 'energy', detail: 'Comfortable cooling with less energy', image: 'https://images.unsplash.com/photo-1745187946672-2c1d8cf26a2b?auto=format&fit=crop&w=1600&q=85', fallbackImage: 'https://images.unsplash.com/photo-1662340712175-349cd23a63d6?auto=format&fit=crop&w=1600&q=85', benefit: 'Use less grid electricity with efficient cooling' },
-  { title: 'Cloth totes for market purchases', cat: 'Shopping', co2: '-5 kg CO₂e / mo', money: 'Zero plastic waste', status: 'Adopted 2 months ago', icon: ShoppingBag, tone: 'shopping', detail: 'A reusable choice on every shopping trip', image: 'https://images.unsplash.com/photo-1772890753143-24991d807710?auto=format&fit=crop&w=1600&q=85', fallbackImage: 'https://images.unsplash.com/photo-1759463408569-c81a969a6c3d?auto=format&fit=crop&w=1600&q=85', benefit: 'Replace single-use bags with a durable tote' },
+  { title: 'Cloth totes for market purchases', cat: 'Shopping', co2: '-5 kg CO₂e / mo', money: 'Zero plastic waste', status: 'Adopted 2 months ago', icon: ShoppingBag, tone: 'shopping', detail: 'A reusable choice on every shopping trip', image: 'https://images.unsplash.com/photo-1772890753143-24991d807710?auto=format&fit=crop&w=1600&q=85', fallbackImage: 'https://images.unsplash.com/photo-1778996525689-cbbbc33a5185?auto=format&fit=crop&w=1600&q=85', benefit: 'Replace single-use bags with a durable tote' },
 ];
 
 export function LogActivityPage() {
