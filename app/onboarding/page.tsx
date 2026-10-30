@@ -128,7 +128,7 @@ const EFFORT_OPTIONS = [
     val: 'committed' as EffortLevel,
     label: 'Willing to invest',
     desc: 'High impact interventions (solar panels, EV, composting)',
-    image: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?w=300&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=600&auto=format&fit=crop&q=85',
   },
 ];
 
@@ -454,21 +454,15 @@ export default function OnboardingPage() {
                         isSelected ? 'border-2 border-emerald-600 bg-emerald-50/40 ring-2 ring-emerald-600/20' : 'border border-[#DFD7CA]'
                       }`}
                     >
-                      {item.val === 'committed' ? (
-                        <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-4xl shadow-inner">
-                          <span role="img" aria-label="Money">💰</span>
-                        </div>
-                      ) : (
-                        <div className="relative mb-3 h-20 w-20 overflow-hidden rounded-2xl border border-[#DFD7CA]">
-                          <Image
-                            src={item.image}
-                            alt={item.label}
-                            fill
-                            sizes="80px"
-                            className="object-cover"
-                          />
-                        </div>
-                      )}
+                      <div className="relative mb-3 h-20 w-20 overflow-hidden rounded-2xl border border-[#DFD7CA]">
+                        <Image
+                          src={item.image}
+                          alt={item.label}
+                          fill
+                          sizes="80px"
+                          className="object-cover"
+                        />
+                      </div>
                       <div>
                         <strong className="block text-base font-bold text-[#162A20]">{item.label}</strong>
                         <p className="text-xs text-[#535C55] mt-1 leading-snug">{item.desc}</p>
