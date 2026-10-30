@@ -146,9 +146,16 @@ export function LogActivityPage() {
                   <div className="swap-card-scrim" aria-hidden="true" />
                   <div className="swap-card-top"><span className="swap-feature-icon"><Icon size={21} /></span><span className="swap-active-status"><span /> ACTIVE</span><span className="swap-card-index">0{index + 1}</span></div>
                   <div className="swap-card-copy"><div className="swap-category-label">{swap.cat}</div><h3>{swap.title}</h3><p>{swap.detail}</p></div>
-                  <div className="swap-card-bottom">
-                    <div className="swap-card-savings"><span className="swap-savings-label">MONTHLY CARBON IMPACT</span><strong>{swap.co2}</strong></div>
-                    <div className="swap-card-money">{swap.money}</div>
+                  <div className="swap-card-expanded-metrics">
+                    <div className="swap-expanded-metric">
+                      <span className="swap-savings-label">MONTHLY CO₂E AVOIDED</span>
+                      <strong>{swap.co2}</strong>
+                    </div>
+                    <div className="swap-expanded-divider" />
+                    <div className="swap-expanded-metric">
+                      <span className="swap-savings-label">HOUSEHOLD BENEFIT</span>
+                      <strong>{swap.money}</strong>
+                    </div>
                   </div>
                   <div className="swap-card-adopted"><Calendar size={13} /> {swap.status}</div>
                 </article>
@@ -186,7 +193,7 @@ export function LogActivityPage() {
                     <small>Best week <b>47 kg</b></small>
                   </div>
                 </div>
-                <svg className="carbon-area-chart" viewBox="0 0 640 320" role="img" aria-label="Weekly carbon avoided increased from 28 to 47 kilograms over four weeks">
+                <svg className="carbon-area-chart" viewBox="0 0 640 340" role="img" aria-label="Weekly carbon avoided increased from 28 to 47 kilograms over four weeks">
                   <defs>
                     <linearGradient id="carbonAreaFill" x1="0" x2="0" y1="0" y2="1">
                       <stop offset="0%" stopColor="#d4a66f" stopOpacity=".28" />
@@ -208,6 +215,18 @@ export function LogActivityPage() {
                     <linearGradient id="barForest" x1="0" x2="0" y1="0" y2="1">
                       <stop offset="0%" stopColor="#64866d" /><stop offset="100%" stopColor="#254b35" />
                     </linearGradient>
+                    <linearGradient id="barFrontGloss" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity=".28" />
+                      <stop offset="28%" stopColor="#ffffff" stopOpacity=".06" />
+                      <stop offset="100%" stopColor="#14291c" stopOpacity=".16" />
+                    </linearGradient>
+                    <linearGradient id="barSideShade" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0%" stopColor="#15291d" stopOpacity=".18" />
+                      <stop offset="100%" stopColor="#102419" stopOpacity=".45" />
+                    </linearGradient>
+                    <filter id="bar3DShadow" x="-50%" y="-20%" width="200%" height="160%">
+                      <feGaussianBlur stdDeviation="5" />
+                    </filter>
                   </defs>
 
                   <g className="carbon-chart-grid">
@@ -222,11 +241,43 @@ export function LogActivityPage() {
 
                   <path className="carbon-chart-area" d="M112 129 C158 121 197 116 250 105 S354 88 388 78 S490 57 526 48 L526 246 L112 246 Z" />
 
-                  <g className="carbon-chart-bars">
-                    <rect x="86" y="129" width="52" height="117" rx="12" fill="url(#barSage)" />
-                    <rect x="224" y="105" width="52" height="141" rx="12" fill="url(#barSand)" />
-                    <rect x="362" y="78" width="52" height="168" rx="12" fill="url(#barBlue)" />
-                    <rect x="500" y="48" width="52" height="198" rx="12" fill="url(#barForest)" />
+                  <polygon className="carbon-chart-floor" points="62,246 606,246 586,269 82,269" />
+                  <g className="carbon-chart-floor-lines">
+                    <path d="M82 269 L112 246 M208 269 L236 246 M334 269 L360 246 M460 269 L484 246 M586 269 L606 246" />
+                    <path d="M70 254 L598 254 M76 261 L592 261" />
+                  </g>
+                  <g className="carbon-chart-bars-3d">
+                    <ellipse className="bar-ground-shadow" cx="119" cy="251" rx="40" ry="8" />
+                    <g className="bar-prism bar-prism-sage">
+                      <polygon className="bar-side" points="138,129 153,117 153,234 138,246" />
+                      <polygon className="bar-top" points="86,129 101,117 153,117 138,129" />
+                      <rect className="bar-front" x="86" y="129" width="52" height="117" rx="8" />
+                      <rect className="bar-front-gloss" x="86" y="129" width="52" height="117" rx="8" />
+                    </g>
+
+                    <ellipse className="bar-ground-shadow" cx="257" cy="251" rx="40" ry="8" />
+                    <g className="bar-prism bar-prism-sand">
+                      <polygon className="bar-side" points="276,105 291,93 291,234 276,246" />
+                      <polygon className="bar-top" points="224,105 239,93 291,93 276,105" />
+                      <rect className="bar-front" x="224" y="105" width="52" height="141" rx="8" />
+                      <rect className="bar-front-gloss" x="224" y="105" width="52" height="141" rx="8" />
+                    </g>
+
+                    <ellipse className="bar-ground-shadow" cx="395" cy="251" rx="40" ry="8" />
+                    <g className="bar-prism bar-prism-blue">
+                      <polygon className="bar-side" points="414,78 429,66 429,234 414,246" />
+                      <polygon className="bar-top" points="362,78 377,66 429,66 414,78" />
+                      <rect className="bar-front" x="362" y="78" width="52" height="168" rx="8" />
+                      <rect className="bar-front-gloss" x="362" y="78" width="52" height="168" rx="8" />
+                    </g>
+
+                    <ellipse className="bar-ground-shadow" cx="533" cy="251" rx="40" ry="8" />
+                    <g className="bar-prism bar-prism-forest">
+                      <polygon className="bar-side" points="552,48 567,36 567,234 552,246" />
+                      <polygon className="bar-top" points="500,48 515,36 567,36 552,48" />
+                      <rect className="bar-front" x="500" y="48" width="52" height="198" rx="8" />
+                      <rect className="bar-front-gloss" x="500" y="48" width="52" height="198" rx="8" />
+                    </g>
                   </g>
 
                   <path className="carbon-chart-line" d="M112 129 C158 121 197 116 250 105 S354 88 388 78 S490 57 526 48" />
@@ -248,7 +299,7 @@ export function LogActivityPage() {
                   </g>
 
                   <g className="carbon-chart-weeks">
-                    <text x="112" y="280" textAnchor="middle">WEEK 01</text>
+                    <text x="112" y="306" textAnchor="middle">WEEK 01</text>
                     <text x="250" y="280" textAnchor="middle">WEEK 02</text>
                     <text x="388" y="280" textAnchor="middle">WEEK 03</text>
                     <text x="526" y="280" textAnchor="middle">WEEK 04</text>
@@ -736,6 +787,77 @@ export function LogActivityPage() {
           .carbon-chart-trend { font-size:.53rem; padding:.32rem .45rem; }
           .carbon-chart-values { font-size:11px; }
           .carbon-chart-weeks { font-size:9px; }
+        }
+        
+        /* Raised 3D carbon columns with visible top/side planes and soft floor shadows. */
+        .carbon-chart-shell { perspective:1100px; }
+        .carbon-area-chart { overflow:visible; transform:rotateX(2deg); transform-origin:50% 100%; }
+        .carbon-chart-floor { fill:#ebe5d9; stroke:#d6cdbd; stroke-width:1; }
+        .carbon-chart-floor-lines { fill:none; stroke:#d5ccbc; stroke-width:1; opacity:.72; }
+        .bar-ground-shadow { fill:rgba(40,48,37,.18); filter:url(#bar3DShadow); }
+        .bar-front { stroke:rgba(255,255,255,.48); stroke-width:1; }
+        .bar-front-gloss { fill:url(#barFrontGloss); pointer-events:none; }
+        .bar-side { fill:#566f59; stroke:rgba(34,53,37,.18); stroke-width:1; }
+        .bar-top { fill:#d0dcc8; stroke:rgba(255,255,255,.52); stroke-width:1; }
+        .bar-prism-sage .bar-front { fill:url(#barSage); }
+        .bar-prism-sage .bar-side { fill:#718b75; }
+        .bar-prism-sage .bar-top { fill:#d0ddcf; }
+        .bar-prism-sand .bar-front { fill:url(#barSand); }
+        .bar-prism-sand .bar-side { fill:#a77d57; }
+        .bar-prism-sand .bar-top { fill:#f1d9b9; }
+        .bar-prism-blue .bar-front { fill:url(#barBlue); }
+        .bar-prism-blue .bar-side { fill:#587b7d; }
+        .bar-prism-blue .bar-top { fill:#d0e1df; }
+        .bar-prism-forest .bar-front { fill:url(#barForest); }
+        .bar-prism-forest .bar-side { fill:#1d422d; }
+        .bar-prism-forest .bar-top { fill:#91ad93; }
+        .carbon-chart-bars-3d .bar-prism { filter:drop-shadow(0 7px 8px rgba(35,48,35,.11)); }
+        .carbon-chart-line { stroke-width:3.5; opacity:.9; }
+        .carbon-chart-points circle { stroke-width:3; }
+
+        /* Your swaps: wider breathing room, taller photo panels, and expanded impact breakdown. */
+        .swaps-hero-panel { min-height:320px; padding:2.65rem 2.8rem; }
+        .swaps-hero-copy { max-width:490px; }
+        .swaps-hero-copy h2 { font-size:clamp(2.25rem,3.8vw,3.15rem); max-width:440px; line-height:1.02; }
+        .swaps-hero-copy p { max-width:455px; font-size:.9rem; }
+        .swaps-hero-stats { max-width:600px; }
+        .swaps-hero-stats>div { padding:1.45rem 1rem; }
+        .swaps-hero-stats strong { font-size:2.15rem; }
+        .swaps-section-heading { margin:2.1rem 0 1.15rem; }
+        .swaps-section-heading h3 { font-size:1.72rem; }
+        .premium-swaps-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.35rem; }
+        .premium-swap-card { min-height:385px; padding:1.6rem 1.65rem 1.3rem; border-radius:27px; }
+        .swap-card-image { filter:saturate(.9); }
+        .swap-card-scrim { background:linear-gradient(180deg,rgba(6,24,16,.12) 0%,rgba(6,24,16,.22) 28%,rgba(6,24,16,.76) 58%,rgba(6,24,16,.95) 100%); }
+        .swap-feature-icon { width:54px; height:54px; border-radius:18px; }
+        .swap-card-copy { margin:2.3rem 0 1.1rem; }
+        .swap-card-copy h3 { font-size:1.62rem; max-width:430px; line-height:1.12; }
+        .swap-card-copy p { max-width:430px; font-size:.8rem; }
+        .swap-card-expanded-metrics {
+          position:relative; z-index:1; display:grid; grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr);
+          align-items:center; gap:1rem; margin-top:auto; padding:1rem 1.05rem;
+          border:1px solid rgba(255,255,255,.24); border-radius:18px;
+          background:rgba(12,31,21,.42); backdrop-filter:blur(16px);
+          box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 8px 20px rgba(0,0,0,.09);
+        }
+        .swap-expanded-metric { min-width:0; }
+        .swap-expanded-metric .swap-savings-label { color:rgba(255,255,255,.64); font-size:.56rem; letter-spacing:.1em; }
+        .swap-expanded-metric strong { display:block; margin-top:.36rem; color:#fff; font-size:.9rem; line-height:1.35; }
+        .swap-expanded-divider { height:39px; background:rgba(255,255,255,.2); }
+        .swap-card-adopted { margin-top:.85rem; font-size:.67rem; }
+        @media(max-width:1050px) {
+          .swaps-hero-panel { min-height:0; padding:2rem; }
+          .premium-swap-card { min-height:360px; }
+        }
+        @media(max-width:700px) {
+          .premium-swaps-grid { grid-template-columns:1fr; }
+          .premium-swap-card { min-height:345px; padding:1.3rem; }
+          .swap-card-copy { margin:1.8rem 0 1rem; }
+          .swap-card-copy h3 { font-size:1.35rem; }
+          .swap-card-expanded-metrics { gap:.65rem; padding:.8rem; }
+          .swap-expanded-metric strong { font-size:.78rem; }
+          .carbon-chart-shell { perspective:none; }
+          .carbon-area-chart { transform:none; }
         }
       `}</style>
     </div>
