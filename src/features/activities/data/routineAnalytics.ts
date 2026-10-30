@@ -227,3 +227,98 @@ export function calculateRoutineAnalytics(
     currentMonthLogCount: currentMonthLogs.length,
   };
 }
+
+export interface RoutineSwapCard {
+  title: string;
+  category: string;
+  co2: string;
+  money: string;
+  status: string;
+  detail: string;
+  benefit: string;
+  alternativeId: string;
+}
+
+export interface RoutinePageViewModel {
+  analytics: RoutineAnalyticsSummary;
+  adoptedSwaps: RoutineSwapCard[];
+  activeCategoryCount: number;
+  chartScale: number;
+  chartColumns: Array<RoutineWeeklyPoint & { x: number; y: number; height: number; centerX: number }>;
+  chartLinePath: string;
+  chartAreaPath: string;
+  bestWeek: RoutineWeeklyPoint;
+}
+
+function formatMoney(amount: number): string {
+  const formatted = new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(Math.abs(amount));
+  if (amount < 0) return 'Save ' + formatted + '/mo';
+  if (amount > 0) return 'Additional ' + formatted + '/mo';
+  return 'No monthly cost change';
+}
+
+function formatAdoptedLabel(value: string | null): string {
+  if (!value) return 'Adopted';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Adopted';
+  const days = Math.max(0, Math.floor((Date.now() - date.getTime()) / 86400000));
+  if (days === 0) return 'Adopted today';
+  if (days === 1) return 'Adopted yesterday';
+  if (days < 30) return 'Adopted ' + days + ' days ago';
+  const months = Math.floor(days / 30);
+  return 'Adopted ' + months + (months === 1 ? ' month ago' : ' months ago');
+}
+
+export function buildRoutinePageViewModel(
+  logs: ActivityLog[],
+  actions: UserAction[],
+  alternatives: Alternative[],
+  now: Date = new Date(),
+): RoutinePageViewModel {
+  const analytics = calculateRoutineAnalytics(logs, actions, alternatives, now);
+  const adoptedSwaps = analytics.adopted.map(({ action, alternative }) => {
+    const savedKg = analytics.adoptedSavingsByAlternative[alternative.id] || 0;
+    return {
+      title: alternative.title,
+      category: alternative.category,
+      co2: savedKg > 0 ? '−' + savedKg.toFixed(1) + ' kg CO₂e / mo' : 'Log baseline activity to estimate',
+      money: formatMoney(alternative.cost_delta_monthly_inr),
+      status: formatAdoptedLabel(action.adopted_at),
+      detail: alternative.description,
+      benefit: alternative.why_better,
+      alternativeId: alternative.id,
+    };
+  });
+
+  const chartScale = Math.max(10, Math.ceil(Math.max(...analytics.weeklyTrend.map((week) => week.kg), 0) / 10) * 10);
+  const chartColumns = analytics.weeklyTrend.map((week, index) => {
+    const x = 86 + index * 138;
+    const height = week.kg > 0 ? Math.max(4, (week.kg / chartScale) * 178) : 0;
+    return { ...week, x, y: 246 - height, height, centerX: x + 26 };
+  });
+  const chartLinePath = chartColumns.map((column, index) =>
+    (index === 0 ? 'M' : 'L') + ' ' + column.centerX + ' ' + column.y
+  ).join(' ');
+  const chartAreaPath = chartColumns.length > 0
+    ? chartLinePath + ' L ' + chartColumns[chartColumns.length - 1].centerX + ' 246 L ' + chartColumns[0].centerX + ' 246 Z'
+    : '';
+  const bestWeek = analytics.weeklyTrend.reduce(
+    (best, week) => week.kg > best.kg ? week : best,
+    { label: '—', start: '', kg: 0 },
+  );
+
+  return {
+    analytics,
+    adoptedSwaps,
+    activeCategoryCount: new Set(adoptedSwaps.map((swap) => swap.category)).size,
+    chartScale,
+    chartColumns,
+    chartLinePath,
+    chartAreaPath,
+    bestWeek,
+  };
+}
