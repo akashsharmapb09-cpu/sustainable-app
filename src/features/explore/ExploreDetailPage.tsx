@@ -8,11 +8,60 @@ import {
   TrendingDown,
   DollarSign,
   Bookmark,
+  Check,
+  LoaderCircle,
 } from 'lucide-react';
+import { useAlternatives, useUpsertUserAction, useUserActions } from '../../shared/lib/hooks/useData';
+import { useToast } from '../../shared/ui';
+
+const EXPLORE_ALTERNATIVE_IDS: Record<string, string> = {
+  transit: 'alt-metro-commute',
+  plant: 'alt-meatless-weekdays',
+  appliances: 'alt-ac-26-degrees',
+  'food-waste': 'alt-home-composting-khamba',
+  secondhand: 'alt-thrift-clothing',
+  reusable: 'alt-reusable-steel-flask',
+  'bldc-fan': 'alt-bldc-ceiling-fans',
+  composting: 'alt-home-composting-khamba',
+};
 
 export function ExploreDetailPage() {
   const { id } = useParams<{ id: string }>();
   const item = getExploreItemById(id || '');
+  const alternativesQuery = useAlternatives();
+  const actionsQuery = useUserActions();
+  const upsert = useUpsertUserAction();
+  const { toast } = useToast();
+  const alternativeId = item ? EXPLORE_ALTERNATIVE_IDS[item.id] : undefined;
+  const matchedAlternative = alternativesQuery.data?.find((alternative) => alternative.id === alternativeId);
+  const isAdopted = actionsQuery.data?.some(
+    (action) => action.alternative_id === alternativeId && action.status === 'adopted',
+  ) ?? false;
+
+  const adoptSwap = async () => {
+    if (!alternativeId || !matchedAlternative) {
+      toast({
+        title: 'This swap is not connected yet',
+        description: 'Open Recommendations to choose an alternative that can be added to Your Routine.',
+        type: 'error',
+      });
+      return;
+    }
+    try {
+      await upsert.mutateAsync({ alternative_id: alternativeId, status: 'adopted' });
+      toast({
+        title: 'Added to Your Routine',
+        description: matchedAlternative.title + ' is now in Your swaps.',
+        type: 'success',
+      });
+    } catch (error) {
+      toast({
+        title: 'Could not add this swap',
+        description: error instanceof Error ? error.message : 'Please try again.',
+        type: 'error',
+      });
+    }
+  };
 
   if (!item) {
     return (
@@ -137,20 +186,37 @@ export function ExploreDetailPage() {
 
             {/* Quick Action Buttons */}
             <div className="space-y-3 pt-2">
+              <button
+                type="button"
+                disabled={!matchedAlternative || alternativesQuery.isLoading || actionsQuery.isLoading || upsert.isPending || isAdopted}
+                onClick={() => void adoptSwap()}
+                className={`w-full py-3.5 px-6 rounded-full font-medium text-sm flex items-center justify-center gap-2 shadow-sm transition-all duration-150 text-center disabled:cursor-not-allowed ${
+                  isAdopted
+                    ? 'bg-[#E8F1E6] text-[#285C3B] border border-[#C9DBC6]'
+                    : 'bg-[#162A20] hover:bg-[#2B543A] text-white'
+                }`}
+              >
+                {isAdopted ? <Check className="w-4 h-4" /> : upsert.isPending ? <LoaderCircle className="w-4 h-4 animate-spin" /> : <Leaf className="w-4 h-4" />}
+                <span>{isAdopted ? 'Added to Your Routine' : upsert.isPending ? 'Adding swap…' : 'Adopt this swap'}</span>
+              </button>
+              {!matchedAlternative && !alternativesQuery.isLoading && (
+                <p className="text-xs text-[#8A6B4F] text-center">
+                  This Explore idea does not have a matching adoptable alternative yet.
+                </p>
+              )}
               <Link
                 to="/routine"
-                className="w-full py-3.5 px-6 rounded-full bg-[#162A20] hover:bg-[#2B543A] text-white font-medium text-sm flex items-center justify-center gap-2 shadow-sm transition-all duration-150 cursor-pointer text-center"
-              >
-                <span>Add swap to your daily routine</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-
-              <Link
-                to="/recommendations"
                 className="w-full py-3 px-6 rounded-full bg-[#FAF8F5] hover:bg-[#EAE5DA] border border-[#DCD5C7] text-[#162A20] font-medium text-sm flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer text-center"
               >
+                <span>View Your Routine</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/recommendations"
+                className="w-full py-3 px-6 rounded-full bg-transparent hover:bg-[#EAE5DA]/60 border border-[#DCD5C7] text-[#162A20] font-medium text-sm flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer text-center"
+              >
                 <Bookmark className="w-4 h-4 text-[#2B543A]" />
-                <span>Save to your ideas list</span>
+                <span>Explore personalized swaps</span>
               </Link>
             </div>
           </div>
