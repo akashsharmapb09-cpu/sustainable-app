@@ -110,34 +110,14 @@ export function LogActivityPage() {
   const activityQuery = useActivityLogs();
   const actionQuery = useUserActions();
   const alternativeQuery = useAlternatives();
-  const activityLogs = activityQuery.data || [];
-  const userActions = actionQuery.data || [];
-  const alternatives = alternativeQuery.data || [];
-  const liveAnalytics = calculateRoutineAnalytics(activityLogs, userActions, alternatives);
-  const adoptedSwaps = liveAnalytics.adopted.map((entry) => ({
-    title: entry.alternative.title,
-    cat: entry.alternative.category.charAt(0).toUpperCase() + entry.alternative.category.slice(1),
-    co2: (liveAnalytics.adoptedSavingsByAlternative[entry.alternative.id] || 0) > 0 ? '−' + (liveAnalytics.adoptedSavingsByAlternative[entry.alternative.id] || 0).toFixed(1) + ' kg CO₂e / mo' : 'Log baseline activity to estimate',
-    money: entry.alternative.cost_delta_monthly_inr < 0 ? 'Save ' + formatINR(entry.alternative.cost_delta_monthly_inr) + '/mo' : entry.alternative.cost_delta_monthly_inr > 0 ? 'Additional ' + formatINR(entry.alternative.cost_delta_monthly_inr) + '/mo' : 'No monthly cost change',
-    status: formatAdoptedStatus(entry.action.adopted_at),
-    icon: (swapVisuals[entry.alternative.category] || swapVisuals.shopping).icon,
-    tone: (swapVisuals[entry.alternative.category] || swapVisuals.shopping).tone,
-    detail: entry.alternative.description,
-    benefit: entry.alternative.why_better,
-    image: (swapVisuals[entry.alternative.category] || swapVisuals.shopping).image,
-    fallbackImage: (swapVisuals[entry.alternative.category] || swapVisuals.shopping).fallbackImage
-  }));
-  const toggleAction = (id) => setRoutineActions((previous) => previous.map((action) => action.id === id ? { ...action, completed: !action.completed } : action));
+  const liveAnalytics = calculateRoutineAnalytics(activityQuery.data || [], actionQuery.data || [], alternativeQuery.data || []);
+  const adoptedSwaps = liveAnalytics.adopted;
+  const toggleAction = (id: string) => setRoutineActions((previous) => previous.map((action) => action.id === id ? { ...action, completed: !action.completed } : action));
   const completedCount = routineActions.filter((action) => action.completed).length;
   const completionPercent = Math.round((completedCount / routineActions.length) * 100);
-  const activeSwapCategoryCount = new Set(adoptedSwaps.map((swap) => swap.cat)).size;
+  const activeSwapCategoryCount = new Set(adoptedSwaps.map((entry) => entry.alternative.category)).size;
   const analyticsLoading = activityQuery.isLoading || actionQuery.isLoading || alternativeQuery.isLoading;
   const analyticsError = activityQuery.isError || actionQuery.isError;
-  const chartScale = 50;
-  const chartColumns = liveAnalytics.weeklyTrend;
-  const chartLinePath = '';
-  const chartAreaPath = '';
-  const bestWeek = { label: '—', start: '', kg: 0 };
   return (
     <div className="routine-premium">
       <header className="routine-page-header">
