@@ -162,7 +162,10 @@ export function DashboardPage() {
 
         {/* Right: Ritual Completion Gauge Card (3/7 steps) */}
         <div className="dash-ritual-card">
-          <span className="ritual-card-title">Ritual completion</span>
+          <div className="ritual-card-heading">
+            <span className="ritual-card-kicker">TODAY'S PRACTICE</span>
+            <span className="ritual-card-title">Ritual completion</span>
+          </div>
           <div className="ritual-card-body">
             {/* Circular Gauge */}
             <div className="ritual-gauge-wrap">
@@ -215,7 +218,11 @@ export function DashboardPage() {
       {/* ── Row 2: Important Topics For You ── */}
       <section className="dash-topics-section">
         <div className="dash-section-header">
-          <h2 className="dash-section-title">Important topics for you</h2>
+          <div className="dash-section-heading-copy">
+            <span className="dash-section-eyebrow">THE FIELD NOTES</span>
+            <h2 className="dash-section-title">Important topics for you</h2>
+            <p className="dash-section-subtitle">Explore the everyday choices with room for a little more good.</p>
+          </div>
           <Link to="/explore" className="dash-section-viewall">
             View all →
           </Link>
@@ -1198,6 +1205,153 @@ export function DashboardPage() {
         }
         @media(prefers-reduced-motion:reduce) {
           .topic-card,.topic-card-thumb img,.day-circle,.saved-item { transition:none; }
+        }
+
+      
+        /* Editorial refinements — aligned to the site's botanical / field-guide visual language. */
+        .dash-container {
+          position:relative;
+          isolation:isolate;
+          background:
+            radial-gradient(circle at 96% 2%,rgba(221,210,187,.2),transparent 24%),
+            radial-gradient(circle at 1% 40%,rgba(213,223,205,.16),transparent 27%);
+        }
+        .dash-greeting-title {
+          font-size:clamp(2.25rem,3.2vw,3rem);
+          color:#1d3526;
+          text-shadow:0 1px 0 rgba(255,255,255,.7);
+        }
+        .wave-hand { transform-origin:70% 75%; animation:dashboard-wave 2.2s ease-in-out 1; }
+        @keyframes dashboard-wave {
+          0%,100%{transform:rotate(0)}
+          20%,60%{transform:rotate(14deg)}
+          40%,80%{transform:rotate(-7deg)}
+        }
+        .dash-greeting-right {
+          position:relative;
+          min-width:200px;
+          border-color:#e3dacb;
+          background:linear-gradient(145deg,rgba(255,255,255,.86),rgba(247,242,232,.9));
+        }
+        .dash-greeting-right:before {
+          content:"";
+          position:absolute;left:0;top:14px;bottom:14px;width:3px;
+          border-radius:4px;background:linear-gradient(180deg,#c59b62,#77906d);
+        }
+        .dash-date-text { font-size:.82rem; }
+        .dash-cheer-text { font-size:.75rem; }
+
+        .dash-impact-row { gap:1.25rem; }
+        .dash-impact-card {
+          min-height:258px;
+          border-radius:28px;
+          padding:2.2rem 2.45rem;
+          box-shadow:0 22px 44px rgba(18,53,35,.16),inset 0 1px 0 rgba(255,255,255,.12);
+        }
+        .dash-impact-card:after {
+          content:"";
+          position:absolute;
+          right:13%;top:-115px;width:280px;height:280px;border:1px solid rgba(236,246,226,.1);
+          border-radius:50%;box-shadow:0 0 0 28px rgba(236,246,226,.035),0 0 0 58px rgba(236,246,226,.025);
+          pointer-events:none;
+        }
+        .impact-num { font-size:clamp(3.8rem,5.2vw,5rem); }
+        .impact-chart-bars { transform:translateY(2px); }
+        .impact-chart-bars .bar { position:relative; }
+        .impact-chart-bars .bar:before {
+          content:"";position:absolute;left:2px;right:2px;top:3px;height:7px;
+          border-radius:5px;background:rgba(255,255,255,.24);
+        }
+
+        .dash-ritual-card { min-height:258px; padding:1.55rem 1.75rem 1.65rem; }
+        .ritual-card-heading { display:flex; flex-direction:column; gap:.35rem; margin-bottom:1.05rem; }
+        .ritual-card-kicker {
+          color:#8d967f;font:800 .59rem/1.2 'DM Sans',sans-serif;
+          letter-spacing:.16em;text-transform:uppercase;
+        }
+        .ritual-card-title { margin:0; font-size:1.35rem; }
+        .ritual-card-body { align-items:center; }
+        .ritual-gauge-wrap { width:128px; height:128px; }
+        .gauge-center-text strong { font-size:1.68rem; }
+        .ritual-legend { gap:.86rem; }
+        .legend-row { font-size:.85rem; }
+        .legend-score { font-size:.9rem; }
+
+        .dash-section-header { align-items:flex-end; gap:1.2rem; }
+        .dash-section-heading-copy { min-width:0; }
+        .dash-section-eyebrow {
+          display:block;margin-bottom:.42rem;color:#89927f;
+          font:800 .6rem/1.2 'DM Sans',sans-serif;letter-spacing:.16em;
+        }
+        .dash-section-title { font-size:1.55rem; }
+        .dash-section-subtitle { margin:.38rem 0 0;color:#80877b;font-size:.86rem;line-height:1.55; }
+        .dash-section-viewall {
+          min-height:38px;padding:.58rem .92rem;border:1px solid #e0dacd;border-radius:999px;
+          color:#496c4e;background:rgba(255,253,248,.8);
+          transition:transform .16s ease,border-color .16s ease,background .16s ease;
+        }
+        .dash-section-viewall:hover {
+          transform:translateY(-1px);border-color:#bbcbb3;background:#f4f6ef;text-decoration:none;
+        }
+        .dash-topics-grid { gap:1.05rem; }
+        .topic-card {
+          position:relative;
+          border-radius:22px;
+          box-shadow:0 8px 22px rgba(50,57,43,.05),inset 0 1px 0 rgba(255,255,255,.9);
+        }
+        .topic-card-thumb {
+          position:relative;height:158px;overflow:hidden;
+          background:linear-gradient(135deg,#e6e8da,#c8d4c2);
+        }
+        .topic-card-thumb:after {
+          content:"";position:absolute;inset:45% 0 0;
+          background:linear-gradient(180deg,transparent,rgba(18,37,23,.2));
+          pointer-events:none;
+        }
+        .topic-card-thumb img { transform:scale(1.01); }
+        .topic-card:hover .topic-card-thumb img { transform:scale(1.075); }
+        .topic-card-text { min-height:94px; justify-content:center; }
+        .topic-card-text h3 { font-size:1rem; }
+        .topic-card-text p { font-size:.83rem; }
+
+        .dash-plan-card,.dash-saved-card { position:relative; overflow:hidden; }
+        .dash-plan-card:before,.dash-saved-card:before {
+          content:"";position:absolute;left:22px;right:22px;top:0;height:2px;
+          border-radius:0 0 3px 3px;background:linear-gradient(90deg,#b6c49e,#d9c8a8,transparent);
+          opacity:.8;
+        }
+        .plan-card-header h3,.saved-card-header h3 { font-size:1.48rem; }
+        .plan-card-header p,.saved-card-header p { font-size:.85rem; }
+        .plan-days-row { justify-content:space-around; }
+        .day-circle { width:44px;height:44px; }
+        .day-label { font-size:.76rem; }
+        .saved-item { min-height:72px; }
+        .saved-item-thumb { width:62px;height:62px; }
+        .saved-item-info strong { font-size:.9rem; }
+        .saved-item-info span { font-size:.78rem; }
+
+        @media(max-width:1180px) {
+          .dash-impact-card,.dash-ritual-card { min-height:230px; }
+        }
+        @media(max-width:640px) {
+          .dash-greeting-right { min-width:0; }
+          .dash-impact-card { min-height:220px; padding:1.6rem 1.35rem; border-radius:22px; }
+          .dash-ritual-card { min-height:0; }
+          .ritual-card-heading { margin-bottom:.9rem; }
+          .ritual-gauge-wrap { width:106px;height:106px; }
+          .dash-section-header { align-items:flex-start; }
+          .dash-section-title { font-size:1.35rem; }
+          .dash-section-subtitle { font-size:.78rem; }
+          .dash-section-viewall { align-self:flex-start; flex:0 0 auto; padding:.48rem .68rem; font-size:.68rem; }
+          .topic-card-thumb { height:112px; }
+          .topic-card-text { min-height:84px; }
+          .topic-card-text h3 { font-size:.83rem; }
+          .topic-card-text p { font-size:.72rem; }
+          .day-circle { width:34px;height:34px; }
+          .day-label { font-size:.64rem; }
+        }
+        @media(prefers-reduced-motion:reduce) {
+          .wave-hand { animation:none; }
         }
 
             `}</style>
