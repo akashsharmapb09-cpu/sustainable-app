@@ -16,10 +16,14 @@ export function SettingsPage() {
     "India","United States","United Kingdom","Canada","Australia","Germany","France","Italy","Japan","China","Brazil","Russia","UAE","Saudi Arabia","Singapore","Malaysia","Pakistan","Bangladesh","Nepal","Sri Lanka","Bhutan","Afghanistan","Albania","Algeria","Andorra","Angola","Argentina","Armenia","Austria","Azerbaijan","Bahamas","Bahrain","Barbados","Belarus","Belgium","Belize","Benin","Bolivia","Bosnia and Herzegovina","Botswana","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Cape Verde","Central African Republic","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","Gabon","Gambia","Georgia","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","Indonesia","Iran","Iraq","Ireland","Israel","Jamaica","Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Macedonia","Norway","Oman","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent","Samoa","San Marino","Sao Tome and Principe","Senegal","Serbia","Seychelles","Sierra Leone","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
   ];
 
-  const [countrySearch, setCountrySearch] = useState("");
   const [selectedCountry, setSelectedCountry] = useState(
     (typeof window !== 'undefined' ? localStorage.getItem('country') : null) || "India"
   );
+  // Show the saved country when the selector is idle; only filter while the user searches.
+  const [countrySearch, setCountrySearch] = useState(
+    (typeof window !== 'undefined' ? localStorage.getItem('country') : null) || "India"
+  );
+  const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
 
   const filtered = allCountries.filter(c => c.toLowerCase().includes(countrySearch.toLowerCase()));
   const [interests, setInterests] = useState<string[]>(['Sustainability', 'Clean Energy', 'Healthy Living']);
@@ -158,32 +162,64 @@ export function SettingsPage() {
             </div>
 
             <div className="form-field">
-              <label className="form-label">Primary Region / Country</label>
-              <div className="relative text-gray-900">
+              <label className="form-label" htmlFor="primary-country-input">Primary Region / Country</label>
+              <div
+                className="relative text-gray-900"
+                onBlur={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                    setCountryDropdownOpen(false);
+                    setCountrySearch(selectedCountry);
+                  }
+                }}
+              >
                 <input
+                  id="primary-country-input"
                   type="text"
                   value={countrySearch}
-                  onChange={(e) => setCountrySearch(e.target.value)}
+                  onFocus={() => setCountryDropdownOpen(true)}
+                  onChange={(e) => {
+                    setCountrySearch(e.target.value);
+                    setCountryDropdownOpen(true);
+                  }}
                   placeholder="Search country - e.g. India"
+                  autoComplete="off"
+                  aria-autocomplete="list"
+                  aria-expanded={countryDropdownOpen}
+                  aria-controls="primary-country-options"
                   className="w-full p-3 border rounded-lg bg-white text-gray-900"
                 />
-                <div className="max-h-48 overflow-y-auto border rounded mt-1 bg-white shadow text-gray-900">
-                  {filtered.slice(0, 50).map((c) => (
-                    <div
-                      key={c}
-                      onClick={() => {
-                        setSelectedCountry(c);
-                        setCountrySearch(c);
-                        localStorage.setItem('country', c);
-                      }}
-                      className={`p-2 hover:bg-green-100 cursor-pointer ${
-                        selectedCountry === c ? 'bg-green-200 font-bold' : ''
-                      }`}
-                    >
-                      {c}
-                    </div>
-                  ))}
-                </div>
+                {countryDropdownOpen && (
+                  <div
+                    id="primary-country-options"
+                    role="listbox"
+                    aria-label="Countries"
+                    className="absolute left-0 right-0 top-full z-30 mt-1 max-h-48 overflow-y-auto border rounded bg-white shadow-lg text-gray-900"
+                  >
+                    {filtered.slice(0, 50).map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        role="option"
+                        aria-selected={selectedCountry === c}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setSelectedCountry(c);
+                          setCountrySearch(c);
+                          setCountryDropdownOpen(false);
+                          localStorage.setItem('country', c);
+                        }}
+                        className={`block w-full p-2 text-left hover:bg-green-100 ${
+                          selectedCountry === c ? 'bg-green-200 font-bold' : ''
+                        }`}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                    {filtered.length === 0 && (
+                      <p className="p-3 text-sm text-gray-500">No countries found. Try another search.</p>
+                    )}
+                  </div>
+                )}
                 <p className="text-xs mt-1 text-gray-600 dark:text-gray-300">Selected: {selectedCountry}</p>
               </div>
             </div>
