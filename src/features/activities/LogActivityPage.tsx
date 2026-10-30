@@ -22,10 +22,10 @@ const INITIAL_ACTIONS: RoutineAction[] = [
 
 const actionIcons = { Shopping: ShoppingBag, Food: Utensils, Transport: Bike, Energy: Lightbulb, Home: Droplets };
 const swaps = [
-  { title: 'Metro commute for office workdays', cat: 'Transport', co2: '-75 kg CO₂e / mo', money: 'Save ~₹3,200/mo', status: 'Adopted 3 weeks ago', icon: TrainFront, tone: 'transport', detail: 'A lower-carbon way to get to work' },
-  { title: 'Eat plant-based weekday lunches', cat: 'Food', co2: '-30 kg CO₂e / mo', money: 'Save ~₹1,100/mo', status: 'Adopted 2 weeks ago', icon: Utensils, tone: 'food', detail: 'More plants, less food-related impact' },
-  { title: 'AC 24°C thermostat setpoint', cat: 'Energy', co2: '-40 kg CO₂e / mo', money: 'Save ~₹680/mo', status: 'Adopted 1 month ago', icon: Zap, tone: 'energy', detail: 'Comfortable cooling with less energy' },
-  { title: 'Cloth totes for market purchases', cat: 'Shopping', co2: '-5 kg CO₂e / mo', money: 'Zero plastic waste', status: 'Adopted 2 months ago', icon: ShoppingBag, tone: 'shopping', detail: 'A reusable choice on every shopping trip' },
+  { title: 'Metro commute for office workdays', cat: 'Transport', co2: '-75 kg CO₂e / mo', money: 'Save ~₹3,200/mo', status: 'Adopted 3 weeks ago', icon: TrainFront, tone: 'transport', detail: 'A lower-carbon way to get to work', image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&auto=format&fit=crop&q=85' },
+  { title: 'Eat plant-based weekday lunches', cat: 'Food', co2: '-30 kg CO₂e / mo', money: 'Save ~₹1,100/mo', status: 'Adopted 2 weeks ago', icon: Utensils, tone: 'food', detail: 'More plants, less food-related impact', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&auto=format&fit=crop&q=85' },
+  { title: 'AC 24°C thermostat setpoint', cat: 'Energy', co2: '-40 kg CO₂e / mo', money: 'Save ~₹680/mo', status: 'Adopted 1 month ago', icon: Zap, tone: 'energy', detail: 'Comfortable cooling with less energy', image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?w=1200&auto=format&fit=crop&q=85' },
+  { title: 'Cloth totes for market purchases', cat: 'Shopping', co2: '-5 kg CO₂e / mo', money: 'Zero plastic waste', status: 'Adopted 2 months ago', icon: ShoppingBag, tone: 'shopping', detail: 'A reusable choice on every shopping trip', image: 'https://images.unsplash.com/photo-1597481499666-9a2c8d9dcbd2?w=1200&auto=format&fit=crop&q=85' },
 ];
 
 export function LogActivityPage() {
@@ -59,6 +59,7 @@ export function LogActivityPage() {
       {activeTab === 'plan' && (
         <div className="routine-plan-view">
           <section className="routine-plan-hero">
+            <div className="plan-hero-photo" aria-hidden="true" />
             <div className="plan-hero-glow" />
             <div className="plan-hero-content">
               <div className="plan-hero-kicker"><Sparkles size={14} /> YOUR WEEK, IN BALANCE</div>
@@ -141,6 +142,8 @@ export function LogActivityPage() {
               const Icon = swap.icon;
               return (
                 <article key={swap.title} className={`premium-swap-card tone-${swap.tone}`}>
+                  <img className="swap-card-image" src={swap.image} alt="" loading="lazy" />
+                  <div className="swap-card-scrim" aria-hidden="true" />
                   <div className="swap-card-top"><span className="swap-feature-icon"><Icon size={21} /></span><span className="swap-active-status"><span /> ACTIVE</span><span className="swap-card-index">0{index + 1}</span></div>
                   <div className="swap-card-copy"><div className="swap-category-label">{swap.cat}</div><h3>{swap.title}</h3><p>{swap.detail}</p></div>
                   <div className="swap-card-bottom">
@@ -158,6 +161,8 @@ export function LogActivityPage() {
       {activeTab === 'analytics' && (
         <div className="routine-analytics-view">
           <section className="analytics-hero-panel">
+            <div className="analytics-hero-photo" aria-hidden="true" />
+            <div className="analytics-hero-scrim" aria-hidden="true" />
             <div><div className="panel-eyebrow light-eyebrow"><TrendingDown size={14} /> YOUR IMPACT, IN FOCUS</div><h2>Your choices are<br />adding up.</h2><p>A snapshot of the positive changes your household routines are creating.</p></div>
             <div className="analytics-hero-highlight"><span>MONTHLY CARBON SAVED</span><strong>150.0 <i>kg</i></strong><small><TrendingDown size={14} /> 12% better than last month</small></div>
             <div className="analytics-hero-decoration"><Leaf size={150} strokeWidth={0.7} /></div>
@@ -309,6 +314,243 @@ export function LogActivityPage() {
         @media(max-width:1050px){.routine-premium{padding:1.8rem 1.5rem 3rem}.swaps-hero-panel{align-items:flex-start;flex-direction:column}.swaps-hero-stats{max-width:none;width:100%}.analytics-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
         @media(max-width:850px){.routine-plan-grid,.analytics-premium-grid{grid-template-columns:1fr}.routine-plan-hero{grid-template-columns:minmax(0,1fr) 180px;padding:1.6rem}.plan-progress-ring{width:130px;height:130px}.plan-ring-inner{width:106px;height:106px}.premium-swaps-grid{grid-template-columns:1fr}}
         @media(max-width:600px){.routine-premium{padding:1.25rem 1rem 2.5rem}.routine-page-header{align-items:flex-start;flex-direction:column;gap:1rem}.routine-streak-chip{min-width:0}.routine-premium-tabs{width:100%;justify-content:space-between;gap:.15rem}.routine-premium-tab{flex:1;justify-content:center;padding:.62rem .45rem;font-size:.7rem}.tab-step{display:none}.routine-plan-hero{grid-template-columns:1fr;gap:1.15rem;padding:1.35rem}.plan-ring-wrap{flex-direction:row;justify-content:flex-start}.plan-progress-ring{width:88px;height:88px}.plan-ring-inner{width:70px;height:70px}.plan-ring-inner strong{font-size:1.35rem}.plan-ring-caption{font-size:.62rem}.challenge-panel{padding:1rem}.premium-checklist-item{gap:.45rem;padding:.62rem .55rem}.action-number{display:none}.action-category-icon{width:32px;height:32px;border-radius:10px}.action-main-copy strong{font-size:.7rem}.action-main-copy small{font-size:.58rem}.action-impact-pill{padding:.27rem .38rem;font-size:.55rem}.premium-action-check{width:23px;height:23px}.challenge-panel-footer{font-size:.58rem}.swaps-hero-panel,.analytics-hero-panel{padding:1.4rem;border-radius:19px}.swaps-hero-stats{grid-template-columns:1fr}.swaps-hero-stats>div{padding:.7rem .85rem}.swaps-hero-stats>div+div{border-left:0;border-top:1px solid rgba(255,255,255,.13)}.swaps-hero-stats strong{margin:.2rem 0}.swaps-section-heading{align-items:flex-start;flex-direction:column}.swaps-section-heading h3{font-size:1.15rem}.premium-swap-card{min-height:220px;padding:1.1rem}.analytics-hero-panel{align-items:flex-start;flex-direction:column;gap:1rem}.analytics-hero-highlight{width:100%;min-width:0}.analytics-hero-decoration{right:-15px;top:10px}.analytics-kpi-grid{grid-template-columns:1fr 1fr;gap:.55rem}.kpi-premium-card{min-height:145px;padding:.85rem}.kpi-label{font-size:.5rem}.kpi-value{font-size:1.2rem}.kpi-description{font-size:.55rem}.premium-chart-card,.premium-breakdown-card{padding:1rem}.premium-chart-heading h3{font-size:1.08rem}.premium-chart-heading p{font-size:.59rem}.premium-weekly-chart{padding-left:1.7rem;padding-right:.1rem}.chart-gridline{left:1.65rem}.chart-gridline span{left:-1.7rem;font-size:.48rem}.premium-week-column{min-width:39px}.premium-bar-track{width:29px}.premium-week-label{font-size:.52rem}.chart-bottom-note{font-size:.55rem}.premium-category-top>span{font-size:.64rem}.premium-category-top>span small{flex-basis:100%;margin-left:1rem}}
+
+        /* Art direction: editorial climate journal meets premium fintech. */
+        .routine-premium {
+          position: relative;
+          max-width: 1240px;
+          padding: 2.1rem clamp(1.4rem,3vw,3.1rem) 5rem;
+          isolation: isolate;
+        }
+        .routine-premium:before {
+          content:""; position:absolute; z-index:-1; inset:0;
+          background:
+            radial-gradient(ellipse at 8% 6%,rgba(188,207,179,.2),transparent 28%),
+            radial-gradient(ellipse at 95% 36%,rgba(214,198,164,.16),transparent 27%);
+          pointer-events:none;
+        }
+        .routine-page-header { align-items:center; padding:0 0 1.35rem; border-bottom:1px solid rgba(113,128,120,.18); margin-bottom:1.35rem; }
+        .routine-eyebrow { color:#3b7852; font-size:.62rem; letter-spacing:.2em; }
+        .routine-page-title { font-size:clamp(2.55rem,4.5vw,3.7rem); letter-spacing:-.06em; text-shadow:0 2px 0 rgba(255,255,255,.55); }
+        .routine-page-subtitle { max-width:560px; font-size:.91rem; letter-spacing:.005em; }
+        .routine-streak-chip { border-radius:18px; padding:.65rem .9rem; border-color:rgba(206,194,174,.8); background:linear-gradient(145deg,rgba(255,255,255,.95),rgba(247,242,232,.9)); box-shadow:0 10px 26px rgba(50,64,51,.08),inset 0 1px 0 #fff; }
+        .routine-streak-icon { border-radius:13px; color:#fff; background:linear-gradient(145deg,#d78a4c,#9d4e2a); box-shadow:0 5px 12px rgba(157,78,42,.2); }
+        .routine-premium-tabs { margin-bottom:1.65rem; padding:.42rem; gap:.3rem; border-color:#e4dccf; border-radius:17px; background:rgba(255,253,248,.86); box-shadow:0 8px 24px rgba(46,61,48,.06),inset 0 1px 0 #fff; }
+        .routine-premium-tab { border-radius:12px; padding:.72rem 1.25rem; font-size:.83rem; }
+        .routine-premium-tab.is-active { background:linear-gradient(135deg,#174b32,#0b291b); box-shadow:0 6px 16px rgba(13,48,31,.25),inset 0 1px 0 rgba(255,255,255,.13); }
+        .tab-step { opacity:.5; font-variant-numeric:tabular-nums; }
+
+        /* 7-day plan: cinematic image panel, strong progress hierarchy, tactile checklist. */
+        .routine-plan-hero {
+          min-height:300px; grid-template-columns:minmax(0,1fr) 265px; padding:2.45rem 2.7rem;
+          border:1px solid rgba(179,216,188,.18); border-radius:30px;
+          background:linear-gradient(110deg,#082719 0%,#103b28 56%,#214a31 100%);
+          box-shadow:0 24px 58px rgba(9,43,27,.2),inset 0 1px 0 rgba(255,255,255,.12);
+        }
+        .plan-hero-photo {
+          position:absolute; z-index:-2; inset:0 0 0 36%;
+          background-image:url("https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=1800&auto=format&fit=crop&q=85");
+          background-size:cover; background-position:center 48%; opacity:.78;
+          mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.3) 16%,#000 62%);
+        }
+        .routine-plan-hero:after {
+          content:""; position:absolute; z-index:-1; inset:0;
+          background:linear-gradient(90deg,#09291b 0%,rgba(9,41,27,.97) 33%,rgba(9,41,27,.58) 72%,rgba(9,41,27,.35) 100%),
+                     linear-gradient(0deg,rgba(4,21,13,.25),transparent 60%);
+          pointer-events:none;
+        }
+        .plan-hero-glow { right:4%; bottom:-170px; width:480px; height:360px; background:rgba(93,204,128,.21); filter:blur(34px); }
+        .plan-hero-kicker { color:#c2efce; font-size:.68rem; letter-spacing:.2em; }
+        .plan-hero-content h2 { font-size:clamp(2rem,3.4vw,3.05rem); line-height:1.02; letter-spacing:-.045em; text-shadow:0 4px 18px rgba(0,0,0,.18); }
+        .plan-hero-content p { max-width:520px; font-size:.87rem; line-height:1.72; }
+        .plan-progress-meta { max-width:560px; margin-top:1.65rem; font-size:.77rem; }
+        .plan-progress-track { max-width:560px; height:10px; background:rgba(255,255,255,.17); box-shadow:inset 0 1px 3px rgba(0,0,0,.18); }
+        .plan-progress-track span { background:linear-gradient(90deg,#67c88a,#d0f3d8); box-shadow:0 0 20px rgba(166,241,185,.55); }
+        .plan-ring-wrap { position:relative; z-index:1; }
+        .plan-progress-ring { width:178px; height:178px; border:1px solid rgba(255,255,255,.35); box-shadow:0 0 0 10px rgba(255,255,255,.055),0 18px 42px rgba(0,0,0,.28),0 0 45px rgba(137,220,158,.2); }
+        .plan-ring-inner { width:148px; height:148px; background:radial-gradient(circle at 40% 22%,#285a3d,#09291b 75%); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),inset 0 10px 26px rgba(255,255,255,.035); }
+        .plan-ring-inner strong { font-size:2.75rem; letter-spacing:-.05em; }
+        .plan-ring-inner span { margin-top:.12rem; color:#bce5c7; font-size:.69rem; }
+        .plan-ring-caption { color:rgba(255,255,255,.86); font-size:.73rem; }
+
+        .routine-plan-grid { grid-template-columns:minmax(0,1.62fr) minmax(280px,.82fr); gap:1.2rem; }
+        .routine-premium-card { border-radius:25px; border-color:#e5ddcf; background:linear-gradient(150deg,#fffefa 0%,#f9f5ec 100%); box-shadow:0 14px 38px rgba(42,53,42,.065),inset 0 1px 0 #fff; }
+        .challenge-panel { padding:1.8rem; }
+        .panel-eyebrow { letter-spacing:.18em; color:#49815d; }
+        .routine-section-title { font-size:1.65rem; letter-spacing:-.035em; }
+        .routine-section-subtitle { font-size:.82rem; }
+        .challenge-count-pill { width:68px; min-width:68px; height:68px; border-radius:21px; font-size:1.68rem; background:linear-gradient(145deg,#285e40,#0c2d1e); box-shadow:0 10px 22px rgba(18,56,38,.19),inset 0 1px 0 rgba(255,255,255,.18); }
+        .routine-premium-checklist { gap:.66rem; }
+        .premium-checklist-item {
+          min-height:70px; padding:.72rem .9rem; gap:.85rem; border-radius:17px;
+          background:linear-gradient(105deg,#fffefa,#f9f6ef);
+          box-shadow:0 3px 9px rgba(39,56,43,.025),inset 0 1px 0 #fff;
+        }
+        .premium-checklist-item.is-complete { background:linear-gradient(105deg,#eef7ef,#f9fbf5); border-color:#c4ddc9; }
+        .premium-checklist-item.is-complete:before { content:""; width:3px; align-self:stretch; margin:-.72rem 0 -.72rem -.9rem; border-radius:0 5px 5px 0; background:linear-gradient(#77c98b,#1d6941); }
+        .action-number { width:24px; color:#a0aaa1; font-size:.67rem; }
+        .action-category-icon { width:43px; height:43px; border-radius:14px; box-shadow:inset 0 1px 0 rgba(255,255,255,.8); }
+        .action-main-copy strong { font-size:.84rem; }
+        .action-main-copy small { font-size:.68rem; }
+        .action-impact-pill { padding:.39rem .68rem; background:#e7f0e7; color:#245b3c; font-size:.66rem; border:1px solid rgba(79,131,89,.08); }
+        .premium-action-check { width:29px; height:29px; box-shadow:0 2px 5px rgba(39,56,43,.07); }
+        .challenge-panel-footer { margin-top:1.2rem; padding-top:1rem; font-size:.7rem; }
+        .today-tip-card {
+          min-height:225px; padding:1.65rem; border-radius:25px;
+          background:
+            linear-gradient(180deg,rgba(7,39,24,.3),rgba(7,39,24,.94)),
+            url("https://images.unsplash.com/photo-1437482078695-4d3ef4be9fbb?w=1000&auto=format&fit=crop&q=85") center/cover;
+          box-shadow:0 18px 38px rgba(18,56,38,.18),inset 0 1px 0 rgba(255,255,255,.14);
+        }
+        .tip-icon-bubble { width:42px; height:42px; border-radius:15px; }
+        .today-tip-card h3 { font-size:1.5rem; letter-spacing:-.025em; }
+        .today-tip-card p { font-size:.83rem; }
+        .tip-bottom-line { margin-top:1.35rem; }
+        .routine-quote-card { min-height:205px; border-radius:25px; background:radial-gradient(circle at 50% 105%,rgba(100,178,119,.3),transparent 58%),linear-gradient(145deg,#203e2c,#0b2217); box-shadow:0 18px 38px rgba(18,56,38,.16),inset 0 1px 0 rgba(255,255,255,.12); }
+        .routine-quote-card p { font-size:1.23rem; }
+
+        /* Adopted swaps: full-bleed photography, glass details, strong editorial type. */
+        .swaps-hero-panel {
+          min-height:285px; padding:2.35rem 2.5rem; border-radius:29px;
+          background:
+            linear-gradient(90deg,rgba(7,35,22,.97) 0%,rgba(9,42,26,.88) 50%,rgba(9,42,26,.48) 100%),
+            url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1800&auto=format&fit=crop&q=85") center 48%/cover;
+          box-shadow:0 24px 54px rgba(11,47,29,.2),inset 0 1px 0 rgba(255,255,255,.14);
+        }
+        .swaps-hero-copy h2 { font-size:clamp(2rem,3.4vw,2.8rem); letter-spacing:-.045em; }
+        .swaps-hero-copy p { font-size:.86rem; }
+        .swaps-hero-stats { background:rgba(5,31,19,.32); border-color:rgba(255,255,255,.22); border-radius:20px; box-shadow:inset 0 1px 0 rgba(255,255,255,.13); }
+        .swaps-hero-stats>div { padding:1.25rem .95rem; }
+        .swaps-hero-stats span { font-size:.58rem; }
+        .swaps-hero-stats strong { font-size:2rem; }
+        .swaps-section-heading { margin:1.8rem 0 1rem; }
+        .swaps-section-heading h3 { font-size:1.55rem; letter-spacing:-.035em; }
+        .premium-swaps-grid { gap:1.15rem; }
+        .premium-swap-card {
+          isolation:isolate; min-height:300px; padding:1.3rem 1.45rem 1.1rem;
+          border:1px solid rgba(255,255,255,.22); border-radius:24px;
+          background:#183929; box-shadow:0 16px 36px rgba(30,47,35,.14);
+          color:#fff; transition:transform .28s ease,box-shadow .28s ease;
+        }
+        .premium-swap-card:hover { transform:translateY(-5px) scale(1.008); box-shadow:0 24px 48px rgba(30,47,35,.2); }
+        .swap-card-image { position:absolute; z-index:-2; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .6s ease; }
+        .premium-swap-card:hover .swap-card-image { transform:scale(1.06); }
+        .swap-card-scrim { position:absolute; z-index:-1; inset:0; background:linear-gradient(180deg,rgba(5,22,14,.2) 0%,rgba(5,22,14,.28) 34%,rgba(5,22,14,.82) 72%,rgba(5,22,14,.96) 100%); }
+        .premium-swap-card:after { right:-50px; top:-75px; width:190px; height:190px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); box-shadow:0 0 0 20px rgba(255,255,255,.025),0 0 0 42px rgba(255,255,255,.018); }
+        .tone-transport,.tone-food,.tone-energy,.tone-shopping { --swap-accent:#d5f0dc; --swap-soft:rgba(255,255,255,.16); }
+        .swap-feature-icon { width:49px; height:49px; border-radius:16px; color:#f1fff3; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.2); backdrop-filter:blur(12px); box-shadow:0 8px 18px rgba(0,0,0,.12); }
+        .swap-active-status { color:#dcf4e2; }
+        .swap-active-status span { background:#8be1a7; box-shadow:0 0 0 4px rgba(139,225,167,.17),0 0 12px rgba(139,225,167,.35); }
+        .swap-card-index { color:rgba(255,255,255,.58); font-size:1rem; }
+        .swap-card-copy { margin:1.45rem 0 1rem; }
+        .swap-category-label { color:#b7edc5; }
+        .swap-card-copy h3 { max-width:390px; color:#fff; font-size:1.38rem; line-height:1.16; letter-spacing:-.025em; text-shadow:0 2px 12px rgba(0,0,0,.28); }
+        .swap-card-copy p { color:rgba(255,255,255,.74); font-size:.76rem; }
+        .swap-card-bottom { border-top-color:rgba(255,255,255,.23); padding-top:.85rem; }
+        .swap-savings-label { color:rgba(255,255,255,.64); font-size:.57rem; }
+        .swap-card-savings strong { color:#fff; font-size:.9rem; }
+        .swap-card-money { color:#fff3dc; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.19); backdrop-filter:blur(10px); font-size:.68rem; }
+        .swap-card-adopted { color:rgba(255,255,255,.67); font-size:.65rem; }
+        .swap-card-adopted svg { color:#b8e8c5; }
+
+        /* Analytics: editorial statement panel, distinct KPI surfaces, richer charts. */
+        .analytics-hero-panel {
+          min-height:265px; padding:2.25rem 2.5rem; border-radius:29px;
+          background:linear-gradient(90deg,rgba(7,34,22,.97) 0%,rgba(9,42,26,.82) 54%,rgba(9,42,26,.42) 100%);
+          box-shadow:0 24px 54px rgba(11,47,29,.18),inset 0 1px 0 rgba(255,255,255,.13);
+        }
+        .analytics-hero-photo { position:absolute; z-index:-2; inset:0; background:url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1800&auto=format&fit=crop&q=85") center 43%/cover; opacity:.75; }
+        .analytics-hero-scrim { position:absolute; z-index:-1; inset:0; background:linear-gradient(90deg,rgba(7,34,22,.97) 0%,rgba(9,42,26,.84) 48%,rgba(9,42,26,.35) 100%); }
+        .analytics-hero-panel h2 { font-size:clamp(2rem,3.5vw,2.9rem); letter-spacing:-.045em; }
+        .analytics-hero-panel p { font-size:.84rem; }
+        .analytics-hero-highlight { min-width:260px; padding:1.3rem 1.5rem; border-radius:21px; background:rgba(5,31,19,.35); box-shadow:inset 0 1px 0 rgba(255,255,255,.14); }
+        .analytics-hero-highlight strong { font-size:3rem; letter-spacing:-.05em; }
+        .analytics-hero-decoration { color:rgba(207,242,211,.11); right:27%; top:-70px; }
+        .analytics-kpi-grid { gap:1.05rem; margin-bottom:1.15rem; }
+        .kpi-premium-card { min-height:174px; padding:1.25rem 1.35rem; border-radius:22px; box-shadow:0 12px 30px rgba(38,53,42,.06),inset 0 1px 0 #fff; }
+        .kpi-premium-card:after { width:135px; height:135px; right:-56px; bottom:-78px; border:1px solid rgba(255,255,255,.35); box-shadow:0 0 0 16px rgba(255,255,255,.14); }
+        .kpi-carbon { background:linear-gradient(145deg,#e8f4e8,#d9ebdc); }
+        .kpi-money { background:linear-gradient(145deg,#fff7e7,#f4ead6); }
+        .kpi-water { background:linear-gradient(145deg,#edf6f8,#dcecf0); }
+        .kpi-streak { background:linear-gradient(145deg,#fff1e7,#f5e3d6); }
+        .kpi-top-row { margin-bottom:.95rem; }
+        .kpi-premium-card .kpi-icon-wrap { width:43px; height:43px; border-radius:15px; box-shadow:0 5px 12px rgba(36,54,42,.07),inset 0 1px 0 rgba(255,255,255,.8); }
+        .kpi-trend { padding:.32rem .55rem; border-radius:999px; background:rgba(255,255,255,.56); font-size:.58rem; }
+        .kpi-label { color:#697c6f; font-size:.6rem; }
+        .kpi-value { margin:.32rem 0 .18rem; font-size:1.72rem; letter-spacing:-.035em; }
+        .kpi-description { color:#7d8c80; font-size:.68rem; }
+        .analytics-premium-grid { grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:1.15rem; }
+        .premium-chart-card,.premium-breakdown-card { padding:1.7rem 1.8rem; border-radius:25px; }
+        .premium-chart-heading h3 { font-size:1.52rem; letter-spacing:-.03em; }
+        .premium-chart-heading p { font-size:.76rem; }
+        .chart-period-pill { padding:.45rem .7rem; font-size:.6rem; }
+        .premium-weekly-chart { height:245px; margin-top:1.55rem; }
+        .premium-bar-track { width:46px; height:160px; border-radius:13px; background:linear-gradient(180deg,#f2f0e9,#e6e5dc); }
+        .premium-week-column>strong { font-size:.76rem; }
+        .premium-week-label { font-size:.66rem; }
+        .chart-bottom-note { font-size:.68rem; }
+        .premium-category-list { gap:1.05rem; margin:1.45rem 0 1.55rem; }
+        .premium-category-top>span { font-size:.77rem; }
+        .premium-category-top>span small { font-size:.64rem; }
+        .premium-category-top>strong { font-size:.76rem; }
+        .premium-category-track { height:10px; margin-top:.56rem; }
+        .premium-category-foot { font-size:.6rem; }
+        .premium-streak-footer { padding-top:1.2rem; }
+        .premium-streak-footer strong { font-size:.74rem; }
+        .premium-streak-footer small { font-size:.62rem; }
+        .premium-streak-dots { gap:.42rem; margin-top:.85rem; }
+        .premium-streak-dots span { width:25px; height:25px; }
+
+        @media(max-width:1050px) {
+          .routine-plan-grid { grid-template-columns:minmax(0,1.3fr) minmax(250px,.8fr); }
+          .swaps-hero-panel { align-items:flex-start; flex-direction:column; }
+          .swaps-hero-stats { max-width:none; width:100%; }
+          .analytics-kpi-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+        }
+        @media(max-width:850px) {
+          .routine-plan-grid,.analytics-premium-grid { grid-template-columns:1fr; }
+          .routine-plan-hero { grid-template-columns:minmax(0,1fr) 190px; padding:1.7rem; }
+          .premium-swaps-grid { grid-template-columns:1fr 1fr; }
+        }
+        @media(max-width:600px) {
+          .routine-premium { padding:1.2rem 1rem 2.5rem; }
+          .routine-page-header { align-items:flex-start; flex-direction:column; gap:1rem; }
+          .routine-premium-tabs { width:100%; justify-content:space-between; }
+          .routine-plan-hero { grid-template-columns:1fr; gap:1.1rem; padding:1.45rem; }
+          .plan-hero-photo { inset:0; opacity:.4; mask-image:none; }
+          .plan-ring-wrap { flex-direction:row; justify-content:flex-start; }
+          .plan-progress-ring { width:94px; height:94px; }
+          .plan-ring-inner { width:74px; height:74px; }
+          .plan-ring-inner strong { font-size:1.45rem; }
+          .challenge-panel { padding:1rem; }
+          .premium-checklist-item { gap:.48rem; padding:.62rem .58rem; }
+          .action-number { display:none; }
+          .action-category-icon { width:33px; height:33px; border-radius:11px; }
+          .action-main-copy strong { font-size:.72rem; }
+          .action-main-copy small { font-size:.58rem; }
+          .action-impact-pill { padding:.28rem .38rem; font-size:.55rem; }
+          .premium-action-check { width:23px; height:23px; }
+          .swaps-hero-panel,.analytics-hero-panel { padding:1.45rem; border-radius:21px; }
+          .swaps-hero-stats { grid-template-columns:1fr; }
+          .swaps-hero-stats>div+div { border-left:0; border-top:1px solid rgba(255,255,255,.13); }
+          .premium-swaps-grid { grid-template-columns:1fr; }
+          .premium-swap-card { min-height:270px; }
+          .analytics-hero-panel { align-items:flex-start; flex-direction:column; gap:1rem; }
+          .analytics-hero-highlight { width:100%; min-width:0; }
+          .analytics-kpi-grid { grid-template-columns:1fr 1fr; gap:.6rem; }
+          .kpi-premium-card { min-height:150px; padding:.9rem; }
+          .kpi-value { font-size:1.28rem; }
+          .premium-chart-card,.premium-breakdown-card { padding:1.05rem; }
+          .premium-weekly-chart { padding-left:1.7rem; padding-right:.1rem; }
+          .chart-gridline { left:1.65rem; }
+          .chart-gridline span { left:-1.7rem; font-size:.48rem; }
+          .premium-week-column { min-width:39px; }
+          .premium-bar-track { width:29px; }
+          .premium-week-label { font-size:.52rem; }
+          .chart-bottom-note { font-size:.55rem; }
+          .premium-category-top>span { font-size:.64rem; }
+          .premium-category-top>span small { flex-basis:100%; margin-left:1rem; }
+        }
       `}</style>
     </div>
   );
