@@ -133,11 +133,11 @@ export function LogActivityPage() {
   const activeSwapCategoryCount = new Set(adoptedSwaps.map((swap) => swap.cat)).size;
   const analyticsLoading = activityQuery.isLoading || actionQuery.isLoading || alternativeQuery.isLoading;
   const analyticsError = activityQuery.isError || actionQuery.isError;
-  const chartScale = Math.max(10, Math.ceil(Math.max(...liveAnalytics.weeklyTrend.map((week) => week.kg), 0) / 10) * 10);
-  const chartColumns = liveAnalytics.weeklyTrend.map((week, index) => ({ ...week, x: 86 + index * 138, height: week.kg > 0 ? Math.max(4, (week.kg / chartScale) * 178) : 0, centerX: 112 + index * 138, y: 246 - (week.kg > 0 ? Math.max(4, (week.kg / chartScale) * 178) : 0) }));
-  const chartLinePath = chartColumns.map((column, index) => (index === 0 ? 'M' : 'L') + ' ' + column.centerX + ' ' + column.y).join(' ');
-  const chartAreaPath = chartColumns.length > 0 ? chartLinePath + ' L ' + chartColumns[chartColumns.length - 1].centerX + ' 246 L ' + chartColumns[0].centerX + ' 246 Z' : '';
-  const bestWeek = liveAnalytics.weeklyTrend.slice().sort((a, b) => b.kg - a.kg)[0] || { label: '—', start: '', kg: 0 };
+  const chartScale = 50;
+  const chartColumns = liveAnalytics.weeklyTrend;
+  const chartLinePath = '';
+  const chartAreaPath = '';
+  const bestWeek = { label: '—', start: '', kg: 0 };
   return (
     <div className="routine-premium">
       <header className="routine-page-header">
