@@ -248,7 +248,13 @@ export function useUpsertUserAction() {
         updated_at: updatedAt,
       });
     },
-    onSuccess: () => {
+    onSuccess: (savedAction) => {
+      // Update the shared cache immediately so Routine and Recommendations show the
+      // adopted state as soon as the save succeeds, then reconcile with the backend.
+      qc.setQueryData<UserAction[]>(["user_actions", user?.id], (current = []) => [
+        savedAction,
+        ...current.filter((action) => action.alternative_id !== savedAction.alternative_id),
+      ]);
       void qc.invalidateQueries({ queryKey: ["user_actions", user?.id] });
       void qc.invalidateQueries({ queryKey: ["recommendations", user?.id] });
     },
