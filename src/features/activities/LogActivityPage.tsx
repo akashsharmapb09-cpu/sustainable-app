@@ -38,7 +38,6 @@ interface AdoptedSwap {
 }
 
 const actionIcons = { Shopping: ShoppingBag, Food: Utensils, Transport: Bike, Energy: Lightbulb, Home: Droplets };
-const actionIcons = { Shopping: ShoppingBag, Food: Utensils, Transport: Bike, Energy: Lightbulb, Home: Droplets };
 const swapVisuals: Record<string, {
   icon: LucideIcon;
   tone: AdoptedSwap['tone'];
