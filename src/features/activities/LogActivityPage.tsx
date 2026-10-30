@@ -106,53 +106,38 @@ function formatNetSavings(value: number): string {
 
 export function LogActivityPage() {
   const [routineActions, setRoutineActions] = useState(INITIAL_ACTIONS);
-  const [activeTab, setActiveTab] = useState('plan' as 'plan' | 'swaps' | 'analytics');
-
-  // These are the same saved records used by Progress and Recommendations.
-  const { data: activityLogs = [], isLoading: logsLoading, isError: logsError, refetch: refetchLogs } = useActivityLogs();
-  const { data: userActions = [], isLoading: userActionsLoading, isError: userActionsError, refetch: refetchUserActions } = useUserActions();
-  const { data: alternatives = [], isLoading: alternativesLoading } = useAlternatives();
-  const liveAnalytics = useMemo(
-    () => calculateRoutineAnalytics(activityLogs, userActions, alternatives),
-    [activityLogs, userActions, alternatives],
-  );
-
-  const adoptedSwaps = liveAnalytics.adopted.map(({ action, alternative }) => ({
-    title: alternative.title,
-    cat: alternative.category.charAt(0).toUpperCase() + alternative.category.slice(1),
-    co2: (liveAnalytics.adoptedSavingsByAlternative[alternative.id] || 0) > 0
-      ? '−' + (liveAnalytics.adoptedSavingsByAlternative[alternative.id] || 0).toFixed(1) + ' kg CO₂e / mo'
-      : 'Log baseline activity to estimate',
-    money: alternative.cost_delta_monthly_inr < 0
-      ? 'Save ' + formatINR(alternative.cost_delta_monthly_inr) + '/mo'
-      : alternative.cost_delta_monthly_inr > 0
-        ? 'Additional ' + formatINR(alternative.cost_delta_monthly_inr) + '/mo'
-        : 'No monthly cost change',
-    status: formatAdoptedStatus(action.adopted_at),
-    icon: (swapVisuals[alternative.category] || swapVisuals.shopping).icon,
-    tone: (swapVisuals[alternative.category] || swapVisuals.shopping).tone,
-    detail: alternative.description,
-    benefit: alternative.why_better,
-    image: (swapVisuals[alternative.category] || swapVisuals.shopping).image,
-    fallbackImage: (swapVisuals[alternative.category] || swapVisuals.shopping).fallbackImage,
+  const [activeTab, setActiveTab] = useState('plan');
+  const activityQuery = useActivityLogs();
+  const actionQuery = useUserActions();
+  const alternativeQuery = useAlternatives();
+  const activityLogs = activityQuery.data || [];
+  const userActions = actionQuery.data || [];
+  const alternatives = alternativeQuery.data || [];
+  const liveAnalytics = calculateRoutineAnalytics(activityLogs, userActions, alternatives);
+  const adoptedSwaps = liveAnalytics.adopted.map((entry) => ({
+    title: entry.alternative.title,
+    cat: entry.alternative.category.charAt(0).toUpperCase() + entry.alternative.category.slice(1),
+    co2: (liveAnalytics.adoptedSavingsByAlternative[entry.alternative.id] || 0) > 0 ? '−' + (liveAnalytics.adoptedSavingsByAlternative[entry.alternative.id] || 0).toFixed(1) + ' kg CO₂e / mo' : 'Log baseline activity to estimate',
+    money: entry.alternative.cost_delta_monthly_inr < 0 ? 'Save ' + formatINR(entry.alternative.cost_delta_monthly_inr) + '/mo' : entry.alternative.cost_delta_monthly_inr > 0 ? 'Additional ' + formatINR(entry.alternative.cost_delta_monthly_inr) + '/mo' : 'No monthly cost change',
+    status: formatAdoptedStatus(entry.action.adopted_at),
+    icon: (swapVisuals[entry.alternative.category] || swapVisuals.shopping).icon,
+    tone: (swapVisuals[entry.alternative.category] || swapVisuals.shopping).tone,
+    detail: entry.alternative.description,
+    benefit: entry.alternative.why_better,
+    image: (swapVisuals[entry.alternative.category] || swapVisuals.shopping).image,
+    fallbackImage: (swapVisuals[entry.alternative.category] || swapVisuals.shopping).fallbackImage
   }));
-  const toggleAction = (id: string) => setRoutineActions((previous) => previous.map((action) => action.id === id ? { ...action, completed: !action.completed } : action));
+  const toggleAction = (id) => setRoutineActions((previous) => previous.map((action) => action.id === id ? { ...action, completed: !action.completed } : action));
   const completedCount = routineActions.filter((action) => action.completed).length;
   const completionPercent = Math.round((completedCount / routineActions.length) * 100);
   const activeSwapCategoryCount = new Set(adoptedSwaps.map((swap) => swap.cat)).size;
-  const analyticsLoading = logsLoading || userActionsLoading || alternativesLoading;
-  const analyticsError = logsError || userActionsError;
+  const analyticsLoading = activityQuery.isLoading || actionQuery.isLoading || alternativeQuery.isLoading;
+  const analyticsError = activityQuery.isError || actionQuery.isError;
   const chartScale = Math.max(10, Math.ceil(Math.max(...liveAnalytics.weeklyTrend.map((week) => week.kg), 0) / 10) * 10);
-  const chartColumns = liveAnalytics.weeklyTrend.map((week, index) => ({
-    ...week,
-    x: 86 + index * 138,
-    height: week.kg > 0 ? Math.max(4, (week.kg / chartScale) * 178) : 0,
-    centerX: 112 + index * 138,
-  })).map((week) => ({ ...week, y: 246 - week.height }));
+  const chartColumns = liveAnalytics.weeklyTrend.map((week, index) => ({ ...week, x: 86 + index * 138, height: week.kg > 0 ? Math.max(4, (week.kg / chartScale) * 178) : 0, centerX: 112 + index * 138, y: 246 - (week.kg > 0 ? Math.max(4, (week.kg / chartScale) * 178) : 0) }));
   const chartLinePath = chartColumns.map((column, index) => (index === 0 ? 'M' : 'L') + ' ' + column.centerX + ' ' + column.y).join(' ');
   const chartAreaPath = chartColumns.length > 0 ? chartLinePath + ' L ' + chartColumns[chartColumns.length - 1].centerX + ' 246 L ' + chartColumns[0].centerX + ' 246 Z' : '';
   const bestWeek = liveAnalytics.weeklyTrend.slice().sort((a, b) => b.kg - a.kg)[0] || { label: '—', start: '', kg: 0 };
-
   return (
     <div className="routine-premium">
       <header className="routine-page-header">
