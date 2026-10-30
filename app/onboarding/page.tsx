@@ -83,7 +83,7 @@ const FOCUS_TOPICS = [
     id: 'energy',
     label: 'Clean Energy',
     tag: 'Cost saver',
-    image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1552197892-f2ad2f75e7c8?auto=format&fit=crop&w=1200&q=85',
   },
   {
     id: 'food',
@@ -128,7 +128,7 @@ const EFFORT_OPTIONS = [
     val: 'committed' as EffortLevel,
     label: 'Willing to invest',
     desc: 'High impact interventions (solar panels, EV, composting)',
-    image: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?w=300&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=600&auto=format&fit=crop&q=85',
   },
 ];
 
@@ -398,14 +398,23 @@ export default function OnboardingPage() {
                         isSelected ? 'border-2 border-emerald-500 ring-2 ring-emerald-500/20' : 'border border-[#DFD7CA]'
                       }`}
                     >
-                      {/* Image full cover */}
-                      <Image
-                        src={topic.image}
-                        alt={topic.label}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
+                      {topic.id === 'energy' ? (
+                        <img
+                          src="https://images.unsplash.com/photo-1552197892-f2ad2f75e7c8?auto=format&fit=crop&w=1200&q=85"
+                          alt={topic.label}
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <Image
+                          src={topic.image}
+                          alt={topic.label}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      )}
+
                       {/* Dark gradient at bottom */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
@@ -441,29 +450,27 @@ export default function OnboardingPage() {
                     <div
                       key={item.val}
                       onClick={() => setEffort(item.val)}
-                      className={`bg-white rounded-2xl p-5 shadow-md hover:shadow-xl transition-all cursor-pointer text-center flex flex-col items-center justify-between ${
-                        isSelected ? 'border-2 border-emerald-600 bg-emerald-50/40 ring-2 ring-emerald-600/20' : 'border border-[#DFD7CA]'
+                      className={`relative h-[190px] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all cursor-pointer group ${
+                        isSelected ? 'border-2 border-emerald-500 ring-2 ring-emerald-500/20' : 'border border-[#DFD7CA]'
                       }`}
                     >
-                      {/* Small product image */}
-                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden mb-3 border border-[#DFD7CA]">
-                        <Image
-                          src={item.image}
-                          alt={item.label}
-                          fill
-                          sizes="80px"
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <strong className="block text-base font-bold text-[#162A20]">{item.label}</strong>
-                        <p className="text-xs text-[#535C55] mt-1 leading-snug">{item.desc}</p>
-                      </div>
+                      <Image
+                        src={item.image}
+                        alt={item.label}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                       {isSelected && (
-                        <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-mono font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
-                          <Check className="h-3.5 w-3.5" /> Selected
-                        </span>
+                        <div className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-white shadow-md">
+                          <Check className="h-3 w-3" /> Selected
+                        </div>
                       )}
+                      <div className="absolute bottom-4 left-4 right-4 z-10 text-left">
+                        <strong className="block text-base font-bold text-white drop-shadow-md">{item.label}</strong>
+                        <p className="mt-1 text-xs leading-snug text-white/85 drop-shadow-md">{item.desc}</p>
+                      </div>
                     </div>
                   );
                 })}
@@ -482,29 +489,27 @@ export default function OnboardingPage() {
                     <div
                       key={item.val}
                       onClick={() => setBudget(item.val)}
-                      className={`bg-white rounded-2xl p-5 shadow-md hover:shadow-xl transition-all cursor-pointer text-center flex flex-col items-center justify-between ${
-                        isSelected ? 'border-2 border-emerald-600 bg-emerald-50/40 ring-2 ring-emerald-600/20' : 'border border-[#DFD7CA]'
+                      className={`relative h-[190px] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all cursor-pointer group ${
+                        isSelected ? 'border-2 border-emerald-500 ring-2 ring-emerald-500/20' : 'border border-[#DFD7CA]'
                       }`}
                     >
-                      {/* Small product/plant image */}
-                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden mb-3 border border-[#DFD7CA]">
-                        <Image
-                          src={item.image}
-                          alt={item.label}
-                          fill
-                          sizes="80px"
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <strong className="block text-base font-bold text-[#162A20]">{item.label}</strong>
-                        <p className="text-xs text-[#535C55] mt-1 leading-snug">{item.desc}</p>
-                      </div>
+                      <Image
+                        src={item.image}
+                        alt={item.label}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                       {isSelected && (
-                        <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-mono font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
-                          <Check className="h-3.5 w-3.5" /> Selected
-                        </span>
+                        <div className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-white shadow-md">
+                          <Check className="h-3 w-3" /> Selected
+                        </div>
                       )}
+                      <div className="absolute bottom-4 left-4 right-4 z-10 text-left">
+                        <strong className="block text-base font-bold text-white drop-shadow-md">{item.label}</strong>
+                        <p className="mt-1 text-xs leading-snug text-white/85 drop-shadow-md">{item.desc}</p>
+                      </div>
                     </div>
                   );
                 })}
