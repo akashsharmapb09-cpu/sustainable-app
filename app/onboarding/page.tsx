@@ -454,7 +454,7 @@ export default function OnboardingPage() {
                         isSelected ? 'border-2 border-emerald-600 bg-emerald-50/40 ring-2 ring-emerald-600/20' : 'border border-[#DFD7CA]'
                       }`}
                     >
-                      <div className="relative mb-3 h-20 w-20 overflow-hidden rounded-2xl border border-[#DFD7CA]">
+                      <div className="relative mb-3 h-20 w-20 overflow-hidden rounded-2xl border border-[#DFD7CA] bg-[#162A20]">
                         <Image
                           src={item.image}
                           alt={item.label}
@@ -462,6 +462,7 @@ export default function OnboardingPage() {
                           sizes="80px"
                           className="object-cover"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" aria-hidden="true" />
                       </div>
                       <div>
                         <strong className="block text-base font-bold text-[#162A20]">{item.label}</strong>
@@ -495,7 +496,7 @@ export default function OnboardingPage() {
                       }`}
                     >
                       {/* Small product/plant image */}
-                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden mb-3 border border-[#DFD7CA]">
+                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden mb-3 border border-[#DFD7CA] bg-[#162A20]">
                         <Image
                           src={item.image}
                           alt={item.label}
@@ -503,6 +504,7 @@ export default function OnboardingPage() {
                           sizes="80px"
                           className="object-cover"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" aria-hidden="true" />
                       </div>
                       <div>
                         <strong className="block text-base font-bold text-[#162A20]">{item.label}</strong>
