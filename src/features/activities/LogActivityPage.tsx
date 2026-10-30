@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Check, Flame, TrendingDown, Droplets, Wallet, Calendar, Leaf,
   ArrowUpRight, TrainFront, Utensils, Lightbulb, ShoppingBag, Bike,
-  Sparkles, ChevronRight, Zap, Clock3, ShieldCheck,
+  Sparkles, ChevronRight, Zap, Clock3, ShieldCheck, Recycle,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
+import { useActivityLogs, useAlternatives, useUserActions } from '../../shared/lib/hooks/useData';
+import { calculateRoutineAnalytics } from './data/routineAnalytics';
 
 interface RoutineAction {
   id: string; label: string; category: string; saving: string; completed: boolean;
@@ -36,19 +38,135 @@ interface AdoptedSwap {
 }
 
 const actionIcons = { Shopping: ShoppingBag, Food: Utensils, Transport: Bike, Energy: Lightbulb, Home: Droplets };
-const swaps: AdoptedSwap[] = [
-  { title: 'Metro commute for office workdays', cat: 'Transport', co2: '-75 kg CO₂e / mo', money: 'Save ~₹3,200/mo', status: 'Adopted 3 weeks ago', icon: TrainFront, tone: 'transport', detail: 'A lower-carbon way to get to work', benefit: 'Trade solo driving for shared city travel', image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&auto=format&fit=crop&q=85', fallbackImage: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&auto=format&fit=crop&q=85' },
-  { title: 'Eat plant-based weekday lunches', cat: 'Food', co2: '-30 kg CO₂e / mo', money: 'Save ~₹1,100/mo', status: 'Adopted 2 weeks ago', icon: Utensils, tone: 'food', detail: 'More plants, less food-related impact', benefit: 'A lighter footprint from everyday meals', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&auto=format&fit=crop&q=85', fallbackImage: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&auto=format&fit=crop&q=85' },
-  { title: 'AC 24°C thermostat setpoint', cat: 'Energy', co2: '-40 kg CO₂e / mo', money: 'Save ~₹680/mo', status: 'Adopted 1 month ago', icon: Zap, tone: 'energy', detail: 'Comfortable cooling with less energy', image: 'https://images.unsplash.com/photo-1745187946672-2c1d8cf26a2b?auto=format&fit=crop&w=1600&q=85', fallbackImage: 'https://images.unsplash.com/photo-1662340712175-349cd23a63d6?auto=format&fit=crop&w=1600&q=85', benefit: 'Use less grid electricity with efficient cooling' },
-  { title: 'Cloth totes for market purchases', cat: 'Shopping', co2: '-5 kg CO₂e / mo', money: 'Zero plastic waste', status: 'Adopted 2 months ago', icon: ShoppingBag, tone: 'shopping', detail: 'A reusable choice on every shopping trip', image: 'https://images.unsplash.com/photo-1772890753143-24991d807710?auto=format&fit=crop&w=1600&q=85', fallbackImage: 'https://images.unsplash.com/photo-1778996525689-cbbbc33a5185?auto=format&fit=crop&w=1600&q=85', benefit: 'Replace single-use bags with a durable tote' },
-];
+const actionIcons = { Shopping: ShoppingBag, Food: Utensils, Transport: Bike, Energy: Lightbulb, Home: Droplets };
+const swapVisuals: Record<string, {
+  icon: LucideIcon;
+  tone: AdoptedSwap['tone'];
+  image: string;
+  fallbackImage?: string;
+}> = {
+  transport: {
+    icon: TrainFront,
+    tone: 'transport',
+    image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&auto=format&fit=crop&q=85',
+    fallbackImage: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&auto=format&fit=crop&q=85',
+  },
+  travel: {
+    icon: TrainFront,
+    tone: 'transport',
+    image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&auto=format&fit=crop&q=85',
+  },
+  food: {
+    icon: Utensils,
+    tone: 'food',
+    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&auto=format&fit=crop&q=85',
+    fallbackImage: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=1200&auto=format&fit=crop&q=85',
+  },
+  energy: {
+    icon: Zap,
+    tone: 'energy',
+    image: 'https://images.unsplash.com/photo-1745187946672-2c1d8cf26a2b?auto=format&fit=crop&w=1600&q=85',
+    fallbackImage: 'https://images.unsplash.com/photo-1662340712175-349cd23a63d6?auto=format&fit=crop&w=1600&q=85',
+  },
+  shopping: {
+    icon: ShoppingBag,
+    tone: 'shopping',
+    image: 'https://images.unsplash.com/photo-1772890753143-24991d807710?auto=format&fit=crop&w=1600&q=85',
+    fallbackImage: 'https://images.unsplash.com/photo-1778996525689-cbbbc33a5185?auto=format&fit=crop&w=1600&q=85',
+  },
+  waste: {
+    icon: Recycle,
+    tone: 'shopping',
+    image: 'https://images.unsplash.com/photo-1532996122724-a3c354a0f50b?w=1200&auto=format&fit=crop&q=85',
+  },
+};
+
+const formatINR = (amount: number) =>
+  new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Math.abs(amount));
+
+function formatAdoptedStatus(value: string | null): string {
+  if (!value) return 'Adopted';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Adopted';
+  const days = Math.max(0, Math.floor((Date.now() - date.getTime()) / 86_400_000));
+  if (days === 0) return 'Adopted today';
+  if (days === 1) return 'Adopted yesterday';
+  if (days < 30) return `Adopted ${days} days ago`;
+  const months = Math.floor(days / 30);
+  return `Adopted ${months} ${months === 1 ? 'month' : 'months'} ago`;
+}
+
+function formatNetSavings(value: number): string {
+  if (value > 0) return formatINR(value);
+  if (value < 0) return `−${formatINR(value)}`;
+  return formatINR(0);
+}
+
 
 export function LogActivityPage() {
-  const [actions, setActions] = useState<RoutineAction[]>(INITIAL_ACTIONS);
+  const [routineActions, setRoutineActions] = useState<RoutineAction[]>(INITIAL_ACTIONS);
   const [activeTab, setActiveTab] = useState<'plan' | 'swaps' | 'analytics'>('plan');
-  const toggleAction = (id: string) => setActions((prev) => prev.map((a) => a.id === id ? { ...a, completed: !a.completed } : a));
-  const completedCount = actions.filter((a) => a.completed).length;
-  const completionPercent = Math.round((completedCount / actions.length) * 100);
+
+  // These are the same saved records used by Progress and Recommendations.
+  const { data: activityLogs = [], isLoading: logsLoading, isError: logsError, refetch: refetchLogs } = useActivityLogs();
+  const { data: userActions = [], isLoading: userActionsLoading, isError: userActionsError, refetch: refetchUserActions } = useUserActions();
+  const { data: alternatives = [], isLoading: alternativesLoading } = useAlternatives();
+  const liveAnalytics = useMemo(
+    () => calculateRoutineAnalytics(activityLogs, userActions, alternatives),
+    [activityLogs, userActions, alternatives],
+  );
+
+  const adoptedSwaps: AdoptedSwap[] = useMemo(() => liveAnalytics.adopted.map(({ action, alternative }) => {
+    const visual = swapVisuals[alternative.category] ?? swapVisuals.shopping;
+    const savedKg = liveAnalytics.adoptedSavingsByAlternative[alternative.id] ?? 0;
+    const costDelta = alternative.cost_delta_monthly_inr;
+    const money = costDelta < 0
+      ? `Save ${formatINR(costDelta)}/mo`
+      : costDelta > 0
+        ? `Additional ${formatINR(costDelta)}/mo`
+        : 'No monthly cost change';
+
+    return {
+      title: alternative.title,
+      cat: alternative.category.charAt(0).toUpperCase() + alternative.category.slice(1),
+      co2: savedKg > 0 ? `−${savedKg.toFixed(1)} kg CO₂e / mo` : 'Log baseline activity to estimate',
+      money,
+      status: formatAdoptedStatus(action.adopted_at),
+      icon: visual.icon,
+      tone: visual.tone,
+      detail: alternative.description,
+      benefit: alternative.why_better,
+      image: visual.image,
+      fallbackImage: visual.fallbackImage,
+    };
+  }), [liveAnalytics]);
+
+  const toggleAction = (id: string) => setRoutineActions((prev) =>
+    prev.map((action) => action.id === id ? { ...action, completed: !action.completed } : action)
+  );
+  const completedCount = routineActions.filter((action) => action.completed).length;
+  const completionPercent = Math.round((completedCount / routineActions.length) * 100);
+  const activeSwapCategoryCount = new Set(adoptedSwaps.map((swap) => swap.cat)).size;
+  const analyticsLoading = logsLoading || userActionsLoading || alternativesLoading;
+  const analyticsError = logsError || userActionsError;
+
+  const chartScale = Math.max(10, Math.ceil(Math.max(...liveAnalytics.weeklyTrend.map((week) => week.kg), 0) / 10) * 10);
+  const chartColumns = liveAnalytics.weeklyTrend.map((week, index) => {
+    const x = 86 + index * 138;
+    const height = week.kg > 0 ? Math.max(4, (week.kg / chartScale) * 178) : 0;
+    const y = 246 - height;
+    return { ...week, x, y, height, centerX: x + 26 };
+  });
+  const chartLinePath = chartColumns.length
+    ? chartColumns.map((column, index) => `${index === 0 ? 'M' : 'L'} ${column.centerX} ${column.y}`).join(' ')
+    : '';
+  const chartAreaPath = chartColumns.length
+    ? `${chartLinePath} L ${chartColumns[chartColumns.length - 1].centerX} 246 L ${chartColumns[0].centerX} 246 Z`
+    : '';
+  const bestWeek = liveAnalytics.weeklyTrend.reduce(
+    (best, week) => week.kg > best.kg ? week : best,
+    liveAnalytics.weeklyTrend[0] ?? { label: '—', start: '', kg: 0 },
+  );
 
   return (
     <div className="routine-premium">
@@ -60,7 +178,7 @@ export function LogActivityPage() {
         </div>
         <div className="routine-streak-chip">
           <span className="routine-streak-icon"><Flame size={18} /></span>
-          <span><small>Current streak</small><strong>14 days</strong></span>
+          <span><small>Activity logging streak</small><strong>{liveAnalytics.currentStreakDays} days</strong></span>
           <Sparkles className="routine-streak-sparkle" size={15} />
         </div>
       </header>
@@ -80,9 +198,9 @@ export function LogActivityPage() {
               <div className="plan-hero-kicker"><Sparkles size={14} /> YOUR WEEK, IN BALANCE</div>
               <h2>A lighter week starts<br />with one small win.</h2>
               <p>Build momentum with simple daily actions. Every completed habit moves your household in a greener direction.</p>
-              <div className="plan-progress-meta"><span>{completedCount} of 7 daily rituals complete</span><strong>{completionPercent}%</strong></div>
+              <div className="plan-progress-meta"><span>{completedCount} of {routineActions.length} daily rituals complete</span><strong>{completionPercent}%</strong></div>
               <div className="plan-progress-track"><span style={{ width: `${completionPercent}%` }} /></div>
-              <div className="plan-hero-foot"><span><Check size={13} /> {completedCount} wins collected</span><span>{7 - completedCount} left this week</span></div>
+              <div className="plan-hero-foot"><span><Check size={13} /> {completedCount} wins collected</span><span>{routineActions.length - completedCount} left this week</span></div>
             </div>
             <div className="plan-ring-wrap">
               <div className="plan-progress-ring" style={{ background: `conic-gradient(#7fe0a7 ${completionPercent * 3.6}deg, rgba(255,255,255,.13) 0deg)` }}>
@@ -96,10 +214,10 @@ export function LogActivityPage() {
             <section className="routine-premium-card challenge-panel challenge-panel-editorial">
               <div className="panel-heading-row">
                 <div><div className="panel-eyebrow">THE DAILY CHECK-IN</div><h2 className="routine-section-title">Your 7-day challenge</h2><p className="routine-section-subtitle">A few small actions add up to meaningful change.</p></div>
-                <span className="challenge-count-pill">{completedCount}<i>/7</i></span>
+                <span className="challenge-count-pill">{completedCount}<i>/{routineActions.length}</i></span>
               </div>
               <div className="routine-premium-checklist">
-                {actions.map((act, index) => {
+                {routineActions.map((act, index) => {
                   const Icon = actionIcons[act.category as keyof typeof actionIcons] || Leaf;
                   return (
                     <button key={act.id} type="button" aria-pressed={act.completed} className={`premium-checklist-item ${act.completed ? 'is-complete' : ''}`} onClick={() => toggleAction(act.id)}>
@@ -112,7 +230,7 @@ export function LogActivityPage() {
                   );
                 })}
               </div>
-              <div className="challenge-panel-footer"><span><ShieldCheck size={15} /> Progress is saved as you go</span><span>{7 - completedCount} habits to complete</span></div>
+              <div className="challenge-panel-footer"><span><ShieldCheck size={15} /> Progress is saved as you go</span><span>{routineActions.length - completedCount} habits to complete</span></div>
             </section>
 
             <aside className="routine-plan-aside">
