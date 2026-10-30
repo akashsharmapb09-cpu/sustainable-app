@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Check, Flame, TrendingDown, Droplets, Wallet, Calendar } from 'lucide-react';
+import {
+  Check, Flame, TrendingDown, Droplets, Wallet, Calendar, Leaf,
+  ArrowUpRight, TrainFront, Utensils, Lightbulb, ShoppingBag, Bike,
+  Sparkles, ChevronRight, Zap, Clock3, ShieldCheck,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface RoutineAction {
-  id: string;
-  label: string;
-  category: string;
-  saving: string;
-  completed: boolean;
+  id: string; label: string; category: string; saving: string; completed: boolean;
 }
 
 const INITIAL_ACTIONS: RoutineAction[] = [
@@ -20,777 +20,295 @@ const INITIAL_ACTIONS: RoutineAction[] = [
   { id: '7', label: 'Take shorter showers', category: 'Home', saving: '-2.0 kg CO₂e', completed: false },
 ];
 
+const actionIcons = { Shopping: ShoppingBag, Food: Utensils, Transport: Bike, Energy: Lightbulb, Home: Droplets };
+const swaps = [
+  { title: 'Metro commute for office workdays', cat: 'Transport', co2: '-75 kg CO₂e / mo', money: 'Save ~₹3,200/mo', status: 'Adopted 3 weeks ago', icon: TrainFront, tone: 'transport', detail: 'A lower-carbon way to get to work' },
+  { title: 'Eat plant-based weekday lunches', cat: 'Food', co2: '-30 kg CO₂e / mo', money: 'Save ~₹1,100/mo', status: 'Adopted 2 weeks ago', icon: Utensils, tone: 'food', detail: 'More plants, less food-related impact' },
+  { title: 'AC 24°C thermostat setpoint', cat: 'Energy', co2: '-40 kg CO₂e / mo', money: 'Save ~₹680/mo', status: 'Adopted 1 month ago', icon: Zap, tone: 'energy', detail: 'Comfortable cooling with less energy' },
+  { title: 'Cloth totes for market purchases', cat: 'Shopping', co2: '-5 kg CO₂e / mo', money: 'Zero plastic waste', status: 'Adopted 2 months ago', icon: ShoppingBag, tone: 'shopping', detail: 'A reusable choice on every shopping trip' },
+];
+
 export function LogActivityPage() {
   const [actions, setActions] = useState<RoutineAction[]>(INITIAL_ACTIONS);
   const [activeTab, setActiveTab] = useState<'plan' | 'swaps' | 'analytics'>('plan');
-
-  const toggleAction = (id: string) => {
-    setActions((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, completed: !a.completed } : a))
-    );
-  };
-
+  const toggleAction = (id: string) => setActions((prev) => prev.map((a) => a.id === id ? { ...a, completed: !a.completed } : a));
   const completedCount = actions.filter((a) => a.completed).length;
+  const completionPercent = Math.round((completedCount / actions.length) * 100);
 
   return (
-    <div className="routine-root">
-      {/* ── Page Header ── */}
-      <div className="routine-header">
-        <h1 className="routine-title">Your routine</h1>
-        <p className="routine-sub">Build simple habits for a stronger impact.</p>
-      </div>
+    <div className="routine-premium">
+      <header className="routine-page-header">
+        <div className="routine-heading-copy">
+          <div className="routine-eyebrow"><Leaf size={14} /> YOUR EVERYDAY, BETTER</div>
+          <h1 className="routine-page-title">Your routine<span>.</span></h1>
+          <p className="routine-page-subtitle">Small, thoughtful habits. A lighter footprint, one day at a time.</p>
+        </div>
+        <div className="routine-streak-chip">
+          <span className="routine-streak-icon"><Flame size={18} /></span>
+          <span><small>Current streak</small><strong>14 days</strong></span>
+          <Sparkles className="routine-streak-sparkle" size={15} />
+        </div>
+      </header>
 
-      {/* ── Tabs Bar ── */}
-      <div className="routine-tabs">
-        <button
-          type="button"
-          className={`routine-tab ${activeTab === 'plan' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('plan')}
-        >
-          7-day plan
-        </button>
-        <button
-          type="button"
-          className={`routine-tab ${activeTab === 'swaps' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('swaps')}
-        >
-          Your swaps
-        </button>
-        <button
-          type="button"
-          className={`routine-tab ${activeTab === 'analytics' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('analytics')}
-        >
-          Analytics
-        </button>
-      </div>
+      <nav className="routine-premium-tabs" aria-label="Routine sections">
+        <button type="button" className={`routine-premium-tab ${activeTab === 'plan' ? 'is-active' : ''}`} onClick={() => setActiveTab('plan')}><span className="tab-step">01</span> 7-day plan</button>
+        <button type="button" className={`routine-premium-tab ${activeTab === 'swaps' ? 'is-active' : ''}`} onClick={() => setActiveTab('swaps')}><span className="tab-step">02</span> Your swaps</button>
+        <button type="button" className={`routine-premium-tab ${activeTab === 'analytics' ? 'is-active' : ''}`} onClick={() => setActiveTab('analytics')}><span className="tab-step">03</span> Analytics</button>
+      </nav>
 
-      {/* ── Tab 1: 7-Day Plan View ── */}
       {activeTab === 'plan' && (
-        <div className="routine-split">
-          {/* Left: Your 7-day challenge card */}
-          <div className="routine-card routine-challenge-card">
-            <div className="challenge-card-header">
-              <div>
-                <h2 className="challenge-title">Your 7-day challenge</h2>
-                <p className="challenge-desc">Complete daily actions to build your sustainable routine.</p>
+        <div className="routine-plan-view">
+          <section className="routine-plan-hero">
+            <div className="plan-hero-glow" />
+            <div className="plan-hero-content">
+              <div className="plan-hero-kicker"><Sparkles size={14} /> YOUR WEEK, IN BALANCE</div>
+              <h2>A lighter week starts<br />with one small win.</h2>
+              <p>Build momentum with simple daily actions. Every completed habit moves your household in a greener direction.</p>
+              <div className="plan-progress-meta"><span>{completedCount} of 7 daily rituals complete</span><strong>{completionPercent}%</strong></div>
+              <div className="plan-progress-track"><span style={{ width: `${completionPercent}%` }} /></div>
+              <div className="plan-hero-foot"><span><Check size={13} /> {completedCount} wins collected</span><span>{7 - completedCount} left this week</span></div>
+            </div>
+            <div className="plan-ring-wrap">
+              <div className="plan-progress-ring" style={{ background: `conic-gradient(#7fe0a7 ${completionPercent * 3.6}deg, rgba(255,255,255,.13) 0deg)` }}>
+                <div className="plan-ring-inner"><strong>{completionPercent}%</strong><span>complete</span></div>
               </div>
-              <span className="challenge-counter">{completedCount}/7 completed</span>
+              <div className="plan-ring-caption"><Flame size={14} /> Keep your streak alive</div>
             </div>
+          </section>
 
-            {/* Checklist */}
-            <div className="routine-checklist">
-              {actions.map((act) => (
-                <button
-                  key={act.id}
-                  type="button"
-                  className={`checklist-item ${act.completed ? 'is-checked' : ''}`}
-                  onClick={() => toggleAction(act.id)}
-                >
-                  <div className="check-box">
-                    {act.completed && <Check className="h-3.5 w-3.5 stroke-[3]" />}
-                  </div>
-                  <span className="check-text">{act.label}</span>
-                  <span className="check-saving">{act.saving}</span>
-                  <span className="check-bookmark">🔖</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Right Column: Today's Tip & Botanical Quote */}
-          <div className="routine-right-col">
-            {/* Today's Tip */}
-            <div className="routine-card tip-card">
-              <div className="tip-header">
-                <span className="tip-title">Today&apos;s tip</span>
-                <span className="tip-icon">💡</span>
+          <div className="routine-plan-grid">
+            <section className="routine-premium-card challenge-panel">
+              <div className="panel-heading-row">
+                <div><div className="panel-eyebrow">THE DAILY CHECK-IN</div><h2 className="routine-section-title">Your 7-day challenge</h2><p className="routine-section-subtitle">A few small actions add up to meaningful change.</p></div>
+                <span className="challenge-count-pill">{completedCount}<i>/7</i></span>
               </div>
-              <p className="tip-body">
-                Taking a 5 minute shorter shower can save up to <strong>20 liters of water</strong> and reduce hot water heating emissions.
-              </p>
-            </div>
-
-            {/* Botanical Quote Card */}
-            <div className="routine-card quote-card">
-              <blockquote className="quote-text">
-                &ldquo;Progress, not perfection, leads to a cleaner planet.&rdquo;
-              </blockquote>
-              <div className="quote-leaf" aria-hidden="true">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                  <path
-                    d="M10 30 C15 15 25 10 35 8 C30 20 22 28 10 30Z"
-                    fill="#123826"
-                    opacity="0.8"
-                  />
-                  <path d="M12 28 L30 12" stroke="#4dd282" strokeWidth="1.5" />
-                </svg>
+              <div className="routine-premium-checklist">
+                {actions.map((act, index) => {
+                  const Icon = actionIcons[act.category as keyof typeof actionIcons] || Leaf;
+                  return (
+                    <button key={act.id} type="button" aria-pressed={act.completed} className={`premium-checklist-item ${act.completed ? 'is-complete' : ''}`} onClick={() => toggleAction(act.id)}>
+                      <span className="action-number">{String(index + 1).padStart(2, '0')}</span>
+                      <span className="action-category-icon"><Icon size={18} /></span>
+                      <span className="action-main-copy"><strong>{act.label}</strong><small>{act.category} <span>·</span> Daily ritual</small></span>
+                      <span className="action-impact-pill">{act.saving}</span>
+                      <span className="premium-action-check">{act.completed ? <Check size={15} strokeWidth={3} /> : <ChevronRight size={17} />}</span>
+                    </button>
+                  );
+                })}
               </div>
-            </div>
+              <div className="challenge-panel-footer"><span><ShieldCheck size={15} /> Progress is saved as you go</span><span>{7 - completedCount} habits to complete</span></div>
+            </section>
+
+            <aside className="routine-plan-aside">
+              <section className="today-tip-card">
+                <div className="tip-topline"><span className="tip-icon-bubble"><Droplets size={18} /></span><span className="tip-label">A LITTLE GREEN INSPIRATION</span><Sparkles size={16} className="tip-sparkle" /></div>
+                <h3>Today&apos;s lighter-living tip</h3>
+                <p>Take a shower that&apos;s five minutes shorter. You could save up to <strong>20 litres of water</strong> while using less energy to heat it.</p>
+                <div className="tip-bottom-line"><span>WATER SAVING</span><strong>~20 L <ArrowUpRight size={14} /></strong></div>
+              </section>
+              <section className="routine-quote-card">
+                <div className="quote-orbit quote-orbit-one" /><div className="quote-orbit quote-orbit-two" />
+                <span className="quote-mark">“</span><p>Progress, not perfection,<br />leads to a cleaner planet.</p>
+                <div className="quote-attribution"><span /> A GREENER EVERYDAY</div><Leaf className="quote-leaf-mark" size={34} />
+              </section>
+              <div className="aside-mini-note"><span className="aside-mini-icon"><Clock3 size={16} /></span><span><strong>Consistency over intensity</strong><small>Small routines are easier to keep.</small></span></div>
+            </aside>
           </div>
         </div>
       )}
 
-      {/* ── Tab 2: Your Swaps View ── */}
       {activeTab === 'swaps' && (
-        <div className="routine-card routine-swaps-view">
-          <div className="swaps-header-row">
-            <div>
-              <h2 className="challenge-title">Active Adopted Swaps</h2>
-              <p className="challenge-desc">Sustainable habits currently active in your household routine.</p>
+        <div className="routine-swaps-view">
+          <section className="swaps-hero-panel">
+            <div className="swaps-hero-copy">
+              <div className="panel-eyebrow light-eyebrow"><Leaf size={13} /> MAKING BETTER CHOICES STICK</div>
+              <h2>Active adopted swaps</h2>
+              <p>Your everyday alternatives are building real momentum. Here&apos;s what is already working in your household.</p>
+              <Link to="/catalogue" className="swaps-browse-button">Explore more swaps <ArrowUpRight size={16} /></Link>
             </div>
-            <Link to="/catalogue" className="adopt-more-btn">
-              Browse More Swaps →
-            </Link>
+            <div className="swaps-hero-stats">
+              <div><span>ACTIVE SWAPS</span><strong>04</strong><small>Across 4 categories</small></div>
+              <div><span>MONTHLY CO₂E AVOIDED</span><strong>150 <i>kg</i></strong><small>From your adopted habits</small></div>
+              <div><span>ESTIMATED SAVINGS</span><strong>₹4,980</strong><small>Per month</small></div>
+            </div>
+          </section>
+          <div className="swaps-section-heading">
+            <div><span className="panel-eyebrow">YOUR HOUSEHOLD PLAYBOOK</span><h3>Habits that are making a difference</h3></div>
+            <span className="swaps-active-label"><span /> All swaps active</span>
           </div>
-
-          <div className="swaps-list-grid">
-            {[
-              {
-                title: 'Metro commute for office workdays',
-                cat: 'Transport',
-                co2: '-75 kg CO₂e / mo',
-                money: 'Save ~₹3,200/mo',
-                status: 'Adopted 3 weeks ago',
-                dot: 'bg-emerald-600',
-              },
-              {
-                title: 'Eat plant-based weekday lunches',
-                cat: 'Food',
-                co2: '-30 kg CO₂e / mo',
-                money: 'Save ~₹1,100/mo',
-                status: 'Adopted 2 weeks ago',
-                dot: 'bg-emerald-600',
-              },
-              {
-                title: 'AC 24°C thermostat setpoint',
-                cat: 'Energy',
-                co2: '-40 kg CO₂e / mo',
-                money: 'Save ~₹680/mo',
-                status: 'Adopted 1 month ago',
-                dot: 'bg-emerald-600',
-              },
-              {
-                title: 'Cloth totes for market purchases',
-                cat: 'Shopping',
-                co2: '-5 kg CO₂e / mo',
-                money: 'Zero plastic waste',
-                status: 'Adopted 2 months ago',
-                dot: 'bg-emerald-600',
-              },
-            ].map((swap) => (
-              <div key={swap.title} className="adopted-swap-item">
-                <div className="adopted-item-left">
-                  <span className="adopted-status-tag">{swap.status}</span>
-                  <h3 className="adopted-item-title">{swap.title}</h3>
-                  <div className="adopted-item-meta">
-                    <span className="adopted-cat">{swap.cat}</span>
-                    <span className="dot-divider">·</span>
-                    <span className="adopted-money">{swap.money}</span>
+          <div className="premium-swaps-grid">
+            {swaps.map((swap, index) => {
+              const Icon = swap.icon;
+              return (
+                <article key={swap.title} className={`premium-swap-card tone-${swap.tone}`}>
+                  <div className="swap-card-top"><span className="swap-feature-icon"><Icon size={21} /></span><span className="swap-active-status"><span /> ACTIVE</span><span className="swap-card-index">0{index + 1}</span></div>
+                  <div className="swap-card-copy"><div className="swap-category-label">{swap.cat}</div><h3>{swap.title}</h3><p>{swap.detail}</p></div>
+                  <div className="swap-card-bottom">
+                    <div className="swap-card-savings"><span className="swap-savings-label">MONTHLY CARBON IMPACT</span><strong>{swap.co2}</strong></div>
+                    <div className="swap-card-money">{swap.money}</div>
                   </div>
-                </div>
-                <div className="adopted-item-right">
-                  <span className="adopted-co2-pill">{swap.co2}</span>
-                </div>
-              </div>
-            ))}
+                  <div className="swap-card-adopted"><Calendar size={13} /> {swap.status}</div>
+                </article>
+              );
+            })}
           </div>
         </div>
       )}
 
-      {/* ── Tab 3: Analytics View (Rich Charts & Metrics) ── */}
       {activeTab === 'analytics' && (
         <div className="routine-analytics-view">
-          {/* Top 4 KPI Metrics */}
+          <section className="analytics-hero-panel">
+            <div><div className="panel-eyebrow light-eyebrow"><TrendingDown size={14} /> YOUR IMPACT, IN FOCUS</div><h2>Your choices are<br />adding up.</h2><p>A snapshot of the positive changes your household routines are creating.</p></div>
+            <div className="analytics-hero-highlight"><span>MONTHLY CARBON SAVED</span><strong>150.0 <i>kg</i></strong><small><TrendingDown size={14} /> 12% better than last month</small></div>
+            <div className="analytics-hero-decoration"><Leaf size={150} strokeWidth={0.7} /></div>
+          </section>
+
           <div className="analytics-kpi-grid">
-            <div className="routine-card kpi-card">
-              <div className="kpi-icon-wrap bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                <TrendingDown className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="kpi-label">MONTHLY CO₂E SAVED</span>
-                <strong className="kpi-value">150.0 <span>kg</span></strong>
-                <span className="kpi-sub">↑ 12% vs last month</span>
-              </div>
-            </div>
-
-            <div className="routine-card kpi-card">
-              <div className="kpi-icon-wrap bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
-                <Wallet className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="kpi-label">NET EXPENDITURE SAVINGS</span>
-                <strong className="kpi-value">₹4,980 <span>/ mo</span></strong>
-                <span className="kpi-sub">Fuel &amp; electricity deltas</span>
-              </div>
-            </div>
-
-            <div className="routine-card kpi-card">
-              <div className="kpi-icon-wrap bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
-                <Droplets className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="kpi-label">WATER CONSERVED</span>
-                <strong className="kpi-value">720 <span>Litres</span></strong>
-                <span className="kpi-sub">Showers &amp; tap aerators</span>
-              </div>
-            </div>
-
-            <div className="routine-card kpi-card">
-              <div className="kpi-icon-wrap bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300">
-                <Flame className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="kpi-label">HABIT STREAK</span>
-                <strong className="kpi-value">14 <span>Days</span></strong>
-                <span className="kpi-sub">Current active streak 🔥</span>
-              </div>
-            </div>
+            <article className="routine-premium-card kpi-premium-card kpi-carbon"><div className="kpi-top-row"><span className="kpi-icon-wrap"><TrendingDown size={19} /></span><span className="kpi-trend">+12%</span></div><span className="kpi-label">MONTHLY CO₂E SAVED</span><strong className="kpi-value">150.0 <small>kg</small></strong><span className="kpi-description">Compared with last month</span></article>
+            <article className="routine-premium-card kpi-premium-card kpi-money"><div className="kpi-top-row"><span className="kpi-icon-wrap"><Wallet size={19} /></span><span className="kpi-trend">SAVED</span></div><span className="kpi-label">NET EXPENDITURE SAVINGS</span><strong className="kpi-value">₹4,980 <small>/ mo</small></strong><span className="kpi-description">Fuel &amp; electricity deltas</span></article>
+            <article className="routine-premium-card kpi-premium-card kpi-water"><div className="kpi-top-row"><span className="kpi-icon-wrap"><Droplets size={19} /></span><span className="kpi-trend">+8%</span></div><span className="kpi-label">WATER CONSERVED</span><strong className="kpi-value">720 <small>litres</small></strong><span className="kpi-description">Showers &amp; tap aerators</span></article>
+            <article className="routine-premium-card kpi-premium-card kpi-streak"><div className="kpi-top-row"><span className="kpi-icon-wrap"><Flame size={19} /></span><span className="kpi-trend">ON TRACK</span></div><span className="kpi-label">HABIT STREAK</span><strong className="kpi-value">14 <small>days</small></strong><span className="kpi-description">Your current active streak</span></article>
           </div>
 
-          {/* Lower Analytics: Weekly Reduction Chart & Category Breakdown */}
-          <div className="analytics-charts-split">
-            {/* Weekly Trend Bar Chart */}
-            <div className="routine-card chart-card">
-              <div className="chart-header">
-                <div>
-                  <h3 className="chart-title">Weekly Carbon Reduction Trend</h3>
-                  <p className="chart-sub">Kilograms of CO₂e avoided each week</p>
-                </div>
-                <span className="chart-period-badge">Last 4 Weeks</span>
-              </div>
-
-              <div className="weekly-bars-display">
+          <div className="analytics-premium-grid">
+            <section className="routine-premium-card premium-chart-card">
+              <div className="premium-chart-heading"><div><span className="panel-eyebrow">WEEKLY PERFORMANCE</span><h3>Carbon reduction trend</h3><p>Kilograms of CO₂e avoided each week</p></div><span className="chart-period-pill">LAST 4 WEEKS</span></div>
+              <div className="premium-weekly-chart">
+                <div className="chart-gridline chart-gridline-one"><span>50 kg</span></div><div className="chart-gridline chart-gridline-two"><span>25 kg</span></div>
                 {[
-                  { week: 'Week 1', kg: 28, height: '55%' },
+                  { week: 'Week 1', kg: 28, height: '56%' },
                   { week: 'Week 2', kg: 34, height: '68%' },
                   { week: 'Week 3', kg: 41, height: '82%' },
                   { week: 'Week 4', kg: 47, height: '94%' },
-                ].map((item) => (
-                  <div key={item.week} className="weekly-bar-col">
-                    <span className="bar-kg-label">{item.kg} kg</span>
-                    <div className="bar-track">
-                      <div className="bar-fill" style={{ height: item.height }} />
-                    </div>
-                    <span className="bar-week-label">{item.week}</span>
-                  </div>
+                ].map((item, index) => (
+                  <div key={item.week} className={`premium-week-column ${index === 3 ? 'is-latest' : ''}`}><strong>{item.kg}<small>kg</small></strong><div className="premium-bar-track"><span style={{ height: item.height }} /></div><small className="premium-week-label">{item.week}</small></div>
                 ))}
               </div>
-            </div>
+              <div className="chart-bottom-note"><span><span className="chart-legend-dot" /> Carbon avoided</span><strong>+19 kg across 4 weeks</strong></div>
+            </section>
 
-            {/* Category Breakdown Donut / List */}
-            <div className="routine-card breakdown-card">
-              <h3 className="chart-title">Impact by Category</h3>
-              <p className="chart-sub">Where your footprint savings come from</p>
-
-              <div className="category-bars-list">
+            <section className="routine-premium-card premium-breakdown-card">
+              <div className="premium-chart-heading"><div><span className="panel-eyebrow">WHERE IT COMES FROM</span><h3>Impact by category</h3><p>Your biggest sources of positive change</p></div><span className="breakdown-total">150 <small>kg</small></span></div>
+              <div className="premium-category-list">
                 {[
-                  { name: 'Transport (Metro & Carpooling)', pct: 50, color: '#123826', kg: '75 kg' },
-                  { name: 'Energy (AC 24°C & LEDs)', pct: 27, color: '#2b7a4b', kg: '40 kg' },
-                  { name: 'Food (Plant-based meals)', pct: 20, color: '#a35a38', kg: '30 kg' },
-                  { name: 'Shopping & Waste (Totes & Compost)', pct: 3, color: '#848E86', kg: '5 kg' },
+                  { name: 'Transport', detail: 'Metro & carpooling', pct: 50, color: '#164532', kg: '75 kg' },
+                  { name: 'Energy', detail: 'AC 24°C & LEDs', pct: 27, color: '#3b9163', kg: '40 kg' },
+                  { name: 'Food', detail: 'Plant-based meals', pct: 20, color: '#b87552', kg: '30 kg' },
+                  { name: 'Shopping & waste', detail: 'Totes & compost', pct: 3, color: '#91a196', kg: '5 kg' },
                 ].map((cat) => (
-                  <div key={cat.name} className="cat-breakdown-row">
-                    <div className="cat-breakdown-info">
-                      <span className="cat-name">{cat.name}</span>
-                      <strong className="cat-kg">{cat.kg} ({cat.pct}%)</strong>
-                    </div>
-                    <div className="cat-progress-track">
-                      <div
-                        className="cat-progress-fill"
-                        style={{ width: `${cat.pct}%`, backgroundColor: cat.color }}
-                      />
-                    </div>
+                  <div key={cat.name} className="premium-category-row">
+                    <div className="premium-category-top"><span><i style={{ backgroundColor: cat.color }} />{cat.name}<small>{cat.detail}</small></span><strong>{cat.kg}</strong></div>
+                    <div className="premium-category-track"><span style={{ width: `${cat.pct}%`, backgroundColor: cat.color }} /></div>
+                    <div className="premium-category-foot"><span>{cat.pct}% of total impact</span></div>
                   </div>
                 ))}
               </div>
-
-              {/* 14-day streak days tracker */}
-              <div className="streak-bubble-row">
-                <span className="streak-bubble-title">
-                  <Calendar className="h-3.5 w-3.5 inline mr-1" />
-                  Recent Daily Activity:
-                </span>
-                <div className="streak-dots">
-                  {['M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
-                    <div
-                      key={i}
-                      className={`streak-dot ${i < 12 ? 'is-complete' : 'is-today'}`}
-                      title={`Day ${i + 1} (${d})`}
-                    >
-                      {d}
-                    </div>
-                  ))}
-                </div>
+              <div className="premium-streak-footer">
+                <div><span className="streak-footer-icon"><Calendar size={15} /></span><span><strong>14-day consistency</strong><small>You&apos;re building a lasting rhythm</small></span></div>
+                <div className="premium-streak-dots">{['M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => <span key={i} className={i < 12 ? 'is-complete' : i === 12 ? 'is-today' : ''}>{i === 12 ? <Check size={10} /> : d}</span>)}</div>
               </div>
-            </div>
+            </section>
           </div>
         </div>
       )}
 
       <style>{`
-        .routine-root {
-          max-width: 1080px;
-          margin: 0 auto;
-          padding: 2.2rem 2.5rem 4rem;
-          font-family: 'DM Sans', sans-serif;
-          color: var(--color-ink);
-        }
-        .routine-header {
-          margin-bottom: 1.4rem;
-        }
-        .routine-title {
-          font-family: 'Fraunces', Georgia, serif;
-          font-size: 2.4rem;
-          font-weight: 700;
-          color: var(--color-ink);
-          letter-spacing: -0.02em;
-          margin: 0 0 0.35rem;
-        }
-        .routine-sub {
-          font-size: 0.9rem;
-          color: var(--color-ink-muted);
-          margin: 0;
-        }
-
-        .routine-tabs {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-          margin-bottom: 2rem;
-        }
-        .routine-tab {
-          padding: 0.45rem 1.15rem;
-          border-radius: 999px;
-          border: 1px solid #DFD7CA;
-          background: #FAF8F4;
-          font-size: 0.82rem;
-          font-weight: 500;
-          color: var(--color-ink-muted);
-          cursor: pointer;
-          transition: all 0.15s;
-        }
-        .dark .routine-tab {
-          background: #141c17;
-          border-color: #24352b;
-        }
-        .routine-tab:hover {
-          border-color: #123826;
-          color: var(--color-ink);
-        }
-        .routine-tab.is-active {
-          background: #123826;
-          border-color: #123826;
-          color: #ffffff;
-          font-weight: 600;
-        }
-        .dark .routine-tab.is-active {
-          background: #3eac6a;
-          border-color: #3eac6a;
-          color: #0c130f;
-        }
-
-        .routine-split {
-          display: grid;
-          grid-template-columns: 1.45fr 1fr;
-          gap: 1.8rem;
-          align-items: flex-start;
-        }
-        .routine-card {
-          background: var(--color-surface);
-          border: 1px solid var(--color-border);
-          border-radius: 16px;
-          padding: 1.8rem 2rem;
-          box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
-        }
-
-        .challenge-card-header {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: 1rem;
-          margin-bottom: 1.8rem;
-        }
-        .challenge-title {
-          font-family: 'Fraunces', Georgia, serif;
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: var(--color-ink);
-          margin: 0 0 0.3rem;
-        }
-        .challenge-desc {
-          font-size: 0.78rem;
-          color: var(--color-ink-muted);
-          margin: 0;
-        }
-        .challenge-counter {
-          font-size: 0.75rem;
-          font-weight: 700;
-          color: #123826;
-          background: rgba(18, 56, 38, 0.08);
-          padding: 0.35rem 0.75rem;
-          border-radius: 999px;
-          white-space: nowrap;
-        }
-        .dark .challenge-counter {
-          background: rgba(62, 172, 106, 0.15);
-          color: #3eac6a;
-        }
-
-        .routine-checklist {
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-        }
-        .checklist-item {
-          display: flex;
-          align-items: center;
-          gap: 0.85rem;
-          padding: 0.75rem 1rem;
-          background: #FAF8F4;
-          border: 1px solid #DFD7CA;
-          border-radius: 10px;
-          cursor: pointer;
-          text-align: left;
-          transition: all 0.15s;
-          width: 100%;
-        }
-        .dark .checklist-item {
-          background: #141c17;
-          border-color: #24352b;
-        }
-        .checklist-item:hover { border-color: #123826; }
-        .checklist-item.is-checked {
-          background: rgba(18, 56, 38, 0.05);
-          border-color: rgba(18, 56, 38, 0.3);
-        }
-        .check-box {
-          width: 22px;
-          height: 22px;
-          border-radius: 50%;
-          border: 2px solid #DFD7CA;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          transition: all 0.2s;
-        }
-        .checklist-item.is-checked .check-box {
-          background: #123826;
-          border-color: #123826;
-          color: #ffffff;
-        }
-        .check-text {
-          font-size: 0.85rem;
-          color: var(--color-ink);
-          font-weight: 500;
-          flex: 1;
-        }
-        .check-saving {
-          font-size: 0.72rem;
-          color: #123826;
-          font-weight: 600;
-          background: rgba(18, 56, 38, 0.08);
-          padding: 0.2rem 0.55rem;
-          border-radius: 6px;
-        }
-        .check-bookmark { font-size: 0.85rem; opacity: 0.35; }
-        .checklist-item:hover .check-bookmark { opacity: 0.9; }
-
-        .routine-right-col {
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-        }
-        .tip-card { background: #FAF8F4; }
-        .dark .tip-card { background: #152019; }
-        .tip-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 0.75rem;
-        }
-        .tip-title {
-          font-size: 0.82rem;
-          font-weight: 700;
-          color: var(--color-ink);
-        }
-        .tip-body {
-          font-size: 0.82rem;
-          color: var(--color-ink-muted);
-          line-height: 1.6;
-          margin: 0;
-        }
-
-        .quote-card {
-          background: #f7f3ec;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          padding: 2.2rem 2rem;
-        }
-        .dark .quote-card { background: #131c16; }
-        .quote-text {
-          font-family: 'Fraunces', Georgia, serif;
-          font-size: 1.15rem;
-          font-style: italic;
-          color: #123826;
-          line-height: 1.5;
-          margin: 0 0 1rem;
-        }
-        .dark .quote-text { color: #4dd282; }
-
-        /* ── Swaps Tab ── */
-        .swaps-header-row {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          margin-bottom: 1.8rem;
-          gap: 1rem;
-          flex-wrap: wrap;
-        }
-        .adopt-more-btn {
-          display: inline-flex;
-          align-items: center;
-          padding: 0.5rem 1.15rem;
-          background: #123826;
-          color: #ffffff;
-          border-radius: 999px;
-          font-size: 0.78rem;
-          font-weight: 600;
-          text-decoration: none;
-          transition: background 0.15s;
-        }
-        .adopt-more-btn:hover { background: #1c4e36; }
-        .swaps-list-grid {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-        .adopted-swap-item {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 1.15rem 1.4rem;
-          background: #FAF8F4;
-          border: 1px solid #DFD7CA;
-          border-radius: 12px;
-          gap: 1rem;
-        }
-        .dark .adopted-swap-item {
-          background: #152019;
-          border-color: #24352b;
-        }
-        .adopted-status-tag {
-          font-size: 0.65rem;
-          color: #123826;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-          margin-bottom: 0.2rem;
-          display: block;
-        }
-        .dark .adopted-status-tag { color: #4dd282; }
-        .adopted-item-title {
-          font-family: 'Fraunces', Georgia, serif;
-          font-size: 1.05rem;
-          font-weight: 700;
-          color: var(--color-ink);
-          margin: 0 0 0.25rem;
-        }
-        .adopted-item-meta {
-          display: flex;
-          align-items: center;
-          gap: 0.4rem;
-          font-size: 0.75rem;
-          color: var(--color-ink-muted);
-        }
-        .adopted-money { color: #8b5a2b; font-weight: 600; }
-        .adopted-co2-pill {
-          padding: 0.4rem 0.85rem;
-          border-radius: 999px;
-          background: rgba(18, 56, 38, 0.1);
-          color: #123826;
-          font-weight: 700;
-          font-size: 0.82rem;
-          white-space: nowrap;
-        }
-        .dark .adopted-co2-pill {
-          background: rgba(62, 172, 106, 0.15);
-          color: #3eac6a;
-        }
-
-        /* ── Analytics Tab ── */
-        .analytics-kpi-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 1.25rem;
-          margin-bottom: 2rem;
-        }
-        .kpi-card {
-          padding: 1.4rem;
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-        .kpi-icon-wrap {
-          width: 44px;
-          height: 44px;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-        .kpi-label {
-          font-size: 0.65rem;
-          letter-spacing: 0.08em;
-          color: var(--color-ink-muted);
-          display: block;
-          margin-bottom: 0.2rem;
-        }
-        .kpi-value {
-          font-family: 'Fraunces', Georgia, serif;
-          font-size: 1.45rem;
-          font-weight: 700;
-          color: var(--color-ink);
-          line-height: 1.1;
-          display: block;
-        }
-        .kpi-value span { font-size: 0.8rem; font-family: 'DM Sans', sans-serif; font-weight: 500; }
-        .kpi-sub { font-size: 0.68rem; color: #123826; font-weight: 600; display: block; margin-top: 0.15rem; }
-        .dark .kpi-sub { color: #4dd282; }
-
-        .analytics-charts-split {
-          display: grid;
-          grid-template-columns: 1.2fr 1fr;
-          gap: 1.8rem;
-        }
-        .chart-header {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          margin-bottom: 1.6rem;
-        }
-        .chart-title {
-          font-family: 'Fraunces', Georgia, serif;
-          font-size: 1.15rem;
-          font-weight: 700;
-          color: var(--color-ink);
-          margin: 0 0 0.25rem;
-        }
-        .chart-sub { font-size: 0.78rem; color: var(--color-ink-muted); margin: 0; }
-        .chart-period-badge {
-          font-size: 0.68rem;
-          padding: 0.25rem 0.65rem;
-          border-radius: 999px;
-          background: rgba(0, 0, 0, 0.05);
-          color: var(--color-ink-muted);
-        }
-
-        .weekly-bars-display {
-          display: flex;
-          align-items: flex-end;
-          justify-content: space-around;
-          height: 180px;
-          padding-top: 1.5rem;
-        }
-        .weekly-bar-col {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 0.4rem;
-          height: 100%;
-        }
-        .bar-kg-label { font-size: 0.72rem; font-weight: 700; color: #123826; }
-        .dark .bar-kg-label { color: #4dd282; }
-        .bar-track {
-          flex: 1;
-          width: 38px;
-          background: rgba(0, 0, 0, 0.04);
-          border-radius: 8px;
-          display: flex;
-          align-items: flex-end;
-          overflow: hidden;
-        }
-        .dark .bar-track { background: rgba(255, 255, 255, 0.04); }
-        .bar-fill {
-          width: 100%;
-          background: linear-gradient(180deg, #4dd282 0%, #123826 100%);
-          border-radius: 8px;
-          transition: height 0.6s ease;
-        }
-        .bar-week-label { font-size: 0.72rem; color: var(--color-ink-muted); }
-
-        .category-bars-list {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-          margin: 1.5rem 0 1.8rem;
-        }
-        .cat-breakdown-row {
-          display: flex;
-          flex-direction: column;
-          gap: 0.35rem;
-        }
-        .cat-breakdown-info {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-size: 0.78rem;
-        }
-        .cat-name { color: var(--color-ink); }
-        .cat-kg { font-weight: 700; color: var(--color-ink); }
-        .cat-progress-track {
-          height: 7px;
-          background: rgba(0, 0, 0, 0.05);
-          border-radius: 99px;
-          overflow: hidden;
-        }
-        .dark .cat-progress-track { background: rgba(255, 255, 255, 0.06); }
-        .cat-progress-fill { height: 100%; border-radius: 99px; }
-
-        .streak-bubble-row {
-          border-top: 1px solid var(--color-border);
-          padding-top: 1.2rem;
-          display: flex;
-          flex-direction: column;
-          gap: 0.6rem;
-        }
-        .streak-bubble-title {
-          font-size: 0.72rem;
-          color: var(--color-ink-muted);
-          font-weight: 600;
-        }
-        .streak-dots {
-          display: flex;
-          gap: 0.4rem;
-          flex-wrap: wrap;
-        }
-        .streak-dot {
-          width: 22px;
-          height: 22px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.65rem;
-          font-weight: 700;
-          color: #ffffff;
-          background: #d4ccbf;
-        }
-        .streak-dot.is-complete { background: #123826; }
-        .streak-dot.is-today { background: #4dd282; color: #0c130f; box-shadow: 0 0 0 2px rgba(77, 210, 130, 0.4); }
-
-        @media (max-width: 900px) {
-          .routine-split, .analytics-charts-split { grid-template-columns: 1fr; }
-          .analytics-kpi-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 600px) {
-          .analytics-kpi-grid { grid-template-columns: 1fr; }
-          .routine-root { padding: 1.5rem 1.25rem; }
-        }
+        .routine-premium{--forest:#123826;--deep:#0d2a1d;--muted:#718078;max-width:1180px;margin:0 auto;padding:2.25rem 2.5rem 4.5rem;color:var(--color-ink,#17271f);font-family:'DM Sans',sans-serif}
+        .routine-page-header{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;margin-bottom:1.55rem}
+        .routine-eyebrow,.panel-eyebrow{display:flex;align-items:center;gap:.45rem;color:#3c825e;font-size:.66rem;font-weight:800;letter-spacing:.16em}
+        .routine-page-title{margin:.45rem 0 .25rem;font:700 clamp(2.2rem,3.5vw,3rem)/1.05 'Fraunces',Georgia,serif;letter-spacing:-.045em;color:#14291f}
+        .routine-page-title span{color:#5ca878}.routine-page-subtitle{margin:0;color:#758178;font-size:.9rem}
+        .routine-streak-chip{display:flex;align-items:center;gap:.75rem;min-width:180px;padding:.72rem .9rem;border:1px solid #e7dfd2;border-radius:16px;background:rgba(255,255,255,.72);box-shadow:0 8px 22px rgba(39,51,41,.045)}
+        .routine-streak-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#a9572c;background:#fff0e3}
+        .routine-streak-chip small,.routine-streak-chip strong{display:block}.routine-streak-chip small{color:#8a928c;font-size:.68rem}.routine-streak-chip strong{color:#1c3326;font:700 1rem 'Fraunces',Georgia,serif;margin-top:.1rem}.routine-streak-sparkle{margin-left:auto;color:#c38a43}
+        .routine-premium-tabs{display:flex;gap:.45rem;align-items:center;padding:.38rem;width:max-content;max-width:100%;border-radius:999px;border:1px solid #e9e2d8;background:rgba(255,255,255,.62);box-shadow:0 5px 18px rgba(37,47,39,.035);margin-bottom:1.55rem}
+        .routine-premium-tab{display:inline-flex;align-items:center;gap:.55rem;border:0;border-radius:999px;padding:.66rem 1.12rem;background:transparent;color:#68776e;font-size:.8rem;font-weight:650;cursor:pointer;transition:background .2s,color .2s,transform .2s,box-shadow .2s}
+        .routine-premium-tab:hover{color:#153b29;background:#f0f3ed;transform:translateY(-1px)}.routine-premium-tab.is-active{background:linear-gradient(135deg,#164832,#0f3021);color:#fff;box-shadow:0 5px 13px rgba(18,56,38,.2)}.tab-step{font-size:.62rem;opacity:.56;letter-spacing:.06em}
+        .routine-plan-hero{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) 245px;gap:2rem;align-items:center;padding:2.05rem 2.2rem;margin-bottom:1.5rem;border-radius:24px;color:#fff;background:radial-gradient(circle at 85% 15%,rgba(113,203,143,.2),transparent 30%),linear-gradient(115deg,#102d20 0%,#174c34 65%,#236a47 100%);box-shadow:0 18px 45px rgba(16,53,35,.15)}
+        .plan-hero-glow{position:absolute;z-index:-1;right:12%;bottom:-150px;width:360px;height:300px;border-radius:50%;background:rgba(91,194,128,.14);filter:blur(25px)}
+        .plan-hero-content{max-width:680px}.plan-hero-kicker{display:flex;align-items:center;gap:.45rem;color:#a7e6bd;font-size:.66rem;font-weight:800;letter-spacing:.16em}
+        .plan-hero-content h2{margin:.72rem 0 .55rem;font:650 clamp(1.65rem,2.5vw,2.3rem)/1.08 'Fraunces',Georgia,serif;letter-spacing:-.025em}.plan-hero-content p{max-width:570px;margin:0;color:rgba(255,255,255,.72);font-size:.83rem;line-height:1.65}
+        .plan-progress-meta{display:flex;align-items:center;justify-content:space-between;max-width:540px;margin-top:1.45rem;color:rgba(255,255,255,.78);font-size:.72rem}.plan-progress-meta strong{color:#b5efc9;font-size:.82rem}
+        .plan-progress-track{max-width:540px;height:8px;margin-top:.55rem;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.13)}.plan-progress-track span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#69cc8f,#b5efc9);box-shadow:0 0 14px rgba(142,235,175,.38);transition:width .35s ease}
+        .plan-hero-foot{display:flex;gap:1.15rem;margin-top:.8rem;color:rgba(255,255,255,.66);font-size:.68rem}.plan-hero-foot span{display:flex;align-items:center;gap:.35rem}.plan-hero-foot svg{color:#9ce4b8}
+        .plan-ring-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem}.plan-progress-ring{display:grid;place-items:center;width:154px;height:154px;border-radius:50%;box-shadow:0 0 0 9px rgba(255,255,255,.035),0 12px 32px rgba(0,0,0,.16)}
+        .plan-ring-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;width:126px;height:126px;border-radius:50%;background:linear-gradient(145deg,#173e2c,#102d20);border:1px solid rgba(255,255,255,.12)}.plan-ring-inner strong{color:#fff;font:700 2.2rem 'Fraunces',Georgia,serif}.plan-ring-inner span{color:#b5d6c0;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase}
+        .plan-ring-caption{display:flex;align-items:center;gap:.4rem;color:rgba(255,255,255,.7);font-size:.69rem}.plan-ring-caption svg{color:#ffb875}
+        .routine-plan-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(265px,.85fr);align-items:start;gap:1.35rem}
+        .routine-premium-card{background:linear-gradient(145deg,#fffdfa,#fbf8f2);border:1px solid #e8e0d5;border-radius:21px;box-shadow:0 10px 32px rgba(45,53,43,.045)}
+        .challenge-panel{padding:1.65rem}.panel-heading-row{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.25rem}
+        .panel-eyebrow{font-size:.61rem;letter-spacing:.14em}.routine-section-title{margin:.36rem 0 .24rem;font:700 1.45rem 'Fraunces',Georgia,serif;letter-spacing:-.02em;color:#183426}.routine-section-subtitle{margin:0;color:#79847c;font-size:.75rem}
+        .challenge-count-pill{min-width:58px;height:58px;display:flex;align-items:center;justify-content:center;gap:2px;border-radius:18px;color:#fff;background:linear-gradient(145deg,#1b573a,#123826);font:700 1.42rem 'Fraunces',Georgia,serif;box-shadow:0 7px 16px rgba(18,56,38,.14)}.challenge-count-pill i{font:500 .72rem 'DM Sans',sans-serif;color:#b9ddc6}
+        .routine-premium-checklist{display:flex;flex-direction:column;gap:.62rem}.premium-checklist-item{width:100%;display:flex;align-items:center;gap:.78rem;padding:.75rem .85rem;border:1px solid #e9e2d8;border-radius:15px;background:#fffefa;text-align:left;cursor:pointer;transition:transform .18s,border .18s,background .18s,box-shadow .18s}
+        .premium-checklist-item:hover{transform:translateY(-2px);border-color:#a9c9b4;box-shadow:0 7px 18px rgba(36,75,50,.07)}.premium-checklist-item.is-complete{background:linear-gradient(100deg,#f0f7f1,#fbfdf9);border-color:#d4e5d8}
+        .action-number{width:22px;flex-shrink:0;color:#a3aaa4;font-size:.62rem;font-weight:750;letter-spacing:.05em}.action-category-icon{width:38px;height:38px;display:grid;place-items:center;flex-shrink:0;border-radius:12px;color:#32764e;background:#eaf4ec}
+        .premium-checklist-item.is-complete .action-category-icon{color:#fff;background:linear-gradient(145deg,#3e9461,#1d5b3b)}.action-main-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:.22rem}
+        .action-main-copy strong{color:#20372a;font-size:.79rem;font-weight:700}.action-main-copy small{color:#929b93;font-size:.64rem}.action-main-copy small span{padding:0 .2rem;color:#c2b9aa}
+        .action-impact-pill{white-space:nowrap;padding:.34rem .58rem;border-radius:999px;background:#edf3ec;color:#356b49;font-size:.63rem;font-weight:750}.premium-action-check{width:26px;height:26px;display:grid;place-items:center;flex-shrink:0;border:1px solid #ddd8ce;border-radius:50%;color:#8d9a90;background:#fff}
+        .is-complete .premium-action-check{border-color:#1c5c3b;color:#fff;background:#1c5c3b}.challenge-panel-footer{display:flex;justify-content:space-between;gap:1rem;margin-top:1.05rem;padding-top:.9rem;border-top:1px solid #eee8df;color:#879188;font-size:.66rem}
+        .challenge-panel-footer span:first-child{display:flex;align-items:center;gap:.35rem}.challenge-panel-footer svg{color:#42835a}
+        .routine-plan-aside{display:flex;flex-direction:column;gap:1rem}.today-tip-card{position:relative;overflow:hidden;padding:1.45rem;border-radius:21px;color:#fff;background:radial-gradient(circle at 100% 0%,rgba(135,202,145,.25),transparent 40%),linear-gradient(145deg,#285c3f,#153825);box-shadow:0 12px 28px rgba(18,56,38,.12)}
+        .tip-topline{display:flex;align-items:center;gap:.65rem;color:#c3e8cf}.tip-icon-bubble{width:35px;height:35px;display:grid;place-items:center;border-radius:12px;color:#173e2a;background:#c5efd1}.tip-label{font-size:.59rem;font-weight:800;letter-spacing:.12em}.tip-sparkle{margin-left:auto;color:#f1d293}
+        .today-tip-card h3{margin:1.05rem 0 .48rem;color:#fff;font:650 1.24rem 'Fraunces',Georgia,serif}.today-tip-card p{margin:0;color:rgba(255,255,255,.76);font-size:.78rem;line-height:1.7}.today-tip-card p strong{color:#c4f1d0}
+        .tip-bottom-line{display:flex;justify-content:space-between;align-items:center;margin-top:1.2rem;padding-top:.85rem;border-top:1px solid rgba(255,255,255,.15)}.tip-bottom-line span{color:rgba(255,255,255,.58);font-size:.58rem;letter-spacing:.12em;font-weight:800}.tip-bottom-line strong{display:flex;align-items:center;color:#d2f4da;font-size:.88rem}
+        .routine-quote-card{min-height:190px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.6rem;border-radius:21px;color:#f4f8f1;text-align:center;background:radial-gradient(circle at 50% 120%,rgba(94,160,112,.25),transparent 60%),linear-gradient(145deg,#172f23,#0e2419);box-shadow:0 12px 28px rgba(18,56,38,.1)}
+        .quote-orbit{position:absolute;border:1px solid rgba(185,225,190,.13);border-radius:50%;pointer-events:none}.quote-orbit-one{width:230px;height:230px;right:-78px;top:-140px}.quote-orbit-two{width:175px;height:175px;left:-70px;bottom:-115px}
+        .quote-mark{height:29px;color:#9ad3a8;font:3rem 'Fraunces',Georgia,serif;line-height:1}.routine-quote-card p{margin:.4rem 0 1rem;font:italic 1.05rem/1.48 'Fraunces',Georgia,serif}
+        .quote-attribution{display:flex;align-items:center;gap:.45rem;color:#9cbaa4;font-size:.56rem;letter-spacing:.15em;font-weight:800}.quote-attribution span{width:18px;height:1px;background:#6eb487}.quote-leaf-mark{position:absolute;right:1rem;bottom:.9rem;color:rgba(139,206,156,.24);transform:rotate(-25deg)}
+        .aside-mini-note{display:flex;align-items:center;gap:.7rem;padding:.8rem .9rem;border:1px solid #e7dfd2;border-radius:15px;background:rgba(255,255,255,.68)}.aside-mini-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:#f1eee5;color:#52725b}
+        .aside-mini-note strong,.aside-mini-note small{display:block}.aside-mini-note strong{color:#34483b;font-size:.7rem}.aside-mini-note small{margin-top:.12rem;color:#8b958d;font-size:.62rem}
+        .swaps-hero-panel,.analytics-hero-panel{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:2rem;margin-bottom:1.45rem;padding:2rem 2.15rem;border-radius:23px;color:#fff;background:radial-gradient(circle at 80% 0%,rgba(111,195,137,.18),transparent 32%),linear-gradient(115deg,#102c20,#1b5035);box-shadow:0 16px 38px rgba(18,56,38,.13)}
+        .swaps-hero-copy{max-width:430px;flex:1}.light-eyebrow{color:#a8dfba}.swaps-hero-copy h2{margin:.55rem 0 .48rem;color:#fff;font:700 2rem 'Fraunces',Georgia,serif;letter-spacing:-.03em}
+        .swaps-hero-copy p{max-width:400px;margin:0;color:rgba(255,255,255,.7);font-size:.79rem;line-height:1.65}
+        .swaps-browse-button{display:inline-flex;align-items:center;gap:.55rem;margin-top:1.1rem;padding:.62rem .95rem;border:1px solid rgba(255,255,255,.2);border-radius:999px;color:#fff;background:rgba(255,255,255,.1);text-decoration:none;font-size:.72rem;font-weight:700;transition:background .2s,transform .2s}
+        .swaps-browse-button:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+        .swaps-hero-stats{display:grid;grid-template-columns:repeat(3,minmax(105px,1fr));gap:0;flex:1.25;max-width:560px;border:1px solid rgba(255,255,255,.15);border-radius:17px;background:rgba(255,255,255,.06);backdrop-filter:blur(12px)}
+        .swaps-hero-stats>div{padding:1.1rem .85rem}.swaps-hero-stats>div+div{border-left:1px solid rgba(255,255,255,.13)}
+        .swaps-hero-stats span,.swaps-hero-stats strong,.swaps-hero-stats small{display:block}.swaps-hero-stats span{color:#a8c7b2;font-size:.54rem;letter-spacing:.1em;font-weight:800}
+        .swaps-hero-stats strong{margin:.4rem 0 .2rem;color:#fff;font:700 1.75rem 'Fraunces',Georgia,serif}.swaps-hero-stats strong i{color:#b7d9c1;font:500 .75rem 'DM Sans',sans-serif}.swaps-hero-stats small{color:rgba(255,255,255,.56);font-size:.6rem}
+        .swaps-section-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;margin:1.4rem 0 .85rem}.swaps-section-heading h3{margin:.32rem 0 0;color:#1b3527;font:700 1.35rem 'Fraunces',Georgia,serif}
+        .swaps-active-label{display:flex;align-items:center;gap:.45rem;color:#6f8175;font-size:.68rem}.swaps-active-label span,.swap-active-status span{width:7px;height:7px;border-radius:50%;background:#4da96f;box-shadow:0 0 0 3px rgba(77,169,111,.13)}
+        .premium-swaps-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+        .premium-swap-card{position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:234px;padding:1.35rem 1.45rem 1rem;border:1px solid #e7dfd3;border-radius:20px;background:linear-gradient(145deg,#fffefa,#f8f5ee);box-shadow:0 8px 26px rgba(43,54,45,.04);transition:transform .2s,box-shadow .2s,border-color .2s}
+        .premium-swap-card:hover{transform:translateY(-3px);border-color:#c6d9ca;box-shadow:0 15px 34px rgba(43,70,50,.09)}.premium-swap-card:after{content:'';position:absolute;right:-42px;top:-60px;width:145px;height:145px;border-radius:50%;background:var(--swap-glow,rgba(91,163,110,.09));pointer-events:none}
+        .tone-transport{--swap-accent:#397b9c;--swap-soft:#eaf3f7;--swap-glow:rgba(81,147,176,.12)}.tone-food{--swap-accent:#a56c42;--swap-soft:#f7eee6;--swap-glow:rgba(190,129,78,.12)}.tone-energy{--swap-accent:#a78337;--swap-soft:#f7f2df;--swap-glow:rgba(185,151,67,.13)}.tone-shopping{--swap-accent:#64846a;--swap-soft:#edf3e9;--swap-glow:rgba(112,155,115,.14)}
+        .swap-card-top{position:relative;z-index:1;display:flex;align-items:center;gap:.6rem}.swap-feature-icon{width:43px;height:43px;display:grid;place-items:center;border-radius:14px;color:var(--swap-accent);background:var(--swap-soft)}
+        .swap-active-status{display:flex;align-items:center;gap:.38rem;color:#607a68;font-size:.58rem;letter-spacing:.12em;font-weight:850}.swap-card-index{margin-left:auto;color:#b9b9ad;font:700 .88rem 'Fraunces',Georgia,serif}
+        .swap-card-copy{position:relative;z-index:1;margin:1.05rem 0 1rem}.swap-category-label{color:var(--swap-accent);font-size:.61rem;letter-spacing:.12em;text-transform:uppercase;font-weight:850}
+        .swap-card-copy h3{max-width:400px;margin:.32rem 0 .3rem;color:#21392c;font:700 1.12rem/1.24 'Fraunces',Georgia,serif}.swap-card-copy p{margin:0;color:#869187;font-size:.68rem}
+        .swap-card-bottom{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;gap:.7rem;margin-top:auto;padding-top:.8rem;border-top:1px solid #ebe5dc}
+        .swap-savings-label{display:block;color:#969f98;font-size:.54rem;letter-spacing:.1em;font-weight:800}.swap-card-savings strong{display:block;margin-top:.25rem;color:#1b5839;font-size:.79rem}
+        .swap-card-money{padding:.34rem .58rem;border-radius:999px;color:#956333;background:#f6eee2;font-size:.64rem;font-weight:750;white-space:nowrap}.swap-card-adopted{position:relative;z-index:1;display:flex;align-items:center;gap:.35rem;margin-top:.65rem;color:#9a9f97;font-size:.6rem}
+        .analytics-hero-panel{min-height:190px;margin-bottom:1.1rem}.analytics-hero-panel>div:first-child{position:relative;z-index:1;max-width:470px}
+        .analytics-hero-panel h2{margin:.55rem 0 .38rem;color:#fff;font:700 2rem/1.12 'Fraunces',Georgia,serif;letter-spacing:-.03em}.analytics-hero-panel p{max-width:390px;margin:0;color:rgba(255,255,255,.69);font-size:.77rem;line-height:1.6}
+        .analytics-hero-highlight{position:relative;z-index:1;min-width:220px;padding:1.05rem 1.25rem;border:1px solid rgba(255,255,255,.17);border-radius:17px;background:rgba(255,255,255,.07);backdrop-filter:blur(10px)}
+        .analytics-hero-highlight span,.analytics-hero-highlight strong,.analytics-hero-highlight small{display:flex}.analytics-hero-highlight span{color:#b0d3bb;font-size:.57rem;letter-spacing:.13em;font-weight:800}
+        .analytics-hero-highlight strong{align-items:baseline;gap:.35rem;margin:.3rem 0;color:#fff;font:700 2.3rem 'Fraunces',Georgia,serif}.analytics-hero-highlight strong i{color:#c2ddca;font:500 .78rem 'DM Sans',sans-serif}
+        .analytics-hero-highlight small{align-items:center;gap:.35rem;color:#b5e5c4;font-size:.65rem}.analytics-hero-decoration{position:absolute;right:14%;top:-45px;color:rgba(198,239,203,.07);transform:rotate(-25deg)}
+        .analytics-kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.95rem;margin-bottom:1rem}.kpi-premium-card{position:relative;overflow:hidden;min-height:154px;padding:1.15rem 1.2rem;transition:transform .2s,box-shadow .2s}
+        .kpi-premium-card:hover{transform:translateY(-3px);box-shadow:0 15px 32px rgba(39,58,42,.08)}.kpi-premium-card:after{content:'';position:absolute;width:100px;height:100px;right:-44px;bottom:-55px;border-radius:50%;background:var(--kpi-glow,rgba(49,123,83,.08))}
+        .kpi-carbon{--kpi-accent:#23734a;--kpi-soft:#e6f4e9;--kpi-glow:rgba(54,147,83,.11)}.kpi-money{--kpi-accent:#9a6926;--kpi-soft:#faf0dc;--kpi-glow:rgba(190,146,64,.12)}.kpi-water{--kpi-accent:#397a9a;--kpi-soft:#e7f1f7;--kpi-glow:rgba(71,143,174,.12)}.kpi-streak{--kpi-accent:#b45f37;--kpi-soft:#fbede4;--kpi-glow:rgba(204,113,68,.12)}
+        .kpi-top-row{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}.kpi-premium-card .kpi-icon-wrap{width:36px;height:36px;display:grid;place-items:center;border-radius:12px;color:var(--kpi-accent);background:var(--kpi-soft)}
+        .kpi-trend{color:var(--kpi-accent);font-size:.58rem;font-weight:850;letter-spacing:.09em}.kpi-label{position:relative;z-index:1;display:block;color:#88948b;font-size:.57rem;letter-spacing:.12em;font-weight:850}
+        .kpi-value{position:relative;z-index:1;display:block;margin:.22rem 0 .12rem;color:#193629;font:700 1.48rem/1.15 'Fraunces',Georgia,serif}.kpi-value small{color:#66796d;font:500 .7rem 'DM Sans',sans-serif}.kpi-description{position:relative;z-index:1;color:#909b92;font-size:.63rem}
+        .analytics-premium-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:1rem}.premium-chart-card,.premium-breakdown-card{padding:1.45rem 1.5rem}
+        .premium-chart-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}.premium-chart-heading h3{margin:.3rem 0 .2rem;color:#1b3628;font:700 1.3rem 'Fraunces',Georgia,serif}.premium-chart-heading p{margin:0;color:#8a958c;font-size:.68rem}
+        .chart-period-pill{padding:.38rem .62rem;border-radius:999px;color:#688071;background:#eef3ed;font-size:.56rem;letter-spacing:.09em;font-weight:850;white-space:nowrap}
+        .premium-weekly-chart{position:relative;display:flex;align-items:flex-end;justify-content:space-around;height:218px;margin-top:1.2rem;padding:1.25rem 1rem .1rem 2.4rem}
+        .chart-gridline{position:absolute;left:2.3rem;right:0;border-top:1px dashed #e8e6de;pointer-events:none}.chart-gridline span{position:absolute;left:-2.35rem;top:-.52rem;color:#a1aaa2;font-size:.54rem}.chart-gridline-one{top:21%}.chart-gridline-two{top:57%}
+        .premium-week-column{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.45rem;height:100%;min-width:48px}.premium-week-column>strong{color:#547261;font-size:.69rem}.premium-week-column>strong small{margin-left:2px;font-size:.53rem;font-weight:600}
+        .premium-bar-track{display:flex;align-items:flex-end;width:38px;height:146px;overflow:hidden;border-radius:11px;background:#f0f0e9;box-shadow:inset 0 1px 2px rgba(31,49,36,.04)}.premium-bar-track span{display:block;width:100%;border-radius:10px;background:linear-gradient(180deg,#7fd99d 0%,#317b53 58%,#143d2a 100%);box-shadow:0 4px 12px rgba(42,130,79,.18);transition:height .4s ease}.is-latest .premium-bar-track span{background:linear-gradient(180deg,#a0edb8 0%,#45a66b 50%,#16452f 100%)}
+        .premium-week-label{color:#849087;font-size:.6rem}.chart-bottom-note{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-top:.95rem;padding-top:.8rem;border-top:1px solid #eee9e0;color:#869289;font-size:.62rem}.chart-bottom-note>span{display:flex;align-items:center;gap:.4rem}.chart-legend-dot{width:8px;height:8px;border-radius:50%;background:#4caa70}.chart-bottom-note strong{color:#2f7650;font-size:.65rem}
+        .breakdown-total{color:#1a4b32;font:700 1.35rem 'Fraunces',Georgia,serif;white-space:nowrap}.breakdown-total small{color:#77867a;font:500 .67rem 'DM Sans',sans-serif}
+        .premium-category-list{display:flex;flex-direction:column;gap:.9rem;margin:1.2rem 0 1.35rem}.premium-category-top{display:flex;align-items:center;justify-content:space-between;gap:.7rem}
+        .premium-category-top>span{display:flex;align-items:center;flex-wrap:wrap;gap:.42rem;color:#344b3b;font-size:.7rem;font-weight:750}.premium-category-top>span i{width:8px;height:8px;border-radius:3px}.premium-category-top>span small{color:#99a198;font-size:.59rem;font-weight:450}.premium-category-top>strong{color:#304e3a;font-size:.68rem;white-space:nowrap}
+        .premium-category-track{height:8px;margin-top:.48rem;overflow:hidden;border-radius:99px;background:#f0eee8}.premium-category-track span{display:block;height:100%;border-radius:99px}.premium-category-foot{display:flex;justify-content:flex-end;margin-top:.2rem;color:#a0a9a1;font-size:.55rem}
+        .premium-streak-footer{padding-top:1rem;border-top:1px solid #eee9e0}.premium-streak-footer>div:first-child{display:flex;align-items:center;gap:.55rem}.streak-footer-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:10px;color:#9a6432;background:#f8eee1}
+        .premium-streak-footer strong,.premium-streak-footer small{display:block}.premium-streak-footer strong{color:#34493a;font-size:.68rem}.premium-streak-footer small{margin-top:.08rem;color:#96a096;font-size:.57rem}
+        .premium-streak-dots{display:flex;flex-wrap:wrap;gap:.34rem;margin-top:.75rem}.premium-streak-dots span{width:23px;height:23px;display:grid;place-items:center;border-radius:50%;color:#7f8c81;background:#f0eee7;font-size:.57rem;font-weight:750}.premium-streak-dots span.is-complete{color:#fff;background:#245b3c}.premium-streak-dots span.is-today{color:#153c28;background:#9de3b5;box-shadow:0 0 0 3px rgba(91,175,119,.14)}
+        @media(max-width:1050px){.routine-premium{padding:1.8rem 1.5rem 3rem}.swaps-hero-panel{align-items:flex-start;flex-direction:column}.swaps-hero-stats{max-width:none;width:100%}.analytics-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        @media(max-width:850px){.routine-plan-grid,.analytics-premium-grid{grid-template-columns:1fr}.routine-plan-hero{grid-template-columns:minmax(0,1fr) 180px;padding:1.6rem}.plan-progress-ring{width:130px;height:130px}.plan-ring-inner{width:106px;height:106px}.premium-swaps-grid{grid-template-columns:1fr}}
+        @media(max-width:600px){.routine-premium{padding:1.25rem 1rem 2.5rem}.routine-page-header{align-items:flex-start;flex-direction:column;gap:1rem}.routine-streak-chip{min-width:0}.routine-premium-tabs{width:100%;justify-content:space-between;gap:.15rem}.routine-premium-tab{flex:1;justify-content:center;padding:.62rem .45rem;font-size:.7rem}.tab-step{display:none}.routine-plan-hero{grid-template-columns:1fr;gap:1.15rem;padding:1.35rem}.plan-ring-wrap{flex-direction:row;justify-content:flex-start}.plan-progress-ring{width:88px;height:88px}.plan-ring-inner{width:70px;height:70px}.plan-ring-inner strong{font-size:1.35rem}.plan-ring-caption{font-size:.62rem}.challenge-panel{padding:1rem}.premium-checklist-item{gap:.45rem;padding:.62rem .55rem}.action-number{display:none}.action-category-icon{width:32px;height:32px;border-radius:10px}.action-main-copy strong{font-size:.7rem}.action-main-copy small{font-size:.58rem}.action-impact-pill{padding:.27rem .38rem;font-size:.55rem}.premium-action-check{width:23px;height:23px}.challenge-panel-footer{font-size:.58rem}.swaps-hero-panel,.analytics-hero-panel{padding:1.4rem;border-radius:19px}.swaps-hero-stats{grid-template-columns:1fr}.swaps-hero-stats>div{padding:.7rem .85rem}.swaps-hero-stats>div+div{border-left:0;border-top:1px solid rgba(255,255,255,.13)}.swaps-hero-stats strong{margin:.2rem 0}.swaps-section-heading{align-items:flex-start;flex-direction:column}.swaps-section-heading h3{font-size:1.15rem}.premium-swap-card{min-height:220px;padding:1.1rem}.analytics-hero-panel{align-items:flex-start;flex-direction:column;gap:1rem}.analytics-hero-highlight{width:100%;min-width:0}.analytics-hero-decoration{right:-15px;top:10px}.analytics-kpi-grid{grid-template-columns:1fr 1fr;gap:.55rem}.kpi-premium-card{min-height:145px;padding:.85rem}.kpi-label{font-size:.5rem}.kpi-value{font-size:1.2rem}.kpi-description{font-size:.55rem}.premium-chart-card,.premium-breakdown-card{padding:1rem}.premium-chart-heading h3{font-size:1.08rem}.premium-chart-heading p{font-size:.59rem}.premium-weekly-chart{padding-left:1.7rem;padding-right:.1rem}.chart-gridline{left:1.65rem}.chart-gridline span{left:-1.7rem;font-size:.48rem}.premium-week-column{min-width:39px}.premium-bar-track{width:29px}.premium-week-label{font-size:.52rem}.chart-bottom-note{font-size:.55rem}.premium-category-top>span{font-size:.64rem}.premium-category-top>span small{flex-basis:100%;margin-left:1rem}}
       `}</style>
     </div>
   );
