@@ -34,7 +34,6 @@ export interface RoutineAnalyticsSummary {
 
 const WEEKS_TO_SHOW = 4;
 const DAYS_TO_SHOW = 14;
-const MONTHS_PER_YEAR = 12;
 const WEEKS_PER_MONTH = 4.33;
 
 function validDate(value: string | null | undefined): Date | null {
@@ -110,7 +109,6 @@ export function calculateRoutineAnalytics(
 
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
   const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-  const previousMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
   const currentMonthLogs = logs.filter((log) => {
     const loggedAt = getActivityDate(log);
     return !!loggedAt && loggedAt >= monthStart && loggedAt < nextMonthStart;
