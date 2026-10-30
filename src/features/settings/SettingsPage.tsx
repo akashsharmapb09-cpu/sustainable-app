@@ -12,9 +12,40 @@ export function SettingsPage() {
   const [email, setEmail] = useState((typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null) || user?.email || 'demo@greenswap.local');
   const [emailErr, setEmailErr] = useState('');
 
-  const allCountries = [
-    "India","United States","United Kingdom","Canada","Australia","Germany","France","Italy","Japan","China","Brazil","Russia","UAE","Saudi Arabia","Singapore","Malaysia","Pakistan","Bangladesh","Nepal","Sri Lanka","Bhutan","Afghanistan","Albania","Algeria","Andorra","Angola","Argentina","Armenia","Austria","Azerbaijan","Bahamas","Bahrain","Barbados","Belarus","Belgium","Belize","Benin","Bolivia","Bosnia and Herzegovina","Botswana","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Cape Verde","Central African Republic","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","Gabon","Gambia","Georgia","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","Indonesia","Iran","Iraq","Ireland","Israel","Jamaica","Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Macedonia","Norway","Oman","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent","Samoa","San Marino","Sao Tome and Principe","Senegal","Serbia","Seychelles","Sierra Leone","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
-  ];
+  // ISO 3166-1 alpha-2 countries and territories (249 assigned entries).
+  const countryCodes = "AW AF AO AI AX AL AD AE AR AM AS AQ TF AG AU AT AZ BI BE BJ BQ BF BD BG BH BS BA BL BY BZ BM BO BR BB BN BT BV BW CF CA CC CH CL CN CI CM CD CG CK CO KM CV CR CU CW CX KY CY CZ DE DJ DM DK DO DZ EC EG ER EH ES EE ET FI FJ FK FR FO FM GA GB GE GG GH GI GN GP GM GW GQ GR GD GL GT GF GU GY HK HM HN HR HT HU ID IM IN IO IE IR IQ IS IL IT JM JE JO JP KZ KE KG KH KI KN KR KW LA LB LR LY LC LI LK LS LT LU LV MO MF MA MC MD MG MV MX MH MK ML MT MM ME MN MP MZ MR MS MQ MU MW MY YT NA NC NE NF NG NI NU NL NO NP NR NZ OM PK PA PN PE PH PW PG PL PR KP PT PY PS PF QA RE RO RU RW SA SD SN SG GS SH SJ SB SL SV SM SO PM RS SS ST SR SK SI SE SZ SX SC SY TC TD TG TH TJ TK TM TL TO TT TN TR TV TW TZ UG UA UM UY US UZ VA VC VE VG VI VN VU WF WS YE ZA ZM ZW".split(" ");
+  const countryNameOverrides: Record<string, string> = {
+    AE: "UAE",
+    BO: "Bolivia",
+    BN: "Brunei",
+    CD: "Democratic Republic of the Congo",
+    CG: "Congo",
+    CV: "Cape Verde",
+    CZ: "Czech Republic",
+    GB: "United Kingdom",
+    IR: "Iran",
+    KP: "North Korea",
+    KR: "South Korea",
+    LA: "Laos",
+    MD: "Moldova",
+    PS: "Palestine",
+    RU: "Russia",
+    TR: "Turkey",
+    TZ: "Tanzania",
+    US: "United States",
+    VA: "Vatican City",
+    VN: "Vietnam",
+  };
+  const countryDisplayNames = new Intl.DisplayNames(["en"], { type: "region" });
+  const getCountryFlag = (code: string) =>
+    String.fromCodePoint(...Array.from(code, (letter) => 127397 + letter.charCodeAt(0)));
+  const allCountries = countryCodes
+    .map((code) => ({
+      code,
+      name: countryNameOverrides[code] || countryDisplayNames.of(code) || code,
+      flag: getCountryFlag(code),
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const [selectedCountry, setSelectedCountry] = useState(
     (typeof window !== 'undefined' ? localStorage.getItem('country') : null) || "India"
@@ -25,7 +56,10 @@ export function SettingsPage() {
   );
   const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
 
-  const filtered = allCountries.filter(c => c.toLowerCase().includes(countrySearch.toLowerCase()));
+  const filtered = allCountries.filter((country) =>
+    country.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
+    country.code.toLowerCase().includes(countrySearch.toLowerCase())
+  );
   const [interests, setInterests] = useState<string[]>(['Sustainability', 'Clean Energy', 'Healthy Living']);
   const [bio, setBio] = useState('Making small everyday choices for a lighter household carbon footprint.');
 
@@ -195,24 +229,26 @@ export function SettingsPage() {
                     aria-label="Countries"
                     className="absolute left-0 right-0 top-full z-30 mt-1 max-h-48 overflow-y-auto border rounded bg-white shadow-lg text-gray-900"
                   >
-                    {filtered.slice(0, 50).map((c) => (
+                    {filtered.map((country) => (
                       <button
-                        key={c}
+                        key={country.code}
                         type="button"
                         role="option"
-                        aria-selected={selectedCountry === c}
+                        aria-selected={selectedCountry === country.name}
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => {
-                          setSelectedCountry(c);
-                          setCountrySearch(c);
+                          setSelectedCountry(country.name);
+                          setCountrySearch(country.name);
                           setCountryDropdownOpen(false);
-                          localStorage.setItem('country', c);
+                          localStorage.setItem('country', country.name);
                         }}
-                        className={`block w-full p-2 text-left hover:bg-green-100 ${
-                          selectedCountry === c ? 'bg-green-200 font-bold' : ''
+                        className={`flex w-full items-center gap-3 p-2 text-left hover:bg-green-100 ${
+                          selectedCountry === country.name ? 'bg-green-200 font-bold' : ''
                         }`}
                       >
-                        {c}
+                        <span className="w-7 text-xl leading-none" aria-hidden="true">{country.flag}</span>
+                        <span className="flex-1">{country.name}</span>
+                        <span className="text-xs font-mono text-gray-400">{country.code}</span>
                       </button>
                     ))}
                     {filtered.length === 0 && (
