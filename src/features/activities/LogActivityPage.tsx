@@ -115,22 +115,20 @@ export function LogActivityPage() {
     [activityLogs, userActions, alternatives],
   );
 
-  const adoptedSwaps: AdoptedSwap[] = useMemo(() => liveAnalytics.adopted.map(({ action, alternative }) => {
-    const visual = swapVisuals[alternative.category] ?? swapVisuals.shopping;
-    const savedKg = liveAnalytics.adoptedSavingsByAlternative[alternative.id] ?? 0;
+  const adoptedSwaps: AdoptedSwap[] = liveAnalytics.adopted.map((entry) => {
+    const alternative = entry.alternative;
+    const visual = swapVisuals[alternative.category] || swapVisuals.shopping;
+    const savedKg = liveAnalytics.adoptedSavingsByAlternative[alternative.id] || 0;
     const costDelta = alternative.cost_delta_monthly_inr;
-    const money = costDelta < 0
-      ? `Save ${formatINR(costDelta)}/mo`
-      : costDelta > 0
-        ? `Additional ${formatINR(costDelta)}/mo`
-        : 'No monthly cost change';
-
+    let money = 'No monthly cost change';
+    if (costDelta < 0) money = 'Save ' + formatINR(costDelta) + '/mo';
+    if (costDelta > 0) money = 'Additional ' + formatINR(costDelta) + '/mo';
     return {
       title: alternative.title,
       cat: alternative.category.charAt(0).toUpperCase() + alternative.category.slice(1),
-      co2: savedKg > 0 ? `−${savedKg.toFixed(1)} kg CO₂e / mo` : 'Log baseline activity to estimate',
+      co2: savedKg > 0 ? '−' + savedKg.toFixed(1) + ' kg CO₂e / mo' : 'Log baseline activity to estimate',
       money,
-      status: formatAdoptedStatus(action.adopted_at),
+      status: formatAdoptedStatus(entry.action.adopted_at),
       icon: visual.icon,
       tone: visual.tone,
       detail: alternative.description,
@@ -138,11 +136,11 @@ export function LogActivityPage() {
       image: visual.image,
       fallbackImage: visual.fallbackImage,
     };
-  }), [liveAnalytics]);
+  });
 
-  const toggleAction = (id: string) => setRoutineActions((prev) =>
-    prev.map((action) => action.id === id ? { ...action, completed: !action.completed } : action)
-  );
+  const toggleAction = (id: string) => setRoutineActions((previous) => previous.map((action) =>
+    action.id === id ? { ...action, completed: !action.completed } : action
+  ));
   const completedCount = routineActions.filter((action) => action.completed).length;
   const completionPercent = Math.round((completedCount / routineActions.length) * 100);
   const activeSwapCategoryCount = new Set(adoptedSwaps.map((swap) => swap.cat)).size;
@@ -156,16 +154,16 @@ export function LogActivityPage() {
     const y = 246 - height;
     return { ...week, x, y, height, centerX: x + 26 };
   });
-  const chartLinePath = chartColumns.length
-    ? chartColumns.map((column, index) => `${index === 0 ? 'M' : 'L'} ${column.centerX} ${column.y}`).join(' ')
+  const chartLinePath = chartColumns.length > 0
+    ? chartColumns.map((column, index) => (index === 0 ? 'M' : 'L') + ' ' + column.centerX + ' ' + column.y).join(' ')
     : '';
-  const chartAreaPath = chartColumns.length
-    ? `${chartLinePath} L ${chartColumns[chartColumns.length - 1].centerX} 246 L ${chartColumns[0].centerX} 246 Z`
+  const chartAreaPath = chartColumns.length > 0
+    ? chartLinePath + ' L ' + chartColumns[chartColumns.length - 1].centerX + ' 246 L ' + chartColumns[0].centerX + ' 246 Z'
     : '';
-  const bestWeek = liveAnalytics.weeklyTrend.reduce(
-    (best, week) => week.kg > best.kg ? week : best,
-    liveAnalytics.weeklyTrend[0] ?? { label: '—', start: '', kg: 0 },
-  );
+  let bestWeek = { label: '—', start: '', kg: 0 };
+  for (const week of liveAnalytics.weeklyTrend) {
+    if (week.kg > bestWeek.kg) bestWeek = week;
+  }
 
   return (
     <div className="routine-premium">
