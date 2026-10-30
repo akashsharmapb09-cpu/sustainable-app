@@ -78,7 +78,7 @@ export function LogActivityPage() {
           </section>
 
           <div className="routine-plan-grid">
-            <section className="routine-premium-card challenge-panel challenge-panel-premium">
+            <section className="routine-premium-card challenge-panel challenge-panel-editorial">
               <div className="panel-heading-row">
                 <div><div className="panel-eyebrow">THE DAILY CHECK-IN</div><h2 className="routine-section-title">Your 7-day challenge</h2><p className="routine-section-subtitle">A few small actions add up to meaningful change.</p></div>
                 <span className="challenge-count-pill">{completedCount}<i>/7</i></span>
@@ -89,7 +89,7 @@ export function LogActivityPage() {
                   return (
                     <button key={act.id} type="button" aria-pressed={act.completed} className={`premium-checklist-item ${act.completed ? 'is-complete' : ''}`} onClick={() => toggleAction(act.id)}>
                       <span className="action-number">{String(index + 1).padStart(2, '0')}</span>
-                      <span className="action-category-icon"><Icon size={18} /></span>
+                      <span className={`action-category-icon category-${act.category.toLowerCase()}`}><Icon size={18} /></span>
                       <span className="action-main-copy"><strong>{act.label}</strong><small>{act.category} <span>·</span> Daily ritual</small></span>
                       <span className="action-impact-pill">{act.saving}</span>
                       <span className="premium-action-check">{act.completed ? <Check size={15} strokeWidth={3} /> : <ChevronRight size={17} />}</span>
@@ -181,54 +181,83 @@ export function LogActivityPage() {
               <div className="carbon-chart-shell">
                 <div className="carbon-chart-summary">
                   <div><span className="carbon-chart-caption">TOTAL AVOIDED</span><strong>150 <small>kg CO₂e</small></strong></div>
-                  <span className="carbon-chart-trend"><TrendingDown size={14} /> +19 kg this month</span>
+                  <div className="carbon-chart-summary-right">
+                    <span className="carbon-chart-trend"><TrendingDown size={14} /> +19 kg this month</span>
+                    <small>Best week <b>47 kg</b></small>
+                  </div>
                 </div>
-                <svg className="carbon-area-chart" viewBox="0 0 640 286" role="img" aria-label="Weekly carbon avoided increased from 28 to 47 kilograms over four weeks">
+                <svg className="carbon-area-chart" viewBox="0 0 640 320" role="img" aria-label="Weekly carbon avoided increased from 28 to 47 kilograms over four weeks">
                   <defs>
                     <linearGradient id="carbonAreaFill" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="#8fe6ad" stopOpacity=".52" />
-                      <stop offset="72%" stopColor="#56b97a" stopOpacity=".12" />
-                      <stop offset="100%" stopColor="#56b97a" stopOpacity="0" />
+                      <stop offset="0%" stopColor="#d4a66f" stopOpacity=".28" />
+                      <stop offset="100%" stopColor="#d4a66f" stopOpacity="0" />
                     </linearGradient>
-                    <linearGradient id="carbonLineStroke" x1="0" x2="1" y1="0" y2="0">
-                      <stop offset="0%" stopColor="#64c88a" />
-                      <stop offset="100%" stopColor="#c6f3d0" />
+                    <linearGradient id="carbonTrendStroke" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0%" stopColor="#547b65" />
+                      <stop offset="100%" stopColor="#203f30" />
                     </linearGradient>
-                    <filter id="carbonPointGlow" x="-100%" y="-100%" width="300%" height="300%">
-                      <feGaussianBlur stdDeviation="5" result="blur" />
-                      <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                    </filter>
+                    <linearGradient id="barSage" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stopColor="#b7c8b6" /><stop offset="100%" stopColor="#809a83" />
+                    </linearGradient>
+                    <linearGradient id="barSand" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stopColor="#e7c69e" /><stop offset="100%" stopColor="#bd8f61" />
+                    </linearGradient>
+                    <linearGradient id="barBlue" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stopColor="#a9c2c2" /><stop offset="100%" stopColor="#688d8c" />
+                    </linearGradient>
+                    <linearGradient id="barForest" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stopColor="#64866d" /><stop offset="100%" stopColor="#254b35" />
+                    </linearGradient>
                   </defs>
+
                   <g className="carbon-chart-grid">
-                    <line x1="52" y1="38" x2="610" y2="38" />
-                    <line x1="52" y1="98" x2="610" y2="98" />
-                    <line x1="52" y1="158" x2="610" y2="158" />
-                    <line x1="52" y1="218" x2="610" y2="218" />
+                    <line x1="58" y1="48" x2="610" y2="48" />
+                    <line x1="58" y1="114" x2="610" y2="114" />
+                    <line x1="58" y1="180" x2="610" y2="180" />
+                    <line x1="58" y1="246" x2="610" y2="246" />
                   </g>
                   <g className="carbon-chart-axis-labels">
-                    <text x="8" y="42">50</text><text x="8" y="102">35</text><text x="8" y="162">20</text><text x="17" y="222">0</text>
+                    <text x="10" y="52">50</text><text x="10" y="118">35</text><text x="10" y="184">20</text><text x="20" y="250">0</text>
                   </g>
-                  <path className="carbon-chart-area" d="M72 106 C126 101 150 91 208 82 S324 65 385 57 S502 36 574 28 L574 218 L72 218 Z" />
-                  <path className="carbon-chart-line" d="M72 106 C126 101 150 91 208 82 S324 65 385 57 S502 36 574 28" />
-                  <g className="carbon-chart-values">
-                    <text x="72" y="82" textAnchor="middle">28 kg</text>
-                    <text x="238" y="57" textAnchor="middle">34 kg</text>
-                    <text x="405" y="32" textAnchor="middle">41 kg</text>
-                    <text x="574" y="12" textAnchor="middle">47 kg</text>
+
+                  <path className="carbon-chart-area" d="M112 129 C158 121 197 116 250 105 S354 88 388 78 S490 57 526 48 L526 246 L112 246 Z" />
+
+                  <g className="carbon-chart-bars">
+                    <rect x="86" y="129" width="52" height="117" rx="12" fill="url(#barSage)" />
+                    <rect x="224" y="105" width="52" height="141" rx="12" fill="url(#barSand)" />
+                    <rect x="362" y="78" width="52" height="168" rx="12" fill="url(#barBlue)" />
+                    <rect x="500" y="48" width="52" height="198" rx="12" fill="url(#barForest)" />
                   </g>
+
+                  <path className="carbon-chart-line" d="M112 129 C158 121 197 116 250 105 S354 88 388 78 S490 57 526 48" />
                   <g className="carbon-chart-points">
-                    <circle cx="72" cy="106" r="6" />
-                    <circle cx="238" cy="76" r="6" />
-                    <circle cx="405" cy="52" r="6" />
-                    <circle className="carbon-point-latest" cx="574" cy="28" r="8" filter="url(#carbonPointGlow)" />
+                    <circle cx="112" cy="129" r="6" />
+                    <circle cx="250" cy="105" r="6" />
+                    <circle cx="388" cy="78" r="6" />
+                    <circle className="carbon-point-latest" cx="526" cy="48" r="8" />
                   </g>
+
+                  <g className="carbon-chart-values">
+                    <text x="112" y="107" textAnchor="middle">28 kg</text>
+                    <text x="250" y="83" textAnchor="middle">34 kg</text>
+                    <text x="388" y="56" textAnchor="middle">41 kg</text>
+                    <g className="carbon-latest-callout">
+                      <rect x="485" y="7" width="82" height="27" rx="13.5" />
+                      <text x="526" y="25" textAnchor="middle">47 kg</text>
+                    </g>
+                  </g>
+
                   <g className="carbon-chart-weeks">
-                    <text x="72" y="252" textAnchor="middle">WEEK 01</text>
-                    <text x="238" y="252" textAnchor="middle">WEEK 02</text>
-                    <text x="405" y="252" textAnchor="middle">WEEK 03</text>
-                    <text x="574" y="252" textAnchor="middle">WEEK 04</text>
+                    <text x="112" y="280" textAnchor="middle">WEEK 01</text>
+                    <text x="250" y="280" textAnchor="middle">WEEK 02</text>
+                    <text x="388" y="280" textAnchor="middle">WEEK 03</text>
+                    <text x="526" y="280" textAnchor="middle">WEEK 04</text>
                   </g>
                 </svg>
+                <div className="carbon-chart-legend">
+                  <span><i className="legend-bar" /> Weekly avoided CO₂e</span>
+                  <span><i className="legend-line" /> Trend line</span>
+                </div>
               </div>
               <div className="chart-bottom-note"><span><span className="chart-legend-dot" /> Carbon avoided each week</span><strong>Consistent upward progress</strong></div>
             </section>
@@ -593,110 +622,119 @@ export function LogActivityPage() {
           .premium-category-top>span small { flex-basis:100%; margin-left:1rem; }
         }
 
-        /* Daily check-in: remove the flat white panel and give it a rich forest-glass surface. */
-        .challenge-panel-premium {
+
+        /* Balanced palette: warm ivory, restrained forest accents, and category-specific colour. */
+        .challenge-panel-editorial {
           position:relative; isolation:isolate; overflow:hidden;
-          border:1px solid rgba(180,220,190,.2);
+          border:1px solid #e6ddcf;
           background:
-            radial-gradient(ellipse at 100% 0%,rgba(111,194,135,.18),transparent 36%),
-            radial-gradient(ellipse at 0% 100%,rgba(68,133,91,.18),transparent 42%),
-            linear-gradient(145deg,#173c2a 0%,#102e20 58%,#0b261a 100%);
-          box-shadow:0 24px 54px rgba(12,43,27,.2),inset 0 1px 0 rgba(255,255,255,.1);
+            radial-gradient(ellipse at 100% 0%,rgba(224,203,169,.24),transparent 34%),
+            radial-gradient(ellipse at 0% 100%,rgba(207,220,199,.22),transparent 36%),
+            linear-gradient(145deg,#fffdf8 0%,#f7f1e7 100%);
+          box-shadow:0 18px 42px rgba(59,53,40,.075),inset 0 1px 0 #fff;
         }
-        .challenge-panel-premium:before {
-          content:""; position:absolute; z-index:-1; width:310px; height:310px; right:-150px; bottom:-185px;
-          border:1px solid rgba(208,241,213,.13); border-radius:50%;
-          box-shadow:0 0 0 24px rgba(208,241,213,.025),0 0 0 54px rgba(208,241,213,.02),0 0 0 88px rgba(208,241,213,.015);
+        .challenge-panel-editorial:before {
+          content:""; position:absolute; z-index:-1; width:260px; height:260px; right:-145px; top:-155px;
+          border:1px solid rgba(177,151,111,.2); border-radius:50%;
+          box-shadow:0 0 0 24px rgba(177,151,111,.04),0 0 0 52px rgba(177,151,111,.025);
           pointer-events:none;
         }
-        .challenge-panel-premium .panel-eyebrow { color:#a9dfb8; }
-        .challenge-panel-premium .routine-section-title { color:#fff; font-size:1.72rem; }
-        .challenge-panel-premium .routine-section-subtitle { color:rgba(235,247,237,.68); font-size:.8rem; }
-        .challenge-panel-premium .challenge-count-pill {
-          color:#133722; background:linear-gradient(145deg,#c8f0d0,#79d69a);
-          box-shadow:0 8px 22px rgba(126,218,153,.2),inset 0 1px 0 rgba(255,255,255,.7);
+        .challenge-panel-editorial .panel-eyebrow { color:#9b7650; }
+        .challenge-panel-editorial .routine-section-title { color:#1c3327; font-size:1.68rem; }
+        .challenge-panel-editorial .routine-section-subtitle { color:#85877d; font-size:.8rem; }
+        .challenge-panel-editorial .challenge-count-pill {
+          color:#fffaf0; background:linear-gradient(145deg,#294b37,#173724);
+          box-shadow:0 8px 20px rgba(28,65,43,.18),inset 0 1px 0 rgba(255,255,255,.18);
         }
-        .challenge-panel-premium .challenge-count-pill i { color:#346b48; }
-        .challenge-panel-premium .premium-checklist-item {
-          position:relative; min-height:72px; border:1px solid rgba(221,241,224,.13);
-          border-radius:17px; background:linear-gradient(110deg,rgba(255,255,255,.085),rgba(255,255,255,.045));
-          box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 5px 13px rgba(3,20,12,.08);
-          backdrop-filter:blur(12px);
+        .challenge-panel-editorial .challenge-count-pill i { color:#d7e4d1; }
+        .challenge-panel-editorial .premium-checklist-item {
+          min-height:72px; border:1px solid #e8e0d4; border-radius:16px;
+          background:linear-gradient(110deg,#fffefa,#fbf7ef);
+          box-shadow:0 4px 12px rgba(63,58,45,.035),inset 0 1px 0 #fff;
         }
-        .challenge-panel-premium .premium-checklist-item:hover {
-          transform:translateY(-2px); border-color:rgba(177,231,190,.48);
-          background:linear-gradient(110deg,rgba(124,196,143,.2),rgba(255,255,255,.08));
-          box-shadow:0 10px 22px rgba(2,18,10,.18),inset 0 1px 0 rgba(255,255,255,.1);
+        .challenge-panel-editorial .premium-checklist-item:hover {
+          transform:translateY(-2px); border-color:#c7b79e;
+          box-shadow:0 10px 22px rgba(63,58,45,.09),inset 0 1px 0 #fff;
         }
-        .challenge-panel-premium .premium-checklist-item.is-complete {
-          border-color:rgba(135,222,157,.35);
-          background:linear-gradient(105deg,rgba(108,190,130,.24),rgba(255,255,255,.075));
+        .challenge-panel-editorial .premium-checklist-item.is-complete {
+          border-color:#d1dfcf;
+          background:linear-gradient(105deg,#edf4eb,#f8f8ef);
         }
-        .challenge-panel-premium .premium-checklist-item.is-complete:before {
+        .challenge-panel-editorial .premium-checklist-item.is-complete:before {
           content:""; width:3px; align-self:stretch; flex-shrink:0; margin:-.72rem 0 -.72rem -.9rem;
-          border-radius:0 5px 5px 0; background:linear-gradient(#b5efc3,#54c27c);
-          box-shadow:0 0 12px rgba(113,223,143,.45);
+          border-radius:0 5px 5px 0; background:linear-gradient(#7eaa82,#477653);
         }
-        .challenge-panel-premium .action-number { color:rgba(224,244,228,.48); }
-        .challenge-panel-premium .action-category-icon {
-          color:#c7f0d1; background:rgba(191,237,201,.13);
-          border:1px solid rgba(205,241,211,.16); box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+        .challenge-panel-editorial .action-number { color:#a29e91; }
+        .challenge-panel-editorial .action-category-icon {
+          color:#527b69; background:#e7eee5; border:1px solid rgba(93,128,99,.1);
+          box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
         }
-        .challenge-panel-premium .premium-checklist-item.is-complete .action-category-icon {
-          color:#153b25; background:linear-gradient(145deg,#c6f0d0,#77d597); border-color:transparent;
+        .challenge-panel-editorial .category-food { color:#a76e42; background:#f8eadc; border-color:#f0dfcf; }
+        .challenge-panel-editorial .category-transport { color:#477b94; background:#e5eff3; border-color:#d8e7ec; }
+        .challenge-panel-editorial .category-energy { color:#a17a31; background:#f7efd9; border-color:#eee3c1; }
+        .challenge-panel-editorial .category-home { color:#58838b; background:#e4f0ef; border-color:#d4e5e3; }
+        .challenge-panel-editorial .category-shopping { color:#7a6c9a; background:#eeeaf5; border-color:#e1dbee; }
+        .challenge-panel-editorial .premium-checklist-item.is-complete .action-category-icon {
+          color:#fff; background:linear-gradient(145deg,#5d8b67,#315c40); border-color:transparent;
         }
-        .challenge-panel-premium .action-main-copy strong { color:#fff; font-size:.84rem; }
-        .challenge-panel-premium .action-main-copy small { color:rgba(231,244,234,.58); }
-        .challenge-panel-premium .action-main-copy small span { color:rgba(231,244,234,.35); }
-        .challenge-panel-premium .action-impact-pill {
-          color:#d0f4d8; background:rgba(170,224,181,.12);
-          border:1px solid rgba(181,235,192,.16); box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+        .challenge-panel-editorial .action-main-copy strong { color:#28392e; font-size:.84rem; }
+        .challenge-panel-editorial .action-main-copy small { color:#96968b; }
+        .challenge-panel-editorial .action-impact-pill {
+          color:#586d56; background:#f0f1e9; border:1px solid #e4e7da;
         }
-        .challenge-panel-premium .premium-action-check {
-          color:#d6eddc; border-color:rgba(215,241,220,.26); background:rgba(255,255,255,.08);
+        .challenge-panel-editorial .premium-action-check {
+          color:#8b9387; border-color:#ded9cd; background:#fffdf8;
         }
-        .challenge-panel-premium .is-complete .premium-action-check {
-          color:#10351f; border-color:#a8e9b8; background:linear-gradient(145deg,#c6f0d0,#78d99a);
-          box-shadow:0 0 0 4px rgba(127,218,151,.1),0 4px 10px rgba(0,0,0,.12);
+        .challenge-panel-editorial .is-complete .premium-action-check {
+          color:#fff; border-color:#315f40; background:#315f40;
+          box-shadow:0 3px 9px rgba(49,95,64,.16);
         }
-        .challenge-panel-premium .challenge-panel-footer {
-          color:rgba(226,242,230,.62); border-top-color:rgba(223,243,227,.16);
+        .challenge-panel-editorial .challenge-panel-footer {
+          color:#8a8d82; border-top-color:#e9e1d6;
         }
-        .challenge-panel-premium .challenge-panel-footer svg { color:#a8e7b8; }
+        .challenge-panel-editorial .challenge-panel-footer svg { color:#6f9572; }
 
-        /* Analytics: high-contrast area chart with a luminous trajectory and data callouts. */
-        .premium-chart-card { overflow:hidden; }
+        /* Carbon chart: mixed-tone columns, a polished trajectory line, and a featured latest week. */
         .carbon-chart-shell {
-          position:relative; margin-top:1rem; padding:1rem 1rem .35rem; overflow:hidden;
-          border:1px solid #e5e9df; border-radius:22px;
+          position:relative; margin-top:1rem; padding:1rem 1rem .65rem; overflow:hidden;
+          border:1px solid #e7dfd2; border-radius:22px;
           background:
-            radial-gradient(ellipse at 84% 0%,rgba(185,224,190,.25),transparent 35%),
-            linear-gradient(145deg,#f7f8f1,#eff3e9);
-          box-shadow:inset 0 1px 0 #fff,0 8px 20px rgba(33,59,39,.035);
+            radial-gradient(ellipse at 88% 0%,rgba(222,197,159,.2),transparent 34%),
+            linear-gradient(145deg,#fffdf8,#f5f0e6);
+          box-shadow:inset 0 1px 0 #fff,0 9px 22px rgba(53,54,43,.045);
         }
-        .carbon-chart-summary { display:flex; align-items:flex-end; justify-content:space-between; gap:.8rem; padding:0 .45rem .2rem; }
-        .carbon-chart-caption { display:block; color:#819084; font-size:.55rem; font-weight:850; letter-spacing:.15em; }
-        .carbon-chart-summary strong { display:block; margin-top:.17rem; color:#163d29; font:700 1.45rem 'Fraunces',Georgia,serif; letter-spacing:-.035em; }
-        .carbon-chart-summary strong small { color:#748579; font:500 .67rem 'DM Sans',sans-serif; }
-        .carbon-chart-trend { display:inline-flex; align-items:center; gap:.35rem; padding:.4rem .65rem; border:1px solid #d7e8d7; border-radius:999px; color:#286744; background:rgba(255,255,255,.72); font-size:.62rem; font-weight:800; white-space:nowrap; }
+        .carbon-chart-summary { display:flex; align-items:flex-end; justify-content:space-between; gap:.8rem; padding:0 .45rem .35rem; }
+        .carbon-chart-caption { display:block; color:#938b7c; font-size:.55rem; font-weight:850; letter-spacing:.15em; }
+        .carbon-chart-summary strong { display:block; margin-top:.17rem; color:#203c2c; font:700 1.55rem 'Fraunces',Georgia,serif; letter-spacing:-.035em; }
+        .carbon-chart-summary strong small { color:#818276; font:500 .67rem 'DM Sans',sans-serif; }
+        .carbon-chart-summary-right { display:flex; flex-direction:column; align-items:flex-end; gap:.38rem; }
+        .carbon-chart-summary-right>small { color:#8d8c80; font-size:.58rem; }
+        .carbon-chart-summary-right>small b { color:#a36d42; }
+        .carbon-chart-trend { display:inline-flex; align-items:center; gap:.35rem; padding:.4rem .65rem; border:1px solid #e6d9c6; border-radius:999px; color:#98683d; background:#fff9ef; font-size:.62rem; font-weight:800; white-space:nowrap; }
+        .carbon-area-chart { display:block; width:100%; height:auto; overflow:visible; margin-top:.25rem; }
         .carbon-chart-area { fill:url(#carbonAreaFill); }
-        .carbon-area-chart { display:block; width:100%; height:auto; overflow:visible; margin-top:.4rem; }
-        .carbon-chart-grid line { stroke:#dce5d9; stroke-width:1; stroke-dasharray:4 7; }
-        .carbon-chart-axis-labels { fill:#94a196; font:11px 'DM Sans',sans-serif; }
-        .carbon-chart-line { fill:none; stroke:url(#carbonLineStroke); stroke-width:5; stroke-linecap:round; filter:drop-shadow(0 5px 5px rgba(54,135,79,.24)); }
-        .carbon-chart-points circle { fill:#effcf0; stroke:#368957; stroke-width:4; }
-        .carbon-chart-points .carbon-point-latest { fill:#d5f7db; stroke:#25804d; stroke-width:5; }
-        .carbon-chart-values { fill:#245a3b; font:700 13px 'DM Sans',sans-serif; }
-        .carbon-chart-weeks { fill:#74877a; font:800 10px 'DM Sans',sans-serif; letter-spacing:1.1px; }
-        .chart-bottom-note { margin-top:.85rem; }
+        .carbon-chart-grid line { stroke:#e6dfd3; stroke-width:1; stroke-dasharray:3 7; }
+        .carbon-chart-axis-labels { fill:#a29b8e; font:11px 'DM Sans',sans-serif; }
+        .carbon-chart-line { fill:none; stroke:url(#carbonTrendStroke); stroke-width:4; stroke-linecap:round; filter:drop-shadow(0 4px 4px rgba(40,77,53,.15)); }
+        .carbon-chart-points circle { fill:#fffaf1; stroke:#537b60; stroke-width:3.5; }
+        .carbon-chart-points .carbon-point-latest { fill:#fff3df; stroke:#b97846; stroke-width:4.5; }
+        .carbon-chart-values { fill:#536b58; font:700 12px 'DM Sans',sans-serif; }
+        .carbon-latest-callout rect { fill:#b97846; filter:drop-shadow(0 3px 4px rgba(108,67,35,.18)); }
+        .carbon-latest-callout text { fill:#fffaf1; font-size:12px; font-weight:800; }
+        .carbon-chart-weeks { fill:#8f9186; font:800 10px 'DM Sans',sans-serif; letter-spacing:1.1px; }
+        .carbon-chart-legend { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:1.1rem; padding:.15rem 0 .25rem; color:#85887d; font-size:.59rem; }
+        .carbon-chart-legend span { display:inline-flex; align-items:center; gap:.38rem; }
+        .carbon-chart-legend i { display:inline-block; width:17px; height:7px; border-radius:5px; }
+        .carbon-chart-legend .legend-bar { background:linear-gradient(90deg,#b7c8b6,#bd8f61,#688d8c,#254b35); }
+        .carbon-chart-legend .legend-line { height:3px; background:#315b40; }
         @media(max-width:600px) {
-          .challenge-panel-premium .routine-section-title { font-size:1.35rem; }
-          .challenge-panel-premium .premium-checklist-item { gap:.4rem; padding:.62rem .55rem; }
-          .challenge-panel-premium .action-impact-pill { font-size:.51rem; padding:.25rem .32rem; }
-          .carbon-chart-shell { margin-left:-.25rem; margin-right:-.25rem; padding:.7rem .45rem .2rem; }
+          .challenge-panel-editorial .routine-section-title { font-size:1.35rem; }
+          .challenge-panel-editorial .premium-checklist-item { gap:.4rem; padding:.62rem .55rem; }
+          .challenge-panel-editorial .action-impact-pill { font-size:.51rem; padding:.25rem .32rem; }
+          .carbon-chart-shell { margin-left:-.25rem; margin-right:-.25rem; padding:.7rem .45rem .35rem; }
           .carbon-chart-summary strong { font-size:1.18rem; }
           .carbon-chart-trend { font-size:.53rem; padding:.32rem .45rem; }
-          .carbon-chart-values { font-size:12px; }
+          .carbon-chart-values { font-size:11px; }
           .carbon-chart-weeks { font-size:9px; }
         }
       `}</style>
