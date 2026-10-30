@@ -115,55 +115,41 @@ export function LogActivityPage() {
     [activityLogs, userActions, alternatives],
   );
 
-  const adoptedSwaps: AdoptedSwap[] = liveAnalytics.adopted.map((entry) => {
-    const alternative = entry.alternative;
-    const visual = swapVisuals[alternative.category] || swapVisuals.shopping;
-    const savedKg = liveAnalytics.adoptedSavingsByAlternative[alternative.id] || 0;
-    const costDelta = alternative.cost_delta_monthly_inr;
-    let money = 'No monthly cost change';
-    if (costDelta < 0) money = 'Save ' + formatINR(costDelta) + '/mo';
-    if (costDelta > 0) money = 'Additional ' + formatINR(costDelta) + '/mo';
-    return {
-      title: alternative.title,
-      cat: alternative.category.charAt(0).toUpperCase() + alternative.category.slice(1),
-      co2: savedKg > 0 ? '−' + savedKg.toFixed(1) + ' kg CO₂e / mo' : 'Log baseline activity to estimate',
-      money,
-      status: formatAdoptedStatus(entry.action.adopted_at),
-      icon: visual.icon,
-      tone: visual.tone,
-      detail: alternative.description,
-      benefit: alternative.why_better,
-      image: visual.image,
-      fallbackImage: visual.fallbackImage,
-    };
-  });
-
-  const toggleAction = (id: string) => setRoutineActions((previous) => previous.map((action) =>
-    action.id === id ? { ...action, completed: !action.completed } : action
-  ));
+  const adoptedSwaps = liveAnalytics.adopted.map(({ action, alternative }) => ({
+    title: alternative.title,
+    cat: alternative.category.charAt(0).toUpperCase() + alternative.category.slice(1),
+    co2: (liveAnalytics.adoptedSavingsByAlternative[alternative.id] || 0) > 0
+      ? '−' + (liveAnalytics.adoptedSavingsByAlternative[alternative.id] || 0).toFixed(1) + ' kg CO₂e / mo'
+      : 'Log baseline activity to estimate',
+    money: alternative.cost_delta_monthly_inr < 0
+      ? 'Save ' + formatINR(alternative.cost_delta_monthly_inr) + '/mo'
+      : alternative.cost_delta_monthly_inr > 0
+        ? 'Additional ' + formatINR(alternative.cost_delta_monthly_inr) + '/mo'
+        : 'No monthly cost change',
+    status: formatAdoptedStatus(action.adopted_at),
+    icon: (swapVisuals[alternative.category] || swapVisuals.shopping).icon,
+    tone: (swapVisuals[alternative.category] || swapVisuals.shopping).tone,
+    detail: alternative.description,
+    benefit: alternative.why_better,
+    image: (swapVisuals[alternative.category] || swapVisuals.shopping).image,
+    fallbackImage: (swapVisuals[alternative.category] || swapVisuals.shopping).fallbackImage,
+  }));
+  const toggleAction = (id: string) => setRoutineActions((previous) => previous.map((action) => action.id === id ? { ...action, completed: !action.completed } : action));
   const completedCount = routineActions.filter((action) => action.completed).length;
   const completionPercent = Math.round((completedCount / routineActions.length) * 100);
   const activeSwapCategoryCount = new Set(adoptedSwaps.map((swap) => swap.cat)).size;
   const analyticsLoading = logsLoading || userActionsLoading || alternativesLoading;
   const analyticsError = logsError || userActionsError;
-
   const chartScale = Math.max(10, Math.ceil(Math.max(...liveAnalytics.weeklyTrend.map((week) => week.kg), 0) / 10) * 10);
-  const chartColumns = liveAnalytics.weeklyTrend.map((week, index) => {
-    const x = 86 + index * 138;
-    const height = week.kg > 0 ? Math.max(4, (week.kg / chartScale) * 178) : 0;
-    const y = 246 - height;
-    return { ...week, x, y, height, centerX: x + 26 };
-  });
-  const chartLinePath = chartColumns.length > 0
-    ? chartColumns.map((column, index) => (index === 0 ? 'M' : 'L') + ' ' + column.centerX + ' ' + column.y).join(' ')
-    : '';
-  const chartAreaPath = chartColumns.length > 0
-    ? chartLinePath + ' L ' + chartColumns[chartColumns.length - 1].centerX + ' 246 L ' + chartColumns[0].centerX + ' 246 Z'
-    : '';
-  let bestWeek = { label: '—', start: '', kg: 0 };
-  for (const week of liveAnalytics.weeklyTrend) {
-    if (week.kg > bestWeek.kg) bestWeek = week;
-  }
+  const chartColumns = liveAnalytics.weeklyTrend.map((week, index) => ({
+    ...week,
+    x: 86 + index * 138,
+    height: week.kg > 0 ? Math.max(4, (week.kg / chartScale) * 178) : 0,
+    centerX: 112 + index * 138,
+  })).map((week) => ({ ...week, y: 246 - week.height }));
+  const chartLinePath = chartColumns.map((column, index) => (index === 0 ? 'M' : 'L') + ' ' + column.centerX + ' ' + column.y).join(' ');
+  const chartAreaPath = chartColumns.length > 0 ? chartLinePath + ' L ' + chartColumns[chartColumns.length - 1].centerX + ' 246 L ' + chartColumns[0].centerX + ' 246 Z' : '';
+  const bestWeek = liveAnalytics.weeklyTrend.slice().sort((a, b) => b.kg - a.kg)[0] || { label: '—', start: '', kg: 0 };
 
   return (
     <div className="routine-premium">
