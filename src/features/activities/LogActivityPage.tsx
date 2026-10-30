@@ -105,14 +105,20 @@ function formatNetSavings(value: number): string {
 
 
 export function LogActivityPage() {
+  const [routineActions, setRoutineActions] = useState(INITIAL_ACTIONS);
+  const [activeTab, setActiveTab] = useState('plan');
   const activityQuery = useActivityLogs();
   const actionQuery = useUserActions();
   const alternativeQuery = useAlternatives();
   const liveAnalytics = calculateRoutineAnalytics(activityQuery.data || [], actionQuery.data || [], alternativeQuery.data || []);
+  function toggleAction(id: string) {
+    setRoutineActions((previous) => previous.map((action) => action.id === id ? { ...action, completed: !action.completed } : action));
+  }
   return (
     <div className="routine-premium">
-      <h1>Your routine</h1>
-      <p>{liveAnalytics.monthlyCo2SavedKg}</p>
+      <h1>{activeTab}</h1>
+      <p>{routineActions.length} · {liveAnalytics.monthlyCo2SavedKg}</p>
+      <button type="button" onClick={() => toggleAction('1')}>toggle</button>
     </div>
   );
 }
