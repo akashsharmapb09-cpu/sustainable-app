@@ -38,12 +38,14 @@ interface AdoptedSwap {
 }
 
 const actionIcons = { Shopping: ShoppingBag, Food: Utensils, Transport: Bike, Energy: Lightbulb, Home: Droplets };
-const swapVisuals: Record<string, {
+interface SwapVisual {
   icon: LucideIcon;
   tone: AdoptedSwap['tone'];
   image: string;
   fallbackImage?: string;
-}> = {
+}
+
+const swapVisuals: Record<string, SwapVisual> = {
   transport: {
     icon: TrainFront,
     tone: 'transport',
